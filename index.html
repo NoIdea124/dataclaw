@@ -4995,6 +4995,10 @@ async function loadRemoteSkills() {
     const res = await fetch(SKILLS_SERVER + '/api/skills');
     if (!res.ok) throw new Error('HTTP ' + res.status);
     skills = await res.json();
+    // 合并本地内置技能（default_ 前缀），避免被远端覆盖
+    const remoteIds = new Set(skills.map(s => s.id));
+    loadSkills().filter(s => s.id.startsWith('default_') && !remoteIds.has(s.id))
+                .forEach(s => skills.push(s));
     if (badge) { badge.textContent = `● 在线 · ${skills.length} 个`; badge.className = 'skill-status-badge online'; }
     renderSkillList();
   } catch(e) {
