@@ -875,6 +875,42 @@ textarea.mf-inp{resize:vertical;line-height:1.55;font-size:12px;font-family:var(
 .dc-chart-svg{display:block;width:100%}
 .dc-xlabels{display:flex;justify-content:space-between;margin-top:5px;padding:0 1px}
 .dc-xlabel{font-size:9.5px;color:var(--txm);font-family:var(--mono)}
+/* ── Asset List Card ── */
+.ac-body{padding:8px 0}
+.ac-item{display:flex;align-items:flex-start;gap:0;padding:9px 14px;border-bottom:1px solid var(--border);transition:background var(--t)}
+.ac-item:last-child{border-bottom:none}
+.ac-item:hover{background:var(--bg-hover)}
+.ac-rank{flex-shrink:0;width:22px;font-size:11px;font-weight:700;color:var(--txd);font-family:var(--mono);padding-top:2px}
+.ac-rank-top{color:var(--acc)}
+.ac-main{flex:1;min-width:0}
+.ac-name-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:2px}
+.ac-display-name{font-size:13px;font-weight:600;color:var(--tx);letter-spacing:-.1px}
+.ac-layer{display:inline-block;padding:1px 5px;border-radius:3px;font-size:9.5px;font-weight:700;letter-spacing:.4px;font-family:var(--mono)}
+.ac-layer.ods{background:rgba(100,116,139,.15);color:#94a3b8}
+.ac-layer.dwd{background:rgba(59,130,246,.15);color:#60a5fa}
+.ac-layer.dws{background:rgba(139,92,246,.15);color:#a78bfa}
+.ac-layer.ads{background:rgba(245,158,11,.15);color:#fbbf24}
+.ac-layer.dim{background:rgba(16,185,129,.15);color:#34d399}
+.ac-cat{font-size:10px;color:var(--txm);background:var(--bg-hover);padding:1px 6px;border-radius:3px;border:1px solid var(--border)}
+.ac-id{font-size:10.5px;font-family:var(--mono);color:var(--txd);margin-bottom:3px}
+.ac-desc{font-size:11.5px;color:var(--tx2);line-height:1.5;margin-bottom:5px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.ac-meta-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px}
+.ac-meta-item{font-size:10px;color:var(--txm)}
+.ac-sens{font-size:9.5px;font-weight:600;padding:1px 5px;border-radius:2px}
+.ac-sens.high{color:#f6465d;background:rgba(246,70,93,.1)}
+.ac-sens.mid{color:#f59e0b;background:rgba(245,158,11,.1)}
+.ac-sens.low{color:var(--txm);background:var(--bg-hover)}
+.ac-status{font-size:9.5px;font-weight:600;padding:1px 5px;border-radius:2px}
+.ac-status.prod{color:#00c087;background:rgba(0,192,135,.1)}
+.ac-status.test{color:#f59e0b;background:rgba(245,158,11,.1)}
+.ac-status.deprecated{color:var(--txd);background:var(--bg-hover)}
+.ac-tags{display:flex;gap:4px;flex-wrap:wrap}
+.ac-tag{font-size:9.5px;color:var(--txm);background:var(--bg-hover);border:1px solid var(--border);padding:0 5px;border-radius:3px}
+.ac-score-col{flex-shrink:0;display:flex;flex-direction:column;align-items:flex-end;gap:4px;padding-left:10px;min-width:36px}
+.ac-score-num{font-size:13px;font-weight:700;font-family:var(--mono);color:var(--tx)}
+.ac-score-bar-wrap{width:32px;height:3px;background:var(--border);border-radius:2px;overflow:hidden}
+.ac-score-bar{height:100%;border-radius:2px;background:var(--acc)}
+.ac-total{font-size:11px;color:var(--txm);margin-left:auto;padding-right:2px}
 @keyframes spin{to{transform:rotate(360deg)}}
 
 
@@ -1878,6 +1914,23 @@ const MCP_MARKET = [
     defaultHeaders: '',
     setupNote: '需先在本地启动服务器',
     setupCmd: 'cd mcp-database && node server.js',
+  },
+  {
+    id: 'catalog',
+    name: '数据资产目录',
+    icon: '🗂️',
+    category: '数据',
+    type: 'local',
+    description: '模拟电商数据资产目录，收录 40 张数据表/数据集，覆盖用户、订单、商品、营销、物流、财务等 8 大业务域。支持关键词搜索，按相关度排序返回匹配资产及元数据。',
+    tools: [
+      { name: 'search_assets',   desc: '按关键词搜索资产目录，返回相关度排序的结果' },
+      { name: 'get_asset_detail', desc: '获取单个数据资产的完整元数据' },
+      { name: 'list_categories', desc: '列出所有业务域及各域资产统计' },
+    ],
+    defaultUrl: 'http://localhost:3463',
+    defaultHeaders: '',
+    setupNote: '需先在本地启动服务器',
+    setupCmd: 'cd mcp-catalog && node server.js',
   },
   {
     id: 'weather',
@@ -3482,9 +3535,64 @@ function renderSparkline(values) {
   </svg>`;
 }
 
+// Render asset list card
+function renderAssetList(data) {
+  const items = data.items || [];
+  const LAYER_CLS = { ODS: 'ods', DWD: 'dwd', DWS: 'dws', ADS: 'ads', DIM: 'dim' };
+  const SENS_CLS  = { '机密': 'high', '高': 'high', '内部': 'mid', '中': 'mid', '公开': 'low', '低': 'low' };
+  const STAT_CLS  = { '正常': 'prod', '生产': 'prod', '测试': 'test', '废弃': 'deprecated' };
+
+  const rows = items.map((item, i) => {
+    const rank = i + 1;
+    const layerCls = LAYER_CLS[item.layer] || 'ods';
+    const sensCls  = SENS_CLS[item.sensitivity] || 'low';
+    const statCls  = STAT_CLS[item.status] || 'prod';
+    const scoreBar = Math.max(0, Math.min(100, item.score || 0));
+    const tags = (item.tags || []).map(t => `<span class="ac-tag">${esc(t)}</span>`).join('');
+    return `<div class="ac-item">
+      <div class="ac-rank${rank <= 3 ? ' ac-rank-top' : ''}">${rank}</div>
+      <div class="ac-main">
+        <div class="ac-name-row">
+          <span class="ac-display-name">${esc(item.display_name || item.name)}</span>
+          <span class="ac-layer ${layerCls}">${esc(item.layer)}</span>
+          <span class="ac-cat">${esc(item.category)}</span>
+        </div>
+        <div class="ac-id">${esc(item.name)}</div>
+        ${item.description ? `<div class="ac-desc">${esc(item.description)}</div>` : ''}
+        <div class="ac-meta-row">
+          ${item.owner ? `<span class="ac-meta-item">👤 ${esc(item.owner)}</span>` : ''}
+          ${item.update_freq ? `<span class="ac-meta-item">🔄 ${esc(item.update_freq)}</span>` : ''}
+          ${item.row_count ? `<span class="ac-meta-item">📦 ${esc(item.row_count)}</span>` : ''}
+          ${item.sensitivity ? `<span class="ac-sens ${sensCls}">${esc(item.sensitivity)}</span>` : ''}
+          ${item.status ? `<span class="ac-status ${statCls}">${esc(item.status)}</span>` : ''}
+        </div>
+        ${tags ? `<div class="ac-tags">${tags}</div>` : ''}
+      </div>
+      <div class="ac-score-col">
+        <div class="ac-score-num">${scoreBar}</div>
+        <div class="ac-score-bar-wrap"><div class="ac-score-bar" style="width:${scoreBar}%"></div></div>
+      </div>
+    </div>`;
+  }).join('');
+
+  const totalHtml = data.total != null
+    ? `<span class="ac-total">共 ${data.total} 条</span>`
+    : '';
+  const queryHtml = data.query
+    ? `<span class="dc-card-lbl">${esc(data.icon || '🗂️')} ${esc(data.title || '数据资产')} · "${esc(data.query)}"</span>`
+    : `<span class="dc-card-lbl">${esc(data.icon || '🗂️')} ${esc(data.title || '数据资产')}</span>`;
+
+  return `<div class="dc-card">
+    <div class="dc-card-hdr">${queryHtml}${totalHtml}</div>
+    <div class="ac-body">${rows}</div>
+  </div>`;
+}
+
 // Render a data card — each metric is a tab with its own trend chart
 function renderDataCard(data) {
-  if (!data || data.type !== 'metric_card') return '';
+  if (!data) return '';
+  if (data.type === 'asset_list') return renderAssetList(data);
+  if (data.type !== 'metric_card') return '';
   const metrics = data.metrics || [];
   if (!metrics.length) return '';
 
