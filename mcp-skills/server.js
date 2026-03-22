@@ -47,20 +47,23 @@ function parseMD(content) {
     if (colon < 0) return;
     meta[line.slice(0, colon).trim()] = line.slice(colon + 1).trim();
   });
-  return {
+  const skill = {
     name:         meta.name        || '',
     trigger:      meta.trigger     || '',
     description:  meta.description || '',
     enabled:      meta.enabled !== 'false',
     instructions: m[2].trim(),
   };
+  if (meta.output_type) skill.output_type = meta.output_type;
+  return skill;
 }
 
-function buildMD({ name, trigger, description, enabled, instructions }) {
+function buildMD({ name, trigger, description, enabled, output_type, instructions }) {
   const lines = ['---'];
   if (name)        lines.push(`name: ${name}`);
   if (trigger)     lines.push(`trigger: ${trigger}`);
   if (description) lines.push(`description: ${description}`);
+  if (output_type) lines.push(`output_type: ${output_type}`);
   if (enabled === false) lines.push(`enabled: false`);
   lines.push('---', '', instructions || '');
   return lines.join('\n');
@@ -165,6 +168,7 @@ const server = http.createServer(async (req, res) => {
       trigger:      body.trigger      ?? existing.trigger,
       description:  body.description  ?? existing.description,
       enabled:      body.enabled      ?? existing.enabled,
+      output_type:  body.output_type  ?? existing.output_type,
       instructions: body.instructions ?? existing.instructions,
     };
     fs.writeFileSync(filepath, buildMD(merged), 'utf8');
