@@ -14,31 +14,35 @@
 - **复杂任务规划** — AI 分解多步计划，支持顺序/并行执行，HTTP·代码·AI 三种步骤类型
 - **多模态上传** — 支持图片视觉问答、TXT/MD/CSV 等文档内容询问
 - **流式渲染** — SSE 实时输出，Markdown 代码高亮，思考链折叠展示
-- **开发者模式** — 隐藏 API Key、模型配置、搜索配置，普通用户无感知
+- **资产库** — 内置独立的数据资产管理应用，含指标管理、需求管理、数据管理三大模块
 
 ## 项目结构
 
 ```
 dataclaw/
-├── index.html          # 主应用（单文件，含全部 UI + 逻辑）
-├── mcp-weather/        # 天气查询 MCP 服务 (端口 3456)
+├── index.html              # 主应用（单文件，含全部 UI + 逻辑）
+├── metric-dict/
+│   └── index.html          # 资产库（独立应用）
+├── asset-catalog/
+│   └── index.html          # 资产目录（独立应用）
+├── mcp-metrics/            # 资产库 MCP 服务 (端口 3464)
 │   ├── server.js
 │   └── package.json
-├── mcp-skills/         # 技能文件 REST API 服务 (端口 3458)
+├── mcp-catalog/            # 资产目录 MCP 服务 (端口 3463)
 │   ├── server.js
 │   └── package.json
-├── mcp-knowledge/      # 外联知识库 MCP 服务 (端口 3459)
+├── mcp-skills/             # 技能文件 REST API 服务 (端口 3458)
 │   ├── server.js
 │   └── package.json
-├── mcp-feishu/         # 飞书文档 MCP 服务 (端口 3461)
+├── mcp-knowledge/          # 外联知识库 MCP 服务 (端口 3459)
 │   ├── server.js
 │   └── package.json
-├── mcp-database/       # 模拟订单数据库 MCP 服务 (端口 3462)
+├── mcp-feishu/             # 飞书文档 MCP 服务 (端口 3461)
 │   ├── server.js
 │   └── package.json
-└── skills/             # 技能文件目录
-    ├── 代码审查.md
-    └── 数据分析.md
+└── skills/                 # 技能文件目录
+    ├── 取数.md
+    └── 找数.md
 ```
 
 ## 快速启动
@@ -46,11 +50,11 @@ dataclaw/
 **1. 启动 MCP 服务**
 
 ```bash
-node mcp-weather/server.js &
+node mcp-metrics/server.js &
+node mcp-catalog/server.js &
 node mcp-skills/server.js &
 node mcp-knowledge/server.js &
 node mcp-feishu/server.js &
-node mcp-database/server.js &
 ```
 
 **2. 启动前端**
@@ -65,11 +69,33 @@ python3 -m http.server 8080
 
 | 服务 | 端口 | 提供能力 |
 |------|------|---------|
-| mcp-weather | 3456 | 当前天气、天气预报、空气质量（Open-Meteo，无需 Key）|
+| mcp-metrics | 3464 | 资产库指标检索：`search_metrics` · `get_metric_detail` · `get_metric_data` · `list_dimensions` · `list_categories` |
+| mcp-catalog | 3463 | 数据资产目录：`search_assets` · `get_asset_detail` · `list_categories` |
 | mcp-skills | 3458 | 技能文件 CRUD REST API |
 | mcp-knowledge | 3459 | 学术/财经/法律等 7 个外联知识库检索 |
 | mcp-feishu | 3461 | 飞书文档创建、内容写入、文档信息查询 |
-| mcp-database | 3462 | 模拟订单数据库（1000条/全年），支持多维过滤查询与聚合分析 |
+
+## 资产库
+
+资产库（`metric-dict/index.html`）是独立的数据资产管理应用，可从 DataClaw 顶栏「资产库」下拉菜单直接跳转，也可单独打开。
+
+### 三大模块
+
+**指标管理**（`metric-dict/index.html#search`）
+
+收录 35 个核心指标 × 8 个公共维度，覆盖用户、订单、商品、营销、物流、财务、流量 7 大业务域。支持按名称/取数表/标签全文搜索、业务域筛选、维度拆解，点击指标卡查看计算口径、模拟时序数据和可拆解维度详情。
+
+**需求管理**
+
+数据需求全生命周期管理，支持两步工作流：
+1. **业务负责人** 创建需求任务，填写背景收益，录入维度/指标元数据，AI 审核通过后提交开发
+2. **技术负责人** 补录来源表信息，AI 测试验证后一键发布，指标/维度自动进入指标管理可检索
+
+元数据表格为类 Excel 组件，支持列宽拖拽调整、文字加粗、插入超链接，文本列支持实时自动补全已有指标/维度名称。
+
+**数据管理**（`metric-dict/index.html#assets`）
+
+以资产字典视图展示所有数据表，按 ODS → DWD → DWS → ADS 数据层级归类，展示每张表关联的指标数量、业务域分布和更新频率，支持按数据层级筛选。
 
 ## 配置说明
 

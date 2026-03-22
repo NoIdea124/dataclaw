@@ -1,186 +1,436 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-theme="light">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>指标字典</title>
+<title>资产库 — DataClaw</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --bg:#0d0f16;--bg2:#13161f;--bg3:#1a1d28;--bg4:#21263a;
-  --border:#272b3d;--border2:#323754;
-  --tx:#e8eaf6;--tx2:#a0a8c8;--txm:#6b7494;--txd:#3d4260;
-  --acc:#6366f1;--acc2:#818cf8;
-  --r:8px;--r-sm:5px;
-  --mono:'JetBrains Mono','Fira Mono','Consolas',monospace;
-  --sans:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Hiragino Sans GB',sans-serif;
-  --sh:0 2px 12px rgba(0,0,0,.4);
-  --ease:cubic-bezier(.4,0,.2,1);
-  --t:.18s;
-  /* category colors */
-  --c-user:#06b6d4;--c-order:#f59e0b;--c-product:#10b981;
-  --c-marketing:#ec4899;--c-logistics:#8b5cf6;--c-finance:#ef4444;--c-traffic:#3b82f6;
+/* ── Design Tokens ── */
+:root {
+  --bg:         #ffffff;
+  --bg-panel:   #ffffff;
+  --bg-card:    #ffffff;
+  --bg-hover:   #f4f4f4;
+  --bg-hdr:     #f8f8f8;
+  --border:     #e8e8e8;
+  --border-med: #cccccc;
+  --accent:     #111111;
+  --tx:         #0d0d0d;
+  --tx2:        #555555;
+  --txm:        #999999;
+  --txd:        #cccccc;
+  --sh-xs: 0 1px 2px rgba(0,0,0,.06);
+  --sh-sm: 0 1px 6px rgba(0,0,0,.09);
+  --sh-md: 0 2px 14px rgba(0,0,0,.10);
+  --r:    12px;
+  --r-sm:  8px;
+  --r-xs:  5px;
+  --font: 'Inter', -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif;
+  --mono: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
+  --ease: cubic-bezier(.16,1,.3,1);
+  --t:    .16s;
 }
-html,body{height:100%;overflow:hidden}
-body{background:var(--bg);color:var(--tx);font-family:var(--sans);font-size:13px;line-height:1.5;display:flex;flex-direction:column}
+[data-theme="dark"] {
+  --bg:         #0a0a0a;
+  --bg-panel:   #111111;
+  --bg-card:    #181818;
+  --bg-hover:   #202020;
+  --bg-hdr:     #161616;
+  --border:     #252525;
+  --border-med: #333333;
+  --accent:     #d8d8d8;
+  --tx:         #efefef;
+  --tx2:        #aaaaaa;
+  --txm:        #666666;
+  --txd:        #333333;
+  --sh-xs: 0 1px 2px rgba(0,0,0,.45);
+  --sh-sm: 0 1px 6px rgba(0,0,0,.55);
+  --sh-md: 0 2px 14px rgba(0,0,0,.6);
+}
 
-/* ── Header ── */
-.hdr{display:flex;align-items:center;gap:16px;padding:0 20px;height:52px;border-bottom:1px solid var(--border);background:var(--bg2);flex-shrink:0}
-.hdr-logo{font-size:15px;font-weight:700;color:var(--tx);letter-spacing:-.3px;white-space:nowrap}
-.hdr-logo span{color:var(--acc)}
-.hdr-search{flex:1;max-width:420px;position:relative}
-.hdr-search input{width:100%;height:32px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-sm);padding:0 12px 0 32px;color:var(--tx);font-size:12.5px;outline:none;transition:border-color var(--t)}
-.hdr-search input:focus{border-color:var(--border2)}
-.hdr-search input::placeholder{color:var(--txm)}
-.hdr-search-ico{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--txm);pointer-events:none;font-size:13px}
-.hdr-count{font-size:11.5px;color:var(--txm);margin-left:auto;white-space:nowrap}
-.hdr-tabs{display:flex;gap:4px;margin-left:16px}
-.hdr-tab{padding:5px 12px;border-radius:var(--r-sm);border:1px solid transparent;font-size:12px;font-weight:500;cursor:pointer;color:var(--tx2);transition:all var(--t);background:none}
-.hdr-tab:hover{background:var(--bg3);color:var(--tx)}
-.hdr-tab.active{background:var(--acc);color:#fff;border-color:var(--acc)}
+/* ── Reset ── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden}
+body{font-family:var(--font);font-feature-settings:'ss01','cv01';background:var(--bg);color:var(--tx);display:flex;flex-direction:column;height:100vh;-webkit-font-smoothing:antialiased;transition:background var(--t),color var(--t)}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border-med);border-radius:99px}
+::-webkit-scrollbar-thumb:hover{background:var(--txm)}
+
+/* ── Toolbar ── */
+.toolbar{height:52px;padding:0 18px;display:flex;align-items:center;gap:12px;background:var(--bg-panel);border-bottom:1px solid var(--border);flex-shrink:0;transition:background var(--t),border-color var(--t)}
+.brand{display:flex;align-items:center;gap:9px;flex-shrink:0;text-decoration:none}
+.brand-mark{width:28px;height:28px;border-radius:7px;background:#7c3aed;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;font-family:var(--mono);color:#fff;letter-spacing:-.3px;flex-shrink:0}
+.brand-name{font-size:14.5px;font-weight:700;letter-spacing:-.3px;color:var(--tx);white-space:nowrap;transition:color var(--t)}
+.brand-tag{font-size:10px;font-weight:500;letter-spacing:.4px;text-transform:uppercase;color:var(--txm);background:var(--bg-hover);border:1px solid var(--border);padding:2px 6px;border-radius:3px;white-space:nowrap}
+.brand-sep{width:1px;height:16px;background:var(--border);flex-shrink:0}
+.srch{position:relative;flex-shrink:0;width:200px}
+.srch input{width:100%;height:32px;background:var(--bg-hover);border:1px solid var(--border);border-radius:var(--r-xs);padding:0 10px 0 28px;color:var(--tx);font-size:12.5px;font-family:var(--font);outline:none;transition:border-color var(--t),background var(--t)}
+.srch input:focus{background:var(--bg-card);border-color:var(--border-med)}
+.srch input::placeholder{color:var(--txm)}
+.srch-ico{position:absolute;left:9px;top:50%;transform:translateY(-50%);color:var(--txm);pointer-events:none;font-size:12px;line-height:1}
+/* ── Top nav (查指标 / 提需求) ── */
+.top-nav{display:flex;align-items:stretch;height:100%;margin-left:10px}
+.tn-item{height:100%;padding:0 14px;display:flex;align-items:center;font-size:13.5px;font-weight:500;color:var(--txm);cursor:pointer;border:none;background:none;font-family:var(--font);border-bottom:2px solid transparent;transition:color var(--t),border-color var(--t);letter-spacing:-.1px;white-space:nowrap}
+.tn-item:hover{color:var(--tx2)}
+.tn-item.active{color:var(--tx);font-weight:650;border-bottom-color:var(--accent)}
+/* ── Right Controls ── */
+.tb-right{display:flex;align-items:center;gap:6px;margin-left:auto;flex-shrink:0}
+.ibtn{width:30px;height:30px;border:1px solid var(--border);background:none;border-radius:var(--r-xs);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--tx2);transition:all var(--t);font-size:14px;line-height:1}
+.ibtn:hover{border-color:var(--border-med);color:var(--tx);background:var(--bg-hover)}
+/* ── Search strip ── */
+.search-strip{padding:8px 16px;border-bottom:1px solid var(--border);background:var(--bg-panel);display:flex;align-items:center;gap:10px;flex-shrink:0;transition:background var(--t),border-color var(--t)}
+.search-strip .srch{flex:1;width:auto}
+/* ── Sidebar sub-tabs (指标/维度) ── */
+.sb-subtabs{display:flex;gap:3px;padding:3px;background:var(--bg-hover);border:1px solid var(--border);border-radius:var(--r-xs);margin-bottom:10px}
+.sb-stab{flex:1;padding:5px 0;border:none;background:none;font-size:12px;font-weight:500;color:var(--txm);cursor:pointer;border-radius:3px;font-family:var(--font);transition:all var(--t)}
+.sb-stab.active{background:var(--bg-card);color:var(--tx);box-shadow:var(--sh-xs)}
+.sb-stab:hover:not(.active){color:var(--tx2)}
+.tb-count{font-size:11.5px;color:var(--txm);white-space:nowrap;padding-right:2px}
 
 /* ── Layout ── */
 .layout{display:flex;flex:1;overflow:hidden}
 
 /* ── Sidebar ── */
-.sidebar{width:168px;flex-shrink:0;border-right:1px solid var(--border);overflow-y:auto;padding:12px 8px;background:var(--bg2)}
-.sidebar::-webkit-scrollbar{width:4px}
-.sidebar::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
-.sidebar-section{margin-bottom:4px}
-.sidebar-title{font-size:10px;font-weight:600;color:var(--txd);letter-spacing:.6px;text-transform:uppercase;padding:8px 8px 4px}
-.cat-btn{display:flex;align-items:center;justify-content:space-between;width:100%;padding:6px 9px;border-radius:var(--r-sm);border:none;background:none;cursor:pointer;color:var(--tx2);font-size:12px;font-weight:500;transition:all var(--t);text-align:left}
-.cat-btn:hover{background:var(--bg3);color:var(--tx)}
-.cat-btn.active{background:var(--bg4);color:var(--tx)}
-.cat-btn .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-right:7px}
-.cat-btn .cnt{font-size:10.5px;color:var(--txm);font-family:var(--mono);margin-left:auto}
-.cat-btn.active .cnt{color:var(--acc2)}
+.sidebar{width:172px;flex-shrink:0;border-right:1px solid var(--border);overflow-y:auto;padding:12px 8px;background:var(--bg-panel);transition:background var(--t),border-color var(--t)}
+.sb-label{font-size:10px;font-weight:600;color:var(--txm);letter-spacing:.7px;text-transform:uppercase;padding:2px 8px 7px;display:block}
+.nav-item{display:flex;align-items:center;width:100%;padding:7px 8px;border-radius:var(--r-xs);border:none;background:none;cursor:pointer;text-align:left;font-family:var(--font);gap:8px;transition:background var(--t);position:relative}
+.nav-item:hover{background:var(--bg-hover)}
+.nav-item.active{background:var(--bg-hover)}
+.nav-item.active::before{content:'';position:absolute;left:0;top:4px;bottom:4px;width:2px;border-radius:2px;background:var(--accent)}
+.nav-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.nav-name{font-size:12.5px;font-weight:500;color:var(--tx2);flex:1;line-height:1.3;transition:color var(--t)}
+.nav-item:hover .nav-name{color:var(--tx)}
+.nav-item.active .nav-name{color:var(--tx);font-weight:600}
+.nav-cnt{font-size:10px;font-family:var(--mono);color:var(--txm);background:var(--bg-card);border:1px solid var(--border);padding:1px 5px;border-radius:3px;transition:background var(--t),border-color var(--t),color var(--t)}
+.nav-item.active .nav-cnt{color:var(--tx2);border-color:var(--border-med)}
+.nav-divider{height:1px;background:var(--border);margin:6px 0}
 
 /* ── Main ── */
-.main{flex:1;overflow-y:auto;padding:16px 20px}
-.main::-webkit-scrollbar{width:6px}
-.main::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+.main{flex:1;overflow-y:auto;background:var(--bg);transition:background var(--t)}
 
-/* ── Metric Card ── */
-.mc{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:14px 15px;cursor:pointer;transition:border-color var(--t),background var(--t),transform .12s var(--ease);position:relative;overflow:hidden}
-.mc::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,transparent 60%,rgba(99,102,241,.04));pointer-events:none}
-.mc:hover{border-color:var(--border2);background:var(--bg4);transform:translateY(-1px)}
-.mc.active{border-color:var(--acc);background:var(--bg4)}
-.mc-top{display:flex;align-items:center;gap:8px;margin-bottom:8px}
-.mc-cat{font-size:10px;font-weight:700;letter-spacing:.4px;padding:2px 7px;border-radius:3px;flex-shrink:0}
-.mc-dir{font-size:10.5px;font-weight:600;font-family:var(--mono);margin-left:auto}
-.mc-dir.up{color:#00c087}.mc-dir.down{color:#818cf8}
-.mc-name{font-size:14px;font-weight:700;color:var(--tx);letter-spacing:-.2px;margin-bottom:2px;line-height:1.3}
-.mc-id{font-size:10.5px;font-family:var(--mono);color:var(--txd);margin-bottom:7px}
-.mc-desc{font-size:11.5px;color:var(--tx2);line-height:1.55;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:10px}
-.mc-footer{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.mc-unit{font-size:11px;font-family:var(--mono);color:var(--txm);background:var(--bg);padding:2px 7px;border-radius:3px;border:1px solid var(--border)}
-.mc-table{font-size:10.5px;font-family:var(--mono);color:var(--txm);background:var(--bg);padding:2px 7px;border-radius:3px;border:1px solid var(--border);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:180px}
+/* ── Metric List ── */
+.mlist-hdr{display:grid;grid-template-columns:188px 1fr 244px;padding:6px 16px;border-bottom:1px solid var(--border);background:var(--bg-hdr);position:sticky;top:0;z-index:5;transition:background var(--t),border-color var(--t)}
+.mlist-hdr-cell{font-size:10px;font-weight:600;color:var(--txm);letter-spacing:.5px;text-transform:uppercase}
 
-/* ── Dimension Card (tab 2) ── */
-.dim-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:12px}
-.dim-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:15px 16px}
-.dim-top{display:flex;align-items:center;gap:8px;margin-bottom:8px}
-.dim-name{font-size:14px;font-weight:700;color:var(--tx)}
-.dim-type{font-size:10px;font-weight:700;letter-spacing:.3px;padding:2px 6px;border-radius:3px;background:rgba(99,102,241,.12);color:var(--acc2)}
-.dim-id{font-size:10.5px;font-family:var(--mono);color:var(--txd);margin-bottom:6px}
-.dim-desc{font-size:11.5px;color:var(--tx2);line-height:1.55;margin-bottom:10px}
-.dim-meta{display:flex;gap:10px;margin-bottom:8px}
-.dim-meta-item{font-size:10.5px;color:var(--txm)}
-.dim-meta-item strong{color:var(--tx2)}
-.dim-vals{display:flex;gap:5px;flex-wrap:wrap}
-.dim-val{font-size:10px;font-family:var(--mono);background:var(--bg);border:1px solid var(--border);padding:2px 7px;border-radius:3px;color:var(--txm)}
+.mrow{display:grid;grid-template-columns:188px 1fr 244px;align-items:center;padding:11px 16px;border-bottom:1px solid var(--border);cursor:pointer;gap:16px;transition:background var(--t)}
+.mrow:hover{background:var(--bg-hover)}
+.mrow.active{background:var(--bg-hover);box-shadow:inset 2px 0 0 var(--accent)}
+
+/* Left meta column */
+.mr-meta{display:flex;flex-direction:column;gap:5px;flex-shrink:0}
+.mr-cat{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:500;color:var(--tx2)}
+.mr-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.mr-dir{display:inline-flex;align-items:center;gap:3px;padding:2px 7px;border-radius:3px;font-size:10px;font-weight:600;width:fit-content}
+.mr-dir.up{background:rgba(5,150,105,.08);color:#059669}
+.mr-dir.down{background:rgba(124,58,237,.08);color:#7c3aed}
+[data-theme="dark"] .mr-dir.up{background:rgba(0,192,135,.1);color:#00c087}
+[data-theme="dark"] .mr-dir.down{background:rgba(167,139,250,.1);color:#a78bfa}
+
+/* Center info column */
+.mr-info{min-width:0}
+.mr-name{font-size:13.5px;font-weight:650;color:var(--tx);letter-spacing:-.2px;margin-bottom:2px;line-height:1.3;transition:color var(--t)}
+.mr-id{font-size:10.5px;font-family:var(--mono);color:var(--txd);margin-bottom:5px;letter-spacing:-.1px}
+.mr-desc{font-size:12px;color:var(--tx2);line-height:1.55;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* Right chips column */
+.mr-chips{display:flex;align-items:center;gap:5px;justify-content:flex-end;flex-wrap:wrap}
+.chip{font-size:10.5px;color:var(--txm);background:var(--bg-hover);border:1px solid var(--border);padding:2px 8px;border-radius:3px;font-family:var(--mono);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px;transition:background var(--t),border-color var(--t)}
+.chip-unit{color:var(--tx2);border-color:var(--border-med)}
+
+/* ── Dimension Grid ── */
+.dim-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:10px;padding:16px}
+.dim-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r);padding:14px 15px;box-shadow:var(--sh-xs);transition:background var(--t),border-color var(--t)}
+.dim-top{display:flex;align-items:baseline;gap:8px;margin-bottom:2px}
+.dim-name{font-size:13.5px;font-weight:650;color:var(--tx);letter-spacing:-.2px}
+.dim-type{font-size:10px;font-weight:600;letter-spacing:.3px;text-transform:uppercase;color:var(--txm);background:var(--bg-hover);border:1px solid var(--border);padding:1px 6px;border-radius:3px}
+.dim-id{font-size:10.5px;font-family:var(--mono);color:var(--txd);margin-bottom:7px;letter-spacing:-.1px}
+.dim-desc{font-size:12px;color:var(--tx2);line-height:1.65;margin-bottom:9px}
+.dim-meta{display:flex;gap:14px;margin-bottom:8px}
+.dim-kv{font-size:11px;color:var(--txm)}
+.dim-kv strong{color:var(--tx2);font-weight:600}
+.dim-vals{display:flex;gap:4px;flex-wrap:wrap}
+.dim-val{font-size:10.5px;font-family:var(--mono);background:var(--bg-hover);border:1px solid var(--border);padding:2px 7px;border-radius:3px;color:var(--txm)}
 
 /* ── Detail Panel ── */
-.detail-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);opacity:0;pointer-events:none;transition:opacity var(--t);z-index:40}
+.detail-overlay{position:fixed;inset:0;background:rgba(0,0,0,.22);opacity:0;pointer-events:none;transition:opacity var(--t);z-index:40}
 .detail-overlay.open{opacity:1;pointer-events:all}
-.detail-panel{position:fixed;top:0;right:0;bottom:0;width:460px;background:var(--bg2);border-left:1px solid var(--border);overflow-y:auto;transform:translateX(100%);transition:transform .24s var(--ease);z-index:41;display:flex;flex-direction:column}
-.detail-panel::-webkit-scrollbar{width:4px}
-.detail-panel::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+.detail-panel{position:fixed;top:0;right:0;bottom:0;width:472px;background:var(--bg-panel);border-left:1px solid var(--border);overflow-y:auto;transform:translateX(100%);transition:transform .24s var(--ease),background var(--t),border-color var(--t);z-index:41;display:flex;flex-direction:column}
 .detail-panel.open{transform:translateX(0)}
-.dp-hdr{display:flex;align-items:flex-start;gap:12px;padding:18px 20px 14px;border-bottom:1px solid var(--border);flex-shrink:0}
+
+/* Detail Header */
+.dp-hdr{padding:16px 18px 14px;border-bottom:1px solid var(--border);flex-shrink:0;display:flex;align-items:flex-start;gap:10px}
 .dp-hdr-info{flex:1;min-width:0}
-.dp-cat-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
-.dp-name{font-size:17px;font-weight:700;color:var(--tx);letter-spacing:-.3px;line-height:1.3;margin-bottom:3px}
-.dp-id{font-size:11px;font-family:var(--mono);color:var(--txd)}
-.dp-close{flex-shrink:0;width:28px;height:28px;border:1px solid var(--border);background:var(--bg3);border-radius:var(--r-sm);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--txm);font-size:16px;line-height:1;transition:all var(--t)}
-.dp-close:hover{color:var(--tx);border-color:var(--border2)}
-.dp-body{padding:18px 20px;flex:1}
+.dp-top-row{display:flex;align-items:center;gap:7px;margin-bottom:7px}
+.dp-cat{display:flex;align-items:center;gap:5px;font-size:10.5px;font-weight:600;color:var(--txm)}
+.dp-dir-badge{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:3px;font-size:10px;font-weight:600}
+.dp-dir-badge.up{background:rgba(5,150,105,.09);color:#059669}
+.dp-dir-badge.down{background:rgba(124,58,237,.09);color:#7c3aed}
+[data-theme="dark"] .dp-dir-badge.up{background:rgba(0,192,135,.1);color:#00c087}
+[data-theme="dark"] .dp-dir-badge.down{background:rgba(167,139,250,.1);color:#a78bfa}
+.dp-name{font-size:16px;font-weight:700;color:var(--tx);letter-spacing:-.3px;line-height:1.3;margin-bottom:3px}
+.dp-id{font-size:11px;font-family:var(--mono);color:var(--txd);letter-spacing:-.1px}
+.dp-close{width:28px;height:28px;border:1px solid var(--border);background:var(--bg-hover);border-radius:var(--r-xs);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--txm);font-size:14px;line-height:1;transition:all var(--t);flex-shrink:0}
+.dp-close:hover{border-color:var(--border-med);color:var(--tx)}
+
+/* Detail Body */
+.dp-body{padding:16px 18px;flex:1}
 .dp-section{margin-bottom:20px}
-.dp-section-title{font-size:10px;font-weight:700;color:var(--txd);letter-spacing:.6px;text-transform:uppercase;margin-bottom:8px;padding-bottom:5px;border-bottom:1px solid var(--border)}
-.dp-formula{background:var(--bg);border:1px solid var(--border);border-radius:var(--r-sm);padding:10px 13px;font-family:var(--mono);font-size:11.5px;color:#a5f3fc;line-height:1.6;word-break:break-all}
-.dp-desc{font-size:12.5px;color:var(--tx2);line-height:1.7}
-.dp-meta-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.dp-meta-item{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-sm);padding:9px 12px}
-.dp-meta-label{font-size:10px;font-weight:600;color:var(--txd);letter-spacing:.3px;margin-bottom:3px}
-.dp-meta-value{font-size:12.5px;color:var(--tx);font-weight:500}
-.dp-meta-value.mono{font-family:var(--mono);font-size:11.5px}
-.dp-dir-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:3px;font-size:11px;font-weight:600}
-.dp-dir-badge.up{background:rgba(0,192,135,.12);color:#00c087}
-.dp-dir-badge.down{background:rgba(129,140,248,.12);color:#818cf8}
-.dp-table{background:var(--bg);border:1px solid var(--border);border-radius:var(--r-sm);padding:8px 12px;font-family:var(--mono);font-size:11.5px;color:#fbbf24;word-break:break-all}
-.dp-tags{display:flex;gap:5px;flex-wrap:wrap}
-.dp-tag{font-size:10.5px;background:var(--bg3);border:1px solid var(--border);padding:3px 8px;border-radius:3px;color:var(--txm)}
-.dp-dims{display:flex;gap:5px;flex-wrap:wrap}
-.dp-dim{font-size:10.5px;background:rgba(99,102,241,.1);border:1px solid rgba(99,102,241,.2);padding:3px 8px;border-radius:3px;color:var(--acc2)}
-/* Sparkline */
-.dp-chart{margin-top:4px}
-.dp-chart-title{font-size:10px;color:var(--txm);margin-bottom:6px}
-.dp-chart svg{display:block;width:100%;overflow:visible}
-.dp-chart-xlabels{display:flex;justify-content:space-between;padding:4px 1px 0;margin-top:2px}
-.dp-chart-xlabel{font-size:9.5px;color:var(--txm);font-family:var(--mono)}
-/* Stat row */
-.dp-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}
-.dp-stat{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-sm);padding:8px 10px;text-align:center}
-.dp-stat-label{font-size:9.5px;color:var(--txm);margin-bottom:3px}
+.dp-section-title{font-size:10px;font-weight:700;color:var(--txm);letter-spacing:.7px;text-transform:uppercase;margin-bottom:9px;display:flex;align-items:center;gap:8px}
+.dp-section-title::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* Stats */
+.dp-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:12px}
+.dp-stat{background:var(--bg-hover);border:1px solid var(--border);border-radius:var(--r-xs);padding:8px 8px;text-align:center}
+.dp-stat-label{font-size:9.5px;font-weight:500;color:var(--txm);margin-bottom:3px;letter-spacing:.1px}
 .dp-stat-value{font-size:13px;font-weight:700;font-family:var(--mono);color:var(--tx)}
 
-/* Category colors helper */
-.cat-用户域{background:rgba(6,182,212,.12);color:#22d3ee}
-.cat-订单域{background:rgba(245,158,11,.12);color:#fbbf24}
-.cat-商品域{background:rgba(16,185,129,.12);color:#34d399}
-.cat-营销域{background:rgba(236,72,153,.12);color:#f472b6}
-.cat-物流域{background:rgba(139,92,246,.12);color:#a78bfa}
-.cat-财务域{background:rgba(239,68,68,.12);color:#f87171}
-.cat-流量域{background:rgba(59,130,246,.12);color:#60a5fa}
+/* Sparkline */
+.dp-sparkline-wrap{overflow:hidden;border-radius:var(--r-xs)}
+.dp-chart-xlabels{display:flex;justify-content:space-between;padding:3px 1px 0}
+.dp-chart-xlabel{font-size:9.5px;color:var(--txm);font-family:var(--mono)}
 
-.dot-用户域{background:#06b6d4}.dot-订单域{background:#f59e0b}.dot-商品域{background:#10b981}
-.dot-营销域{background:#ec4899}.dot-物流域{background:#8b5cf6}.dot-财务域{background:#ef4444}.dot-流量域{background:#3b82f6}
+/* Formula */
+.dp-formula{border:1px solid var(--border);border-radius:var(--r-sm);overflow:hidden;box-shadow:var(--sh-xs)}
+.dp-formula-hdr{padding:6px 12px;background:var(--bg-hdr);border-bottom:1px solid var(--border);font-size:10px;font-weight:600;color:var(--txm);font-family:var(--mono);letter-spacing:.2px}
+.dp-formula-body{padding:10px 13px;font-family:var(--mono);font-size:12px;color:var(--tx);line-height:1.7;word-break:break-all;white-space:pre-wrap;background:var(--bg-card)}
+
+/* Description */
+.dp-desc-text{font-size:12.5px;color:var(--tx2);line-height:1.75}
+
+/* Meta grid */
+.dp-meta-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.dp-meta-item{background:var(--bg-hover);border:1px solid var(--border);border-radius:var(--r-xs);padding:8px 11px}
+.dp-meta-lbl{font-size:10px;font-weight:600;color:var(--txm);letter-spacing:.2px;margin-bottom:3px}
+.dp-meta-val{font-size:12.5px;color:var(--tx);font-weight:500}
+.dp-meta-val.mono{font-family:var(--mono);font-size:11.5px}
+
+/* Source table */
+.dp-table-chip{display:inline-flex;align-items:center;gap:7px;background:var(--bg-hover);border:1px solid var(--border);border-radius:var(--r-xs);padding:7px 13px;font-family:var(--mono);font-size:12px;color:var(--tx2)}
+.dp-table-ico{width:18px;height:18px;background:var(--border);border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;color:var(--txm);font-family:var(--mono);flex-shrink:0}
+
+/* Chips */
+.chips-row{display:flex;gap:5px;flex-wrap:wrap}
+.tag-chip{font-size:11px;color:var(--txm);background:var(--bg-hover);border:1px solid var(--border);padding:3px 8px;border-radius:3px;font-weight:500;transition:background var(--t)}
+.dim-chip{font-size:11px;color:var(--tx2);background:var(--bg-hover);border:1px solid var(--border-med);padding:3px 8px;border-radius:3px;font-family:var(--mono);font-weight:500}
 
 /* Empty */
-.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;height:240px;color:var(--txm);font-size:13px}
-.empty-icon{font-size:28px;margin-bottom:10px;opacity:.4}
+.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;height:260px;color:var(--txm);font-size:13px}
+.empty-icon{font-size:26px;color:var(--txd);margin-bottom:12px}
 
-/* Scrollbar */
-.main::-webkit-scrollbar-track{background:transparent}
+/* ── Req Edit Page (full page, not panel) ── */
+.req-edit-page{display:flex;flex-direction:column;height:100%;overflow:hidden;background:var(--bg);transition:background var(--t)}
+.rep-hdr{display:flex;align-items:center;gap:10px;padding:10px 24px;border-bottom:1px solid var(--border);background:var(--bg-panel);flex-shrink:0;transition:background var(--t),border-color var(--t)}
+.rep-back{display:flex;align-items:center;gap:4px;height:30px;padding:0 10px;border:1px solid var(--border);background:none;border-radius:var(--r-xs);font-size:12px;font-weight:500;color:var(--tx2);cursor:pointer;font-family:var(--font);transition:all var(--t);flex-shrink:0}
+.rep-back:hover{border-color:var(--border-med);color:var(--tx);background:var(--bg-hover)}
+.rep-hdr-title{flex:1;min-width:0;font-size:14px;font-weight:700;color:var(--tx);letter-spacing:-.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rep-scroll{flex:1;overflow-y:auto}
+.rep-inner{max-width:700px;margin:0 auto;padding:24px 24px 8px}
+.rep-step{margin-bottom:20px}
+.rep-footer{padding:11px 24px;border-top:1px solid var(--border);background:var(--bg-panel);display:flex;align-items:center;gap:8px;flex-shrink:0;transition:background var(--t),border-color var(--t)}
+/* ── Requirements View ── */
+.req-view{height:100%;overflow-y:auto;padding:20px;background:var(--bg);transition:background var(--t)}
+.req-toolbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.req-ttl{font-size:14px;font-weight:700;color:var(--tx);letter-spacing:-.2px}
+.btn-new{height:30px;padding:0 14px;background:var(--accent);color:var(--bg);border:none;border-radius:var(--r-xs);font-size:12px;font-weight:600;cursor:pointer;font-family:var(--font);transition:opacity var(--t)}
+.btn-new:hover{opacity:.8}
+.req-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;height:220px;color:var(--txm);font-size:13px}
+.req-empty-icon{font-size:28px;color:var(--txd);margin-bottom:12px}
+.req-list{border:1px solid var(--border);border-radius:var(--r);overflow:hidden;box-shadow:var(--sh-xs)}
+.req-row{display:flex;align-items:center;padding:12px 16px;border-bottom:1px solid var(--border);cursor:pointer;gap:12px;transition:background var(--t);background:var(--bg-card)}
+.req-row:last-child{border-bottom:none}
+.req-row:hover{background:var(--bg-hover)}
+.req-row-info{flex:1;min-width:0}
+.req-row-title{font-size:13px;font-weight:650;color:var(--tx);letter-spacing:-.2px;margin-bottom:3px}
+.req-row-meta{font-size:11px;color:var(--txm);display:flex;gap:12px}
+.req-badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:3px;font-size:10.5px;font-weight:600;white-space:nowrap;flex-shrink:0}
+.req-badge.draft{background:rgba(107,114,128,.1);color:#6b7280}
+.req-badge.in_dev{background:rgba(37,99,235,.1);color:#2563eb}
+.req-badge.published{background:rgba(5,150,105,.1);color:#059669}
+/* ── Req Panel ── */
+.req-panel{position:fixed;top:0;right:0;bottom:0;width:590px;background:var(--bg-panel);border-left:1px solid var(--border);transform:translateX(100%);transition:transform .24s var(--ease),background var(--t),border-color var(--t);z-index:41;display:flex;flex-direction:column;overflow:hidden}
+.req-panel.open{transform:translateX(0)}
+.rp-hdr{padding:15px 18px 13px;border-bottom:1px solid var(--border);flex-shrink:0}
+.rp-hdr-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:11px}
+.rp-hdr-title{font-size:15px;font-weight:700;color:var(--tx);letter-spacing:-.3px}
+.step-bar{display:flex;align-items:center}
+.step-item{display:flex;align-items:center;gap:7px}
+.step-num{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;line-height:1}
+.step-num.active{background:var(--accent);color:var(--bg)}
+.step-num.done{background:#059669;color:#fff}
+.step-num.inactive{background:var(--bg-hover);color:var(--txm);border:1.5px solid var(--border)}
+.step-lbl{font-size:12px;font-weight:500;color:var(--txm)}
+.step-lbl.active{color:var(--tx);font-weight:600}
+.step-lbl.done{color:#059669}
+.step-conn{flex:1;height:1px;background:var(--border);margin:0 10px;min-width:28px}
+.step-conn.done{background:#059669}
+/* form */
+.rp-scroll{flex:1;overflow-y:auto}
+.rp-body{padding:14px 18px}
+.rp-sec{font-size:10px;font-weight:700;color:var(--txm);letter-spacing:.7px;text-transform:uppercase;margin:14px 0 8px;display:flex;align-items:center;gap:8px}
+.rp-sec:first-child{margin-top:0}
+.rp-sec::after{content:'';flex:1;height:1px;background:var(--border)}
+.fg{margin-bottom:11px}
+.fr2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:11px}
+.flbl{display:block;font-size:10.5px;font-weight:600;color:var(--txm);letter-spacing:.15px;margin-bottom:4px}
+.finp{width:100%;height:32px;background:var(--bg-hover);border:1px solid var(--border);border-radius:var(--r-xs);padding:0 10px;color:var(--tx);font-size:12.5px;font-family:var(--font);outline:none;transition:border-color var(--t),background var(--t)}
+.finp:focus{background:var(--bg-card);border-color:var(--border-med)}
+.fta{width:100%;height:66px;background:var(--bg-hover);border:1px solid var(--border);border-radius:var(--r-xs);padding:8px 10px;color:var(--tx);font-size:12.5px;font-family:var(--font);outline:none;resize:vertical;line-height:1.55;transition:border-color var(--t),background var(--t)}
+.fta:focus{background:var(--bg-card);border-color:var(--border-med)}
+/* meta table */
+.meta-wrap{border:1px solid var(--border);border-radius:var(--r-sm);overflow:auto;margin-bottom:8px;max-height:270px}
+.meta-tbl{border-collapse:collapse;font-size:11.5px;min-width:100%}
+.meta-tbl th{padding:6px 7px;background:var(--bg-hdr);font-size:9.5px;font-weight:600;color:var(--txm);letter-spacing:.4px;text-transform:uppercase;text-align:left;border-bottom:1px solid var(--border);white-space:nowrap;position:sticky;top:0;z-index:2}
+.meta-tbl td{padding:3px 4px;border-bottom:1px solid var(--border);vertical-align:middle}
+.meta-tbl tbody tr:last-child td{border-bottom:none}
+.meta-tbl tbody tr:hover td{background:var(--bg-hover)}
+.ti{width:100%;height:26px;background:transparent;border:1px solid transparent;border-radius:3px;padding:0 5px;color:var(--tx);font-size:11.5px;font-family:var(--font);outline:none}
+.ti:focus{background:var(--bg-card);border:1px solid var(--border-med)}
+.ti::placeholder{color:var(--txd)}
+.ts{height:26px;background:transparent;border:1px solid transparent;border-radius:3px;padding:0 3px;color:var(--tx);font-size:11.5px;font-family:var(--font);outline:none;cursor:pointer;width:100%}
+.ts:focus{background:var(--bg-card);border:1px solid var(--border-med)}
+.tbl-del{width:22px;height:22px;background:none;border:none;cursor:pointer;color:var(--txm);font-size:11px;border-radius:3px;display:flex;align-items:center;justify-content:center;transition:color var(--t),background var(--t)}
+.tbl-del:hover{color:#dc2626;background:rgba(220,38,38,.08)}
+.btn-add-row{display:flex;align-items:center;justify-content:center;gap:5px;padding:7px;border:1px dashed var(--border);border-radius:var(--r-xs);background:none;color:var(--txm);font-size:11.5px;font-family:var(--font);cursor:pointer;width:100%;transition:all var(--t)}
+.btn-add-row:hover{border-color:var(--border-med);color:var(--tx2);background:var(--bg-hover)}
+/* ── Autocomplete ── */
+.ac-wrap{position:relative}
+.ac-dd{position:absolute;top:100%;left:0;min-width:180px;background:var(--bg-panel);border:1px solid var(--border-med);border-radius:var(--r-xs);box-shadow:var(--sh-md);z-index:100;overflow:hidden;margin-top:1px}
+.ac-item{padding:6px 9px;cursor:pointer;font-size:12px;color:var(--tx);display:flex;justify-content:space-between;align-items:center;gap:8px}
+.ac-item:hover{background:var(--bg-hover)}
+/* ── Dim picker ── */
+.dimpick-wrap{display:flex;align-items:center;gap:4px;flex-wrap:wrap;min-height:26px}
+.dimpick-chip{display:inline-flex;align-items:center;gap:3px;background:var(--bg-hover);border:1px solid var(--border-med);border-radius:3px;padding:2px 6px;font-size:10.5px;color:var(--tx2);cursor:pointer;line-height:1.3}
+.dimpick-chip:hover{border-color:#dc2626;color:#dc2626}
+.dimpick-btn{height:20px;padding:0 6px;background:none;border:1px dashed var(--border);border-radius:3px;font-size:11px;color:var(--txm);cursor:pointer;font-family:var(--font);transition:all var(--t);white-space:nowrap}
+.dimpick-btn:hover{border-color:var(--border-med);color:var(--tx2)}
+.dimpick-dd{position:absolute;top:100%;left:0;min-width:150px;background:var(--bg-panel);border:1px solid var(--border-med);border-radius:var(--r-xs);box-shadow:var(--sh-md);z-index:100;overflow:hidden;margin-top:2px;max-height:160px;overflow-y:auto}
+.dimpick-opt{padding:5px 9px;cursor:pointer;font-size:12px;color:var(--tx);display:flex;align-items:center;gap:4px}
+.dimpick-opt:hover{background:var(--bg-hover)}
+.dimpick-opt.selected{color:var(--accent);font-weight:600}
+/* AI box */
+.ai-box{border:1px solid var(--border);border-radius:var(--r-sm);padding:11px 13px;margin-top:12px}
+.ai-box.checking{border-color:#f59e0b;background:rgba(245,158,11,.04)}
+.ai-box.pass{border-color:rgba(5,150,105,.4);background:rgba(5,150,105,.04)}
+.ai-box.fail{border-color:rgba(220,38,38,.35);background:rgba(220,38,38,.04)}
+.ai-box-row{display:flex;align-items:center;gap:7px;margin-bottom:5px;font-size:12px;font-weight:600;color:var(--tx)}
+.ai-box-msg{font-size:12px;color:var(--tx2);line-height:1.6;margin-bottom:4px}
+.ai-item{font-size:11.5px;color:var(--tx2);display:flex;align-items:flex-start;gap:5px;line-height:1.5}
+.ai-item+.ai-item{margin-top:2px}
+.ai-item.ok::before{content:'✓';color:#059669;flex-shrink:0;font-size:11px}
+.ai-item.err::before{content:'✗';color:#dc2626;flex-shrink:0;font-size:11px}
+/* footer */
+.rp-footer{padding:12px 18px;border-top:1px solid var(--border);display:flex;align-items:center;gap:8px;flex-shrink:0;background:var(--bg-panel);transition:background var(--t),border-color var(--t)}
+.ml-auto{margin-left:auto}
+.btn-ai{height:30px;padding:0 12px;background:none;border:1px solid var(--border);border-radius:var(--r-xs);font-size:12px;font-weight:500;cursor:pointer;font-family:var(--font);color:var(--tx2);display:flex;align-items:center;gap:5px;transition:all var(--t)}
+.btn-ai:hover:not(:disabled){border-color:var(--border-med);color:var(--tx)}
+.btn-ai:disabled{opacity:.45;cursor:not-allowed}
+.btn-pri{height:30px;padding:0 14px;background:var(--accent);color:var(--bg);border:none;border-radius:var(--r-xs);font-size:12px;font-weight:600;cursor:pointer;font-family:var(--font);transition:opacity var(--t)}
+.btn-pri:hover:not(:disabled){opacity:.85}
+.btn-pri:disabled{opacity:.35;cursor:not-allowed}
+.btn-sec{height:30px;padding:0 12px;background:none;border:1px solid var(--border);border-radius:var(--r-xs);font-size:12px;font-weight:500;cursor:pointer;font-family:var(--font);color:var(--tx2);transition:all var(--t)}
+.btn-sec:hover{border-color:var(--border-med);color:var(--tx)}
+
+/* ── Spreadsheet: fixed-layout + column resize ── */
+.meta-tbl{table-layout:fixed}
+.col-rz{position:absolute;right:0;top:0;bottom:0;width:5px;cursor:col-resize;z-index:3;background:transparent;transition:background var(--t)}
+.col-rz:hover,.col-rz.rz-on{background:var(--accent);opacity:.35}
+/* ── Contenteditable cells ── */
+.tc{display:block;min-height:26px;padding:2px 6px;outline:none;border-radius:3px;border:1px solid transparent;color:var(--tx);font-size:11.5px;font-family:var(--font);word-break:break-word;white-space:pre-wrap;cursor:text;line-height:1.5;transition:border-color var(--t),background var(--t);overflow-wrap:anywhere}
+.tc:focus{background:var(--bg-card);border-color:var(--border-med)}
+.tc:empty::before{content:attr(data-ph);color:var(--txd);pointer-events:none;font-weight:400}
+.tc a{color:#2563eb;text-decoration:underline;word-break:break-all}
+[data-theme="dark"] .tc a{color:#60a5fa}
+/* ── Format toolbar ── */
+#fmt-toolbar{position:fixed;background:var(--bg-panel);border:1px solid var(--border-med);border-radius:var(--r-xs);box-shadow:var(--sh-md);display:none;align-items:center;gap:1px;padding:3px;z-index:400}
+#fmt-toolbar.show{display:flex}
+.fmt-btn{min-width:26px;height:24px;border:none;background:none;border-radius:3px;cursor:pointer;font-size:12px;font-weight:700;color:var(--tx2);font-family:var(--font);display:flex;align-items:center;justify-content:center;padding:0 5px;transition:all var(--t);white-space:nowrap;line-height:1}
+.fmt-btn:hover{background:var(--bg-hover);color:var(--tx)}
+.fmt-btn.on{background:var(--bg-hover);color:var(--accent)}
+.fmt-sep{width:1px;height:16px;background:var(--border);margin:0 2px;flex-shrink:0}
+
+/* ── Assets view ── */
+.assets-view{height:100%;overflow-y:auto;background:var(--bg);transition:background var(--t)}
+.assets-toolbar{padding:14px 16px 0;display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+.assets-ttl{font-size:14px;font-weight:700;color:var(--tx);letter-spacing:-.2px}
+.assets-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:10px;padding:12px 16px 20px}
+.asset-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r);padding:14px 15px;box-shadow:var(--sh-xs);transition:background var(--t),border-color var(--t),box-shadow var(--t);cursor:default}
+.asset-card:hover{box-shadow:var(--sh-sm);border-color:var(--border-med)}
+.asset-top{display:flex;align-items:center;gap:8px;margin-bottom:9px}
+.asset-layer{display:inline-flex;align-items:center;padding:2px 7px;border-radius:3px;font-size:9.5px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;flex-shrink:0}
+.layer-ods{background:rgba(107,114,128,.1);color:#6b7280}
+.layer-dwd{background:rgba(37,99,235,.1);color:#2563eb}
+.layer-dws{background:rgba(124,58,237,.1);color:#7c3aed}
+.layer-ads{background:rgba(5,150,105,.1);color:#059669}
+[data-theme="dark"] .layer-ods{background:rgba(156,163,175,.1);color:#9ca3af}
+[data-theme="dark"] .layer-dwd{background:rgba(96,165,250,.1);color:#60a5fa}
+[data-theme="dark"] .layer-dws{background:rgba(167,139,250,.1);color:#a78bfa}
+[data-theme="dark"] .layer-ads{background:rgba(52,211,153,.1);color:#34d399}
+.asset-name{font-size:12.5px;font-weight:700;color:var(--tx);font-family:var(--mono);letter-spacing:-.2px;min-width:0;word-break:break-all}
+.asset-stats{display:flex;gap:14px;margin-bottom:9px}
+.asset-stat{font-size:11.5px;color:var(--txm)}
+.asset-stat strong{color:var(--tx2);font-weight:600}
+.asset-linked{display:flex;gap:4px;flex-wrap:wrap}
+.asset-linked-chip{font-size:10.5px;color:var(--txm);background:var(--bg-hover);border:1px solid var(--border);padding:2px 7px;border-radius:3px;font-family:var(--mono);white-space:nowrap}
 </style>
 </head>
 <body>
 
-<header class="hdr">
-  <div class="hdr-logo">⚡ 指标<span>字典</span></div>
-  <div class="hdr-search">
-    <span class="hdr-search-ico">⌕</span>
-    <input type="text" id="search-input" placeholder="搜索指标名称、标签、取数表…" autocomplete="off">
+<div class="toolbar">
+  <a class="brand" href="#">
+    <div class="brand-mark">MD</div>
+    <span class="brand-name">资产库</span>
+  </a>
+  <div class="brand-sep"></div>
+  <nav class="top-nav" id="top-nav">
+    <button class="tn-item active" onclick="switchTab('search')">指标管理</button>
+    <button class="tn-item" onclick="switchTab('request')">需求管理</button>
+    <button class="tn-item" onclick="switchTab('assets')">数据管理</button>
+  </nav>
+  <div class="tb-right">
+    <button class="ibtn" id="theme-btn" title="切换主题">◑</button>
   </div>
-  <div class="hdr-tabs">
-    <button class="hdr-tab active" data-tab="metrics">指标</button>
-    <button class="hdr-tab" data-tab="dimensions">维度</button>
-  </div>
-  <div class="hdr-count" id="count-label"></div>
-</header>
+</div>
 
 <div class="layout">
   <nav class="sidebar" id="sidebar"></nav>
   <main class="main" id="main">
-    <div id="metric-grid" class="grid"></div>
+    <div class="search-strip" id="search-strip">
+      <div class="srch">
+        <span class="srch-ico">⌕</span>
+        <input type="text" id="search-input" placeholder="搜索指标名称、取数表、标签…" autocomplete="off">
+      </div>
+      <span class="tb-count" id="count-label"></span>
+    </div>
+    <div id="metric-list"></div>
     <div id="dim-grid" class="dim-grid" style="display:none"></div>
+    <div id="req-view" class="req-view" style="display:none"></div>
+    <div id="req-edit-view" class="req-edit-page" style="display:none"></div>
+    <div id="assets-view" class="assets-view" style="display:none"></div>
   </main>
 </div>
 
 <div class="detail-overlay" id="detail-overlay" onclick="closeDetail()"></div>
 <div class="detail-panel" id="detail-panel">
   <div id="dp-content"></div>
+</div>
+
+<div class="detail-overlay" id="req-overlay" onclick="closeReqPanel()"></div>
+<div class="req-panel" id="req-panel">
+  <div id="rp-content" style="display:contents"></div>
+</div>
+
+<div id="fmt-toolbar">
+  <button class="fmt-btn" id="fmt-b" onmousedown="event.preventDefault();fmtBold()" title="加粗 Ctrl+B"><b>B</b></button>
+  <button class="fmt-btn" id="fmt-i" onmousedown="event.preventDefault();fmtItalic()" title="斜体" style="font-style:italic;font-size:11px">I</button>
+  <div class="fmt-sep"></div>
+  <button class="fmt-btn" onmousedown="event.preventDefault();fmtLink()" title="插入链接" style="font-size:10.5px;font-weight:600;letter-spacing:-.3px">链接</button>
+  <button class="fmt-btn" onmousedown="event.preventDefault();fmtUnlink()" title="取消链接" style="font-size:10px;font-weight:400">取消链接</button>
+  <div class="fmt-sep"></div>
+  <button class="fmt-btn" onmousedown="event.preventDefault();fmtClear()" title="清除格式" style="font-size:10px;font-weight:400;color:var(--txm)">清除</button>
 </div>
 
 <script>
@@ -467,16 +717,20 @@ const METRICS = [
     sim:{base:420,variance:0.11,trend:0.02} },
 ];
 
+/* ── Category colors ── */
+const CAT_DOTS = {'用户域':'#06b6d4','订单域':'#f59e0b','商品域':'#10b981','营销域':'#ec4899','物流域':'#8b5cf6','财务域':'#ef4444','流量域':'#3b82f6'};
+
 /* ── State ── */
 let currentCat = 'all';
 let searchQuery = '';
-let currentTab = 'metrics';
+let currentTab = 'search';   // 'search' | 'request'
+let currentSubTab = 'metrics'; // 'metrics' | 'dimensions' (within search tab)
 
 /* ── Deterministic sim ── */
 function hashKey(s) {
   let h = 5381;
   for (let i = 0; i < s.length; i++) h = Math.imul((h << 5) + h, 1) ^ s.charCodeAt(i);
-  return (h >>> 0);
+  return h >>> 0;
 }
 function simValue(metric, dateStr) {
   const h = hashKey(metric.id + '|' + dateStr);
@@ -496,10 +750,10 @@ function genSeries(metric, days = 30) {
   return { vals, labels };
 }
 
-/* ── Sparkline SVG ── */
-function renderSparkline(vals, W = 420, H = 72) {
+/* ── Sparkline ── */
+function renderSparkline(vals, W = 420, H = 68) {
   if (!vals || vals.length < 2) return '';
-  const PAD = { t: 10, b: 6, l: 4, r: 44 };
+  const PAD = {t:10,b:6,l:4,r:44};
   const min = Math.min(...vals), max = Math.max(...vals);
   const range = max - min || 1;
   const gW = W - PAD.l - PAD.r, gH = H - PAD.t - PAD.b;
@@ -511,38 +765,139 @@ function renderSparkline(vals, W = 420, H = 72) {
   const area = `M${x(0).toFixed(1)},${(PAD.t + gH).toFixed(1)} ` +
     vals.map((v, i) => `L${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(' ') +
     ` L${x(vals.length - 1).toFixed(1)},${(PAD.t + gH).toFixed(1)} Z`;
-  const gradId = 'sg' + Math.random().toString(36).slice(2, 6);
-  // y-axis labels (3 lines)
-  const yLabels = [max, min + range / 2, min].map((v, i) => {
-    const yy = y(v);
-    const lbl = v >= 10000 ? (v / 10000).toFixed(1) + 'w' : v >= 1000 ? (v / 1000).toFixed(1) + 'k' : v.toFixed(v < 10 ? 1 : 0);
-    return `<text x="${(W - PAD.r + 5).toFixed(0)}" y="${(yy + 3.5).toFixed(1)}" fill="#6b7494" font-size="9" font-family="monospace">${lbl}</text>`;
-  }).join('');
-  // grid lines
+  const gId = 'sg' + Math.random().toString(36).slice(2, 7);
+  const fmtY = v => v >= 10000 ? (v/10000).toFixed(1)+'w' : v >= 1000 ? (v/1000).toFixed(1)+'k' : v.toFixed(v < 10 ? 1 : 0);
+  const yLabels = [max, min + range/2, min].map(v =>
+    `<text x="${W-PAD.r+6}" y="${(y(v)+3.5).toFixed(1)}" style="fill:var(--txm)" font-size="9" font-family="monospace">${fmtY(v)}</text>`
+  ).join('');
   const gridLines = [0, 0.5, 1].map(f => {
     const yy = (PAD.t + f * gH).toFixed(1);
-    return `<line x1="${PAD.l}" y1="${yy}" x2="${(W - PAD.r).toFixed(0)}" y2="${yy}" stroke="#272b3d" stroke-width="1"/>`;
+    return `<line x1="${PAD.l}" y1="${yy}" x2="${W-PAD.r}" y2="${yy}" style="stroke:var(--border)" stroke-width="1"/>`;
   }).join('');
-  return `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" class="dp-sparkline-svg">
-    <defs><linearGradient id="${gradId}" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="${color}" stop-opacity=".18"/>
+  return `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" style="display:block;width:100%;overflow:visible">
+    <defs><linearGradient id="${gId}" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="${color}" stop-opacity=".14"/>
       <stop offset="100%" stop-color="${color}" stop-opacity="0"/>
     </linearGradient></defs>
     ${gridLines}
-    <path d="${area}" fill="url(#${gradId})"/>
-    <polyline points="${pts}" fill="none" stroke="${color}" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>
+    <path d="${area}" fill="url(#${gId})"/>
+    <polyline points="${pts}" fill="none" stroke="${color}" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"/>
     ${yLabels}
   </svg>`;
 }
 
 /* ── Helpers ── */
-function esc(s) {
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;') }
+// Strip HTML tags → plain text (for autocomplete/validation/publish)
+function pt(html){ const d=document.createElement('div'); d.innerHTML=html||''; return d.textContent||d.innerText||''; }
+
+/* ── Column resize state ── */
+let dimColWidths = [];
+let metricColWidths = [];
+let _rzState = null; // { tableId, colIdx, startX, startW }
+
+function _defaultDimW(showSrc) {
+  return showSrc ? [132,70,78,158,108,56,26] : [132,70,78,180,56,26];
 }
-function catColor(cat) {
-  const m = {'用户域':'--c-user','订单域':'--c-order','商品域':'--c-product','营销域':'--c-marketing','物流域':'--c-logistics','财务域':'--c-finance','流量域':'--c-traffic'};
-  return m[cat] || '--c-user';
+function _defaultMetW(showSrc) {
+  return showSrc ? [132,76,52,70,158,132,108,56,26] : [132,76,52,70,168,132,56,26];
 }
+function _applyColWidths(tableId, widths) {
+  const tbl = document.getElementById(tableId);
+  if (!tbl) return;
+  tbl.querySelectorAll('col').forEach((c, i) => { if (widths[i]) c.style.width = widths[i] + 'px'; });
+}
+function startColResize(e, tableId, colIdx) {
+  e.preventDefault(); e.stopPropagation();
+  const th = e.currentTarget.parentElement;
+  e.currentTarget.classList.add('rz-on');
+  _rzState = { tableId, colIdx, startX: e.clientX, startW: th.offsetWidth };
+  document.addEventListener('mousemove', _onRzMove);
+  document.addEventListener('mouseup', _onRzEnd);
+}
+function _onRzMove(e) {
+  if (!_rzState) return;
+  const w = Math.max(36, _rzState.startW + e.clientX - _rzState.startX);
+  const arr = _rzState.tableId === 'dim-sp-tbl' ? dimColWidths : metricColWidths;
+  arr[_rzState.colIdx] = w;
+  const tbl = document.getElementById(_rzState.tableId);
+  if (tbl) { const cols = tbl.querySelectorAll('col'); if (cols[_rzState.colIdx]) cols[_rzState.colIdx].style.width = w + 'px'; }
+}
+function _onRzEnd() {
+  document.querySelectorAll('.col-rz.rz-on').forEach(h => h.classList.remove('rz-on'));
+  _rzState = null;
+  document.removeEventListener('mousemove', _onRzMove);
+  document.removeEventListener('mouseup', _onRzEnd);
+}
+
+/* ── Format toolbar ── */
+let _fmtEl = null;
+function showFmtToolbar(el) {
+  _fmtEl = el;
+  const tb = document.getElementById('fmt-toolbar');
+  if (!tb) return;
+  const r = el.getBoundingClientRect();
+  const top = r.top - 36;
+  tb.style.left = Math.max(4, r.left) + 'px';
+  tb.style.top = (top < 4 ? r.bottom + 4 : top) + 'px';
+  tb.classList.add('show');
+  _updateFmtState();
+}
+function hideFmtToolbar(rel) {
+  const tb = document.getElementById('fmt-toolbar');
+  if (!tb) return;
+  if (rel && tb.contains(rel)) return;
+  tb.classList.remove('show');
+  _fmtEl = null;
+}
+function _updateFmtState() {
+  const b = document.getElementById('fmt-b');
+  const i = document.getElementById('fmt-i');
+  if (b) b.classList.toggle('on', document.queryCommandState('bold'));
+  if (i) i.classList.toggle('on', document.queryCommandState('italic'));
+}
+function fmtBold() {
+  if (_fmtEl) { _fmtEl.focus(); document.execCommand('bold'); _syncTc(_fmtEl); _updateFmtState(); }
+}
+function fmtItalic() {
+  if (_fmtEl) { _fmtEl.focus(); document.execCommand('italic'); _syncTc(_fmtEl); _updateFmtState(); }
+}
+function fmtLink() {
+  if (!_fmtEl) return;
+  _fmtEl.focus();
+  const sel = window.getSelection();
+  const range = sel && sel.rangeCount > 0 ? sel.getRangeAt(0).cloneRange() : null;
+  const url = prompt('输入链接 URL：', 'https://');
+  if (!url || url === 'https://') return;
+  _fmtEl.focus();
+  if (range) { sel.removeAllRanges(); sel.addRange(range); }
+  if (sel && sel.toString().trim()) {
+    document.execCommand('createLink', false, url);
+    // Force target=_blank on new link
+    const a = _fmtEl.querySelector('a[href="' + url + '"]');
+    if (a) a.target = '_blank';
+  } else {
+    document.execCommand('insertHTML', false, `<a href="${esc(url)}" target="_blank">${esc(url)}</a>`);
+  }
+  _syncTc(_fmtEl);
+}
+function fmtUnlink() {
+  if (_fmtEl) { _fmtEl.focus(); document.execCommand('unlink'); _syncTc(_fmtEl); }
+}
+function fmtClear() {
+  if (_fmtEl) { _fmtEl.focus(); document.execCommand('removeFormat'); document.execCommand('unlink'); _syncTc(_fmtEl); _updateFmtState(); }
+}
+// Sync contenteditable HTML back to reqDraft after toolbar action
+function _syncTc(el) {
+  const idx = parseInt(el.dataset.dim ?? el.dataset.metric ?? el.dataset.dimDesc ?? el.dataset.metDesc ?? '-1');
+  if (idx < 0) return;
+  const field = el.dataset.field;
+  const table = el.dataset.tbl;
+  if (!field || !table || !reqDraft) return;
+  if (table === 'dim') updateDimRow(idx, field, el.innerHTML);
+  else updateMetricRow(idx, field, el.innerHTML);
+}
+function fmt(v){ return v>=10000?(v/10000).toFixed(1)+'w':v>=1000?(v/1000).toFixed(1)+'k':v.toFixed(v<10?2:0) }
 
 /* ── Filter ── */
 function filterMetrics() {
@@ -561,57 +916,122 @@ function filterMetrics() {
   });
 }
 
-/* ── Render Sidebar ── */
+/* ── Sidebar ── */
 function renderSidebar() {
-  const cats = ['all', ...Array.from(new Set(METRICS.map(m => m.category)))];
-  const sb = document.getElementById('sidebar');
-  if (currentTab === 'dimensions') { sb.innerHTML = ''; return; }
-  sb.innerHTML = `<div class="sidebar-section">
-    <div class="sidebar-title">分类</div>
-    ${cats.map(cat => {
-      const count = cat === 'all' ? METRICS.length : METRICS.filter(m => m.category === cat).length;
-      const dotCls = cat === 'all' ? '' : `dot-${cat}`;
-      const label = cat === 'all' ? '全部指标' : cat;
-      return `<button class="cat-btn${cat === currentCat ? ' active' : ''}" onclick="selectCat('${esc(cat)}')">
-        ${cat !== 'all' ? `<span class="dot ${dotCls}"></span>` : ''}
-        <span>${esc(label)}</span>
-        <span class="cnt">${count}</span>
-      </button>`;
-    }).join('')}
-  </div>`;
-}
+  const el = document.getElementById('sidebar');
+  if (currentTab === 'request') { el.innerHTML = ''; el.style.display = 'none'; return; }
 
-/* ── Render Grid ── */
-function renderGrid() {
-  const filtered = filterMetrics();
-  const grid = document.getElementById('metric-grid');
-  document.getElementById('count-label').textContent = `${filtered.length} / ${METRICS.length} 个指标`;
-  if (!filtered.length) {
-    grid.innerHTML = `<div class="empty" style="grid-column:1/-1"><div class="empty-icon">📐</div>未找到匹配的指标</div>`;
+  if (currentTab === 'assets') {
+    el.style.display = '';
+    // Derive layer counts from METRICS source tables
+    const layerCount = {};
+    let total = 0;
+    const seen = new Set();
+    METRICS.forEach(m => {
+      if (!m.source_table || seen.has(m.source_table)) return;
+      seen.add(m.source_table);
+      total++;
+      const l = _getLayer(m.source_table).id;
+      layerCount[l] = (layerCount[l] || 0) + 1;
+    });
+    const layerDefs = [
+      { id:'dwd', label:'DWD 明细层', color:'#2563eb' },
+      { id:'dws', label:'DWS 汇总层', color:'#7c3aed' },
+      { id:'ads', label:'ADS 应用层', color:'#059669' },
+      { id:'ods', label:'ODS 原始层', color:'#9ca3af' },
+    ];
+    el.innerHTML = [
+      `<span class="sb-label">资产字典</span>`,
+      `<button class="nav-item${currentLayer==='all'?' active':''}" onclick="selectLayer('all')">
+        <span class="nav-dot" style="background:var(--border-med)"></span>
+        <span class="nav-name">全部表</span>
+        <span class="nav-cnt">${total}</span>
+      </button>`,
+      `<div class="nav-divider"></div>`,
+      `<span class="sb-label">数据层级</span>`,
+      ...layerDefs.map(d => `<button class="nav-item${currentLayer===d.id?' active':''}" onclick="selectLayer('${d.id}')">
+        <span class="nav-dot" style="background:${d.color}"></span>
+        <span class="nav-name">${d.label}</span>
+        <span class="nav-cnt">${layerCount[d.id]||0}</span>
+      </button>`),
+    ].join('');
     return;
   }
-  grid.innerHTML = filtered.map(m => `
-    <div class="mc" id="mc-${esc(m.id)}" onclick="openDetail('${esc(m.id)}')">
-      <div class="mc-top">
-        <span class="mc-cat cat-${esc(m.category)}">${esc(m.category)}</span>
-        <span class="mc-dir ${m.direction}">${m.direction === 'up' ? '↑ 正向' : '↓ 负向'}</span>
-      </div>
-      <div class="mc-name">${esc(m.display_name)}</div>
-      <div class="mc-id">${esc(m.name)}</div>
-      <div class="mc-desc">${esc(m.description)}</div>
-      <div class="mc-footer">
-        <span class="mc-unit">${esc(m.unit)}</span>
-        <span class="mc-table">${esc(m.source_table)}</span>
-      </div>
-    </div>
-  `).join('');
+
+  el.style.display = '';
+
+  const subTabHtml = `<div class="sb-subtabs">
+    <button class="sb-stab${currentSubTab==='metrics'?' active':''}" onclick="selectSubTab('metrics')">指标</button>
+    <button class="sb-stab${currentSubTab==='dimensions'?' active':''}" onclick="selectSubTab('dimensions')">维度</button>
+  </div>`;
+
+  if (currentSubTab !== 'metrics') { el.innerHTML = subTabHtml; return; }
+
+  const cats = Array.from(new Set(METRICS.map(m => m.category)));
+  const allCount = METRICS.length;
+  const items = [
+    subTabHtml,
+    `<div class="nav-divider"></div>`,
+    `<span class="sb-label">业务域</span>`,
+    `<button class="nav-item${currentCat==='all'?' active':''}" onclick="selectCat('all')">
+      <span class="nav-dot" style="background:var(--border-med)"></span>
+      <span class="nav-name">全部指标</span>
+      <span class="nav-cnt">${allCount}</span>
+    </button>`,
+    `<div class="nav-divider"></div>`,
+    ...cats.map(cat => {
+      const count = METRICS.filter(m => m.category === cat).length;
+      const color = CAT_DOTS[cat] || '#999';
+      return `<button class="nav-item${currentCat===cat?' active':''}" onclick="selectCat('${esc(cat)}')">
+        <span class="nav-dot" style="background:${color}"></span>
+        <span class="nav-name">${esc(cat)}</span>
+        <span class="nav-cnt">${count}</span>
+      </button>`;
+    })
+  ];
+  el.innerHTML = items.join('');
 }
 
-/* ── Render Dimensions Tab ── */
+/* ── Metric List ── */
+let openId = null;
+function renderList() {
+  const filtered = filterMetrics();
+  document.getElementById('count-label').textContent = `${filtered.length} / ${METRICS.length} 个指标`;
+  const el = document.getElementById('metric-list');
+  if (!filtered.length) {
+    el.innerHTML = `<div class="empty"><div class="empty-icon">📐</div>未找到匹配的指标</div>`;
+    return;
+  }
+  el.innerHTML =
+    `<div class="mlist-hdr">
+      <span class="mlist-hdr-cell">分类 / 方向</span>
+      <span class="mlist-hdr-cell">指标名称</span>
+      <span class="mlist-hdr-cell" style="text-align:right">单位 / 取数表</span>
+    </div>` +
+    filtered.map(m => {
+      const dot = CAT_DOTS[m.category] || '#999';
+      return `<div class="mrow${m.id===openId?' active':''}" id="mr-${esc(m.id)}" onclick="openDetail('${esc(m.id)}')">
+        <div class="mr-meta">
+          <span class="mr-cat"><span class="mr-dot" style="background:${dot}"></span>${esc(m.category)}</span>
+          <span class="mr-dir ${m.direction}">${m.direction==='up'?'↑ 正向':'↓ 负向'}</span>
+        </div>
+        <div class="mr-info">
+          <div class="mr-name">${esc(m.display_name)}</div>
+          <div class="mr-id">${esc(m.name)}</div>
+          <div class="mr-desc">${esc(m.description)}</div>
+        </div>
+        <div class="mr-chips">
+          <span class="chip chip-unit">${esc(m.unit)}</span>
+          <span class="chip">${esc(m.source_table)}</span>
+        </div>
+      </div>`;
+    }).join('');
+}
+
+/* ── Dim Grid ── */
 function renderDimGrid() {
-  const grid = document.getElementById('dim-grid');
   document.getElementById('count-label').textContent = `${DIMENSIONS.length} 个维度`;
-  grid.innerHTML = DIMENSIONS.map(d => `
+  document.getElementById('dim-grid').innerHTML = DIMENSIONS.map(d => `
     <div class="dim-card">
       <div class="dim-top">
         <span class="dim-name">${esc(d.display_name)}</span>
@@ -620,48 +1040,40 @@ function renderDimGrid() {
       <div class="dim-id">${esc(d.id)}</div>
       <div class="dim-desc">${esc(d.description)}</div>
       <div class="dim-meta">
-        <span class="dim-meta-item">基数：<strong>${esc(d.cardinality)}</strong></span>
-        <span class="dim-meta-item">字段名：<strong style="font-family:monospace">${esc(d.id)}</strong></span>
+        <span class="dim-kv">基数：<strong>${esc(d.cardinality)}</strong></span>
+        <span class="dim-kv">字段：<strong style="font-family:var(--mono);font-size:10.5px">${esc(d.id)}</strong></span>
       </div>
-      <div class="dim-vals">${d.values_example.map(v => `<span class="dim-val">${esc(v)}</span>`).join('')}</div>
-    </div>
-  `).join('');
+      <div class="dim-vals">${d.values_example.map(v=>`<span class="dim-val">${esc(v)}</span>`).join('')}</div>
+    </div>`).join('');
 }
 
 /* ── Detail Panel ── */
 function openDetail(id) {
   const m = METRICS.find(x => x.id === id);
   if (!m) return;
-  // Update active card
-  document.querySelectorAll('.mc').forEach(el => el.classList.remove('active'));
-  const card = document.getElementById('mc-' + id);
-  if (card) card.classList.add('active');
+  openId = id;
+  document.querySelectorAll('.mrow').forEach(el => el.classList.toggle('active', el.id === 'mr-' + id));
 
   const { vals, labels } = genSeries(m, 30);
-  const last = vals[vals.length - 1];
-  const prev = vals[vals.length - 2];
-  const delta = prev ? ((last - prev) / prev * 100) : 0;
+  const last = vals[vals.length - 1], prev = vals[vals.length - 2];
+  const delta = prev ? (last - prev) / prev * 100 : 0;
   const deltaStr = (delta >= 0 ? '+' : '') + delta.toFixed(1) + '%';
-  const deltaColor = (m.direction === 'up' ? delta >= 0 : delta <= 0) ? '#00c087' : '#f6465d';
-  const total = vals.reduce((a, b) => a + b, 0);
-  const avg = total / vals.length;
-  const fmt = v => v >= 10000 ? (v / 10000).toFixed(1) + 'w' : v >= 1000 ? (v / 1000).toFixed(1) + 'k' : v.toFixed(v < 10 ? 2 : 0);
-
-  // Sparse x-labels
+  const isGood = m.direction === 'up' ? delta >= 0 : delta <= 0;
+  const deltaColor = isGood ? 'color:#059669' : 'color:#dc2626';
   const step = Math.ceil(labels.length / 5);
-  const shownLabels = labels.map((l, i) => (i === 0 || i === labels.length - 1 || i % step === 0) ? l : '');
-
-  const dimItems = m.available_dimensions.map(did => {
+  const shownLabels = labels.map((l, i) => (i===0||i===labels.length-1||i%step===0)?l:'');
+  const dot = CAT_DOTS[m.category] || '#999';
+  const dimChips = m.available_dimensions.map(did => {
     const dim = DIMENSIONS.find(d => d.id === did);
-    return `<span class="dp-dim">${esc(dim ? dim.name : did)}</span>`;
+    return `<span class="dim-chip">${esc(dim?dim.name:did)}</span>`;
   }).join('');
 
   document.getElementById('dp-content').innerHTML = `
     <div class="dp-hdr">
       <div class="dp-hdr-info">
-        <div class="dp-cat-row">
-          <span class="mc-cat cat-${esc(m.category)}">${esc(m.category)}</span>
-          <span class="dp-dir-badge ${m.direction}">${m.direction === 'up' ? '↑ 越高越好' : '↓ 越低越好'}</span>
+        <div class="dp-top-row">
+          <span class="dp-cat"><span class="mr-dot" style="background:${dot};width:6px;height:6px;border-radius:50%;display:inline-block;margin-right:5px"></span>${esc(m.category)}</span>
+          <span class="dp-dir-badge ${m.direction}">${m.direction==='up'?'↑ 越高越好':'↓ 越低越好'}</span>
         </div>
         <div class="dp-name">${esc(m.display_name)}</div>
         <div class="dp-id">${esc(m.name)}</div>
@@ -669,100 +1081,1027 @@ function openDetail(id) {
       <button class="dp-close" onclick="closeDetail()">✕</button>
     </div>
     <div class="dp-body">
-
       <div class="dp-section">
-        <div class="dp-section-title">近30天趋势（截至 2024-12-30）</div>
+        <div class="dp-section-title">近30天趋势</div>
         <div class="dp-stats">
           <div class="dp-stat"><div class="dp-stat-label">最新值</div><div class="dp-stat-value">${fmt(last)}</div></div>
-          <div class="dp-stat"><div class="dp-stat-label">环比</div><div class="dp-stat-value" style="color:${deltaColor}">${deltaStr}</div></div>
-          <div class="dp-stat"><div class="dp-stat-label">均值</div><div class="dp-stat-value">${fmt(avg)}</div></div>
-          <div class="dp-stat"><div class="dp-stat-label">最高值</div><div class="dp-stat-value">${fmt(Math.max(...vals))}</div></div>
+          <div class="dp-stat"><div class="dp-stat-label">环比</div><div class="dp-stat-value" style="${deltaColor}">${deltaStr}</div></div>
+          <div class="dp-stat"><div class="dp-stat-label">均值</div><div class="dp-stat-value">${fmt(vals.reduce((a,b)=>a+b,0)/vals.length)}</div></div>
+          <div class="dp-stat"><div class="dp-stat-label">最高</div><div class="dp-stat-value">${fmt(Math.max(...vals))}</div></div>
         </div>
-        <div class="dp-chart">
-          ${renderSparkline(vals)}
-          <div class="dp-chart-xlabels">${shownLabels.map(l => `<span class="dp-chart-xlabel">${esc(l)}</span>`).join('')}</div>
-        </div>
+        <div class="dp-sparkline-wrap">${renderSparkline(vals)}</div>
+        <div class="dp-chart-xlabels">${shownLabels.map(l=>`<span class="dp-chart-xlabel">${esc(l)}</span>`).join('')}</div>
       </div>
-
       <div class="dp-section">
         <div class="dp-section-title">指标说明</div>
-        <div class="dp-desc">${esc(m.description)}</div>
+        <div class="dp-desc-text">${esc(m.description)}</div>
       </div>
-
       <div class="dp-section">
         <div class="dp-section-title">计算口径</div>
-        <div class="dp-formula">${esc(m.formula)}</div>
+        <div class="dp-formula">
+          <div class="dp-formula-hdr">SQL</div>
+          <div class="dp-formula-body">${esc(m.formula)}</div>
+        </div>
       </div>
-
       <div class="dp-section">
         <div class="dp-section-title">基础信息</div>
         <div class="dp-meta-grid">
-          <div class="dp-meta-item"><div class="dp-meta-label">单位</div><div class="dp-meta-value mono">${esc(m.unit)}</div></div>
-          <div class="dp-meta-item"><div class="dp-meta-label">更新频率</div><div class="dp-meta-value">${esc(m.update_freq)}</div></div>
-          <div class="dp-meta-item"><div class="dp-meta-label">负责团队</div><div class="dp-meta-value">${esc(m.owner)}</div></div>
-          <div class="dp-meta-item"><div class="dp-meta-label">指标ID</div><div class="dp-meta-value mono" style="font-size:10.5px">${esc(m.id)}</div></div>
+          <div class="dp-meta-item"><div class="dp-meta-lbl">单位</div><div class="dp-meta-val mono">${esc(m.unit)}</div></div>
+          <div class="dp-meta-item"><div class="dp-meta-lbl">更新频率</div><div class="dp-meta-val">${esc(m.update_freq)}</div></div>
+          <div class="dp-meta-item"><div class="dp-meta-lbl">负责团队</div><div class="dp-meta-val">${esc(m.owner)}</div></div>
+          <div class="dp-meta-item"><div class="dp-meta-lbl">指标ID</div><div class="dp-meta-val mono" style="font-size:10.5px">${esc(m.id)}</div></div>
         </div>
       </div>
-
       <div class="dp-section">
         <div class="dp-section-title">取数来源</div>
-        <div class="dp-table">${esc(m.source_table)}</div>
+        <div class="dp-table-chip">
+          <span class="dp-table-ico">TB</span>${esc(m.source_table)}
+        </div>
       </div>
-
       <div class="dp-section">
-        <div class="dp-section-title">可拆解维度（${m.available_dimensions.length}个）</div>
-        <div class="dp-dims">${dimItems}</div>
+        <div class="dp-section-title">可拆解维度 <span style="font-weight:400;color:var(--txm);letter-spacing:0;text-transform:none;font-size:11px">${m.available_dimensions.length}个</span></div>
+        <div class="chips-row">${dimChips}</div>
       </div>
-
       <div class="dp-section">
         <div class="dp-section-title">标签</div>
-        <div class="dp-tags">${m.tags.map(t => `<span class="dp-tag">${esc(t)}</span>`).join('')}</div>
+        <div class="chips-row">${m.tags.map(t=>`<span class="tag-chip">${esc(t)}</span>`).join('')}</div>
       </div>
-
-    </div>
-  `;
+    </div>`;
 
   document.getElementById('detail-overlay').classList.add('open');
   document.getElementById('detail-panel').classList.add('open');
 }
 
 function closeDetail() {
+  openId = null;
   document.getElementById('detail-overlay').classList.remove('open');
   document.getElementById('detail-panel').classList.remove('open');
-  document.querySelectorAll('.mc').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.mrow').forEach(el => el.classList.remove('active'));
 }
 
-/* ── Event Handlers ── */
-function selectCat(cat) {
-  currentCat = cat;
+/* ── Events ── */
+function selectCat(cat) { currentCat = cat; renderSidebar(); renderList(); }
+
+function selectSubTab(sub) {
+  currentSubTab = sub;
+  const isM = sub === 'metrics';
+  document.getElementById('metric-list').style.display = isM ? '' : 'none';
+  document.getElementById('dim-grid').style.display = isM ? 'none' : '';
   renderSidebar();
-  renderGrid();
+  if (isM) { renderList(); } else { renderDimGrid(); }
+  if (!isM) closeDetail();
+}
+
+function switchTab(tab) {
+  currentTab = tab;
+  const isS = tab === 'search';
+  const isR = tab === 'request';
+  const isA = tab === 'assets';
+  const isM = isS && currentSubTab === 'metrics';
+  const isD = isS && currentSubTab === 'dimensions';
+  const labels = { search:'指标管理', request:'需求管理', assets:'数据管理' };
+  document.querySelectorAll('.tn-item').forEach(b => b.classList.toggle('active', b.textContent.trim() === labels[tab]));
+  document.getElementById('metric-list').style.display = isM ? '' : 'none';
+  document.getElementById('dim-grid').style.display = isD ? '' : 'none';
+  document.getElementById('req-view').style.display = isR ? '' : 'none';
+  document.getElementById('assets-view').style.display = isA ? '' : 'none';
+  document.getElementById('search-strip').style.display = isS ? '' : 'none';
+  renderSidebar();
+  if (isS) { if (isM) renderList(); else renderDimGrid(); }
+  else if (isR) { renderReqView(); }
+  else if (isA) { renderAssetsView(); }
+  if (!isM) closeDetail();
 }
 
 document.getElementById('search-input').addEventListener('input', e => {
-  searchQuery = e.target.value;
-  renderGrid();
-  document.getElementById('count-label').textContent;
+  searchQuery = e.target.value; renderList();
 });
 
-document.querySelectorAll('.hdr-tab').forEach(btn => {
-  btn.addEventListener('click', () => {
-    currentTab = btn.dataset.tab;
-    document.querySelectorAll('.hdr-tab').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    const isMetrics = currentTab === 'metrics';
-    document.getElementById('metric-grid').style.display = isMetrics ? '' : 'none';
-    document.getElementById('dim-grid').style.display = isMetrics ? 'none' : '';
-    document.getElementById('sidebar').style.display = isMetrics ? '' : 'none';
-    if (isMetrics) { renderSidebar(); renderGrid(); }
-    else { renderDimGrid(); document.getElementById('count-label').textContent = `${DIMENSIONS.length} 个维度`; }
-    if (!isMetrics) closeDetail();
-  });
+document.getElementById('theme-btn').addEventListener('click', () => {
+  const html = document.documentElement;
+  html.dataset.theme = html.dataset.theme === 'dark' ? 'light' : 'dark';
 });
+
+/* ── Assets (数据管理 / 资产字典) ── */
+let currentLayer = 'all';
+
+function _getLayer(tableName) {
+  const p = (tableName || '').split('_')[0].toLowerCase();
+  return { ods:{id:'ods',label:'ODS'}, dwd:{id:'dwd',label:'DWD'},
+           dws:{id:'dws',label:'DWS'}, ads:{id:'ads',label:'ADS'} }[p]
+    || { id:'ods', label: p.toUpperCase() || 'ODS' };
+}
+
+function selectLayer(layer) {
+  currentLayer = layer;
+  renderSidebar();
+  renderAssetsView();
+}
+
+function renderAssetsView() {
+  const el = document.getElementById('assets-view');
+  if (!el) return;
+
+  // Build table catalog: each unique source_table → associated metrics & dims
+  const tableMap = {};
+  METRICS.forEach(m => {
+    if (!m.source_table) return;
+    if (!tableMap[m.source_table]) tableMap[m.source_table] = { name:m.source_table, metrics:[], freqs:new Set() };
+    tableMap[m.source_table].metrics.push(m);
+    if (m.update_freq) tableMap[m.source_table].freqs.add(m.update_freq);
+  });
+
+  let tables = Object.values(tableMap).sort((a,b) => {
+    const order = { ods:0, dwd:1, dws:2, ads:3 };
+    return (order[_getLayer(a.name).id]||9) - (order[_getLayer(b.name).id]||9) || a.name.localeCompare(b.name);
+  });
+
+  if (currentLayer !== 'all') tables = tables.filter(t => _getLayer(t.name).id === currentLayer);
+
+  const cards = tables.map(t => {
+    const layer = _getLayer(t.name);
+    const cats = [...new Set(t.metrics.map(m => m.category))];
+    const freqStr = [...t.freqs].join(' / ') || '—';
+    const shown = t.metrics.slice(0, 4);
+    const more = t.metrics.length - shown.length;
+    return `<div class="asset-card">
+      <div class="asset-top">
+        <span class="asset-layer layer-${layer.id}">${layer.label}</span>
+        <span class="asset-name">${esc(t.name)}</span>
+      </div>
+      <div class="asset-stats">
+        <span class="asset-stat"><strong>${t.metrics.length}</strong> 个指标</span>
+        <span class="asset-stat"><strong>${cats.length}</strong> 个业务域</span>
+        <span class="asset-stat">更新频率 <strong>${esc(freqStr)}</strong></span>
+      </div>
+      <div class="asset-linked">
+        ${shown.map(m => `<span class="asset-linked-chip">${esc(m.display_name)}</span>`).join('')}
+        ${more > 0 ? `<span class="asset-linked-chip" style="color:var(--txm)">+${more}</span>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+
+  el.innerHTML = `
+    <div class="assets-toolbar">
+      <span class="assets-ttl">资产字典
+        <span style="font-size:11px;font-weight:400;color:var(--txm);margin-left:6px">${tables.length} 张表</span>
+      </span>
+    </div>
+    <div class="assets-grid">
+      ${cards || '<div style="padding:20px;color:var(--txm);font-size:13px">暂无数据资产</div>'}
+    </div>`;
+}
+
+/* ── Requirements ── */
+const REQ_STATUS_LBL = { draft:'草稿', in_dev:'开发中', published:'已发布' };
+let reqTasks = [];
+let currentReqId = null;
+let reqDraft = null;
+let reqAiState = null; // { step, status:'idle'|'checking'|'pass'|'fail', message, items }
+
+function emptyDimRow() {
+  return { display_name:'', type:'categorical', category:'', description:'', source_table:'', update_freq:'天' };
+}
+function emptyMetricRow() {
+  return { display_name:'', category:'', unit:'', direction:'up', description:'', source_table:'', update_freq:'天', available_dims:[] };
+}
+
+function genReqId() {
+  return 'req_' + Date.now().toString(36) + Math.random().toString(36).slice(2,5);
+}
+
+function initDraft(task) {
+  if (task) {
+    reqDraft = JSON.parse(JSON.stringify(task));
+    // Migrate old metaRows format
+    if (reqDraft.metaRows && !reqDraft.dimRows) {
+      reqDraft.dimRows = reqDraft.metaRows.filter(r => r.type === 'dimension').map(r => ({
+        display_name:r.display_name, type:'categorical', category:r.category||'',
+        description:r.formula||'', source_table:r.source_table||'', update_freq:r.update_freq||'天'
+      }));
+      reqDraft.metricRows = reqDraft.metaRows.filter(r => r.type !== 'dimension').map(r => ({
+        display_name:r.display_name, category:r.category||'', unit:r.unit||'',
+        direction:'up', description:r.formula||'', source_table:r.source_table||'',
+        update_freq:r.update_freq||'天', available_dims:[]
+      }));
+      delete reqDraft.metaRows;
+    }
+    if (!reqDraft.dimRows) reqDraft.dimRows = [emptyDimRow()];
+    if (!reqDraft.metricRows) reqDraft.metricRows = [emptyMetricRow()];
+  } else {
+    reqDraft = { id:null, title:'', background:'', benefit:'', requester:'', assignee:'',
+      status:'draft', createdAt:new Date().toISOString(),
+      dimRows:[emptyDimRow()], metricRows:[emptyMetricRow()], step1Review:null, step2Test:null };
+  }
+  reqAiState = null;
+}
+
+function renderReqView() {
+  const el = document.getElementById('req-view');
+  const sorted = [...reqTasks].sort((a,b) => new Date(b.createdAt)-new Date(a.createdAt));
+  const rows = sorted.map(t => {
+    const dimCnt = (t.dimRows||[]).length;
+    const metCnt = (t.metricRows||[]).length;
+    const cntText = `${dimCnt} 维度 / ${metCnt} 指标`;
+    return `
+    <div class="req-row" onclick="openReqPanel('${esc(t.id)}')">
+      <div class="req-row-info">
+        <div class="req-row-title">${esc(t.title||'未命名需求')}</div>
+        <div class="req-row-meta">
+          <span>业务负责人：${esc(t.requester||'—')}</span>
+          <span>技术负责人：${esc(t.assignee||'—')}</span>
+          <span>${cntText}</span>
+        </div>
+      </div>
+      <span class="req-badge ${t.status}">${REQ_STATUS_LBL[t.status]||t.status}</span>
+    </div>`;
+  }).join('');
+  el.innerHTML = `
+    <div class="req-toolbar">
+      <span class="req-ttl">需求任务
+        <span style="font-size:11px;font-weight:400;color:var(--txm);margin-left:5px">${reqTasks.length} 条</span>
+      </span>
+      <button class="btn-new" onclick="openNewReq()">+ 新建需求</button>
+    </div>
+    ${rows ? `<div class="req-list">${rows}</div>`
+            : '<div class="req-empty"><div class="req-empty-icon">📋</div>暂无需求，点击右上角新建</div>'}`;
+}
+
+function openNewReq() {
+  initDraft(null);
+  currentReqId = '__new__';
+  _openReqPanel();
+}
+
+function openReqPanel(id) {
+  // Tasks open as full edit page, not panel
+  openReqEdit(id);
+}
+
+function _openReqPanel() {
+  renderReqPanelContent();
+  document.getElementById('req-panel').classList.add('open');
+  document.getElementById('req-overlay').classList.add('open');
+}
+
+function closeReqPanel() {
+  document.getElementById('req-panel').classList.remove('open');
+  document.getElementById('req-overlay').classList.remove('open');
+  currentReqId = null;
+  reqDraft = null;
+  reqAiState = null;
+}
+
+/* ── Full page edit ── */
+function openReqEdit(id) {
+  const task = reqTasks.find(t => t.id === id);
+  if (!task) return;
+  initDraft(task);
+  currentReqId = id;
+  document.getElementById('req-view').style.display = 'none';
+  document.getElementById('req-edit-view').style.display = '';
+  renderReqEditPage();
+}
+
+function closeReqEdit() {
+  // Auto-save if still draft
+  if (reqDraft && reqDraft.id && reqDraft.status === 'draft') {
+    const idx = reqTasks.findIndex(t => t.id === reqDraft.id);
+    if (idx >= 0) reqTasks[idx] = JSON.parse(JSON.stringify(reqDraft));
+  }
+  document.getElementById('req-edit-view').style.display = 'none';
+  document.getElementById('req-view').style.display = '';
+  currentReqId = null;
+  reqDraft = null;
+  reqAiState = null;
+  renderReqView();
+}
+
+function saveReqDraft() {
+  if (!reqDraft || !reqDraft.id) return;
+  const idx = reqTasks.findIndex(t => t.id === reqDraft.id);
+  if (idx >= 0) reqTasks[idx] = JSON.parse(JSON.stringify(reqDraft));
+  renderReqView();
+  const btn = document.getElementById('btn-save-draft');
+  if (btn) { btn.textContent = '已保存 ✓'; btn.disabled = true;
+    setTimeout(() => { if (btn) { btn.textContent = '保存'; btn.disabled = false; } }, 1800); }
+}
+
+function renderReqEditPage() {
+  if (!reqDraft) return;
+  const isDraft = reqDraft.status === 'draft';
+  const isInDev = reqDraft.status === 'in_dev';
+  const isPublished = reqDraft.status === 'published';
+
+  const s1done = isInDev || isPublished;
+  const s2done = isPublished;
+  const stepBar = `<div class="step-bar rep-step">
+    <div class="step-item">
+      <div class="step-num ${s1done?'done':'active'}">${s1done?'✓':'1'}</div>
+      <span class="step-lbl ${s1done?'done':'active'}">需求录入</span>
+    </div>
+    <div class="step-conn ${s1done?'done':''}"></div>
+    <div class="step-item">
+      <div class="step-num ${s2done?'done':isInDev?'active':'inactive'}">${s2done?'✓':'2'}</div>
+      <span class="step-lbl ${s2done?'done':isInDev?'active':''}">开发注册</span>
+    </div>
+  </div>`;
+
+  let bodyHtml;
+  if (isDraft) bodyHtml = renderDraftBody();
+  else if (isInDev) bodyHtml = renderS2Body();
+  else bodyHtml = renderPublishedBody();
+
+  const aiSvg = `<svg width="13" height="13" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M5.5 8l1.8 1.8 3.2-3.8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+
+  let footerHtml = '';
+  if (isDraft) {
+    const canSubmit = reqAiState && reqAiState.step===1 && reqAiState.status==='pass';
+    footerHtml = `<button class="btn-ai" onclick="runAiReview()">${aiSvg} AI 审核</button>
+      <button class="btn-pri ml-auto" onclick="submitToDev()" ${canSubmit?'':'disabled'}>提交开发</button>`;
+  } else if (isInDev) {
+    const canPublish = reqAiState && reqAiState.step===2 && reqAiState.status==='pass';
+    footerHtml = `<button class="btn-ai" onclick="runAiTest()">${aiSvg} AI 测试</button>
+      <button class="btn-pri ml-auto" onclick="publishTask()" ${canPublish?'':'disabled'}>发布任务</button>`;
+  }
+
+  document.getElementById('req-edit-view').innerHTML = `
+    <div class="rep-hdr">
+      <button class="rep-back" onclick="closeReqEdit()">← 返回</button>
+      <span class="rep-hdr-title">${esc(reqDraft.title || '未命名需求')}</span>
+      <span class="req-badge ${reqDraft.status}">${REQ_STATUS_LBL[reqDraft.status]||''}</span>
+      ${isDraft ? `<button class="btn-sec" id="btn-save-draft" onclick="saveReqDraft()">保存</button>` : ''}
+    </div>
+    <div class="rep-scroll">
+      <div class="rep-inner">
+        ${stepBar}
+        ${bodyHtml}
+        <div style="height:16px"></div>
+      </div>
+    </div>
+    ${footerHtml ? `<div class="rep-footer">${footerHtml}</div>` : ''}`;
+}
+
+function renderReqPanelContent() {
+  if (!reqDraft) return;
+  const isNew   = currentReqId === '__new__';
+  const isDraft = reqDraft.status === 'draft';
+  const isInDev = reqDraft.status === 'in_dev';
+  const isPublished = reqDraft.status === 'published';
+
+  // Step bar only for existing tasks
+  let stepBar = '';
+  if (!isNew) {
+    const s1done = isInDev || isPublished;
+    const s2done = isPublished;
+    stepBar = `<div class="step-bar" style="margin-top:10px">
+      <div class="step-item">
+        <div class="step-num ${s1done?'done':'active'}">${s1done?'✓':'1'}</div>
+        <span class="step-lbl ${s1done?'done':'active'}">需求录入</span>
+      </div>
+      <div class="step-conn ${s1done?'done':''}"></div>
+      <div class="step-item">
+        <div class="step-num ${s2done?'done':isInDev?'active':'inactive'}">${s2done?'✓':'2'}</div>
+        <span class="step-lbl ${s2done?'done':isInDev?'active':''}">开发注册</span>
+      </div>
+    </div>`;
+  }
+
+  const titleText = isNew ? '新建需求' : (reqDraft.title ? esc(reqDraft.title) : '需求详情');
+  let body, footer;
+  if (isNew)        { body = renderCreateBody();    footer = renderCreateFooter(); }
+  else if (isDraft) { body = renderDraftBody();     footer = renderDraftFooter(); }
+  else if (isInDev) { body = renderS2Body();        footer = renderS2Footer(); }
+  else              { body = renderPublishedBody(); footer = `<button class="btn-sec ml-auto" onclick="closeReqPanel()">关闭</button>`; }
+
+  document.getElementById('rp-content').innerHTML = `
+    <div class="rp-hdr">
+      <div class="rp-hdr-top">
+        <span class="rp-hdr-title">${titleText}</span>
+        <button class="dp-close" onclick="closeReqPanel()">✕</button>
+      </div>
+      ${stepBar}
+    </div>
+    <div class="rp-scroll"><div class="rp-body">${body}</div></div>
+    <div class="rp-footer">${footer}</div>`;
+}
+
+/* ── Create mode: just basic info, no metadata required ── */
+function renderCreateBody() {
+  const r = reqDraft;
+  return `
+    <div class="rp-sec">基本信息</div>
+    <div class="fg">
+      <label class="flbl">需求标题 <span style="color:#dc2626;font-weight:400">*</span></label>
+      <input class="finp" id="req-title-inp" placeholder="一句话描述需求目标" value="${esc(r.title)}" oninput="reqDraft.title=this.value">
+    </div>
+    <div class="fg">
+      <label class="flbl">需求背景</label>
+      <textarea class="fta" placeholder="当前业务问题或数据缺口…" oninput="reqDraft.background=this.value">${esc(r.background)}</textarea>
+    </div>
+    <div class="fg">
+      <label class="flbl">需求收益</label>
+      <textarea class="fta" placeholder="预期带来的分析支撑或决策价值…" oninput="reqDraft.benefit=this.value">${esc(r.benefit)}</textarea>
+    </div>
+    <div class="fr2">
+      <div><label class="flbl">业务负责人</label><input class="finp" placeholder="姓名或工号" value="${esc(r.requester)}" oninput="reqDraft.requester=this.value"></div>
+      <div><label class="flbl">技术负责人</label><input class="finp" placeholder="数据开发同学" value="${esc(r.assignee)}" oninput="reqDraft.assignee=this.value"></div>
+    </div>
+    <div style="margin-top:6px;padding:10px 12px;background:var(--bg-hover);border:1px solid var(--border);border-radius:var(--r-xs);font-size:12px;color:var(--txm);line-height:1.6">
+      💡 创建后可在任务详情中补充指标维度元信息，并提交 AI 审核后转入开发
+    </div>`;
+}
+
+function renderCreateFooter() {
+  return `<button class="btn-sec" onclick="closeReqPanel()">取消</button>
+    <button class="btn-pri ml-auto" onclick="createReq()">创建需求</button>`;
+}
+
+function createReq() {
+  if (!reqDraft || !reqDraft.title.trim()) {
+    const inp = document.getElementById('req-title-inp');
+    if (inp) { inp.style.borderColor = '#dc2626'; inp.focus(); }
+    return;
+  }
+  reqDraft.id = genReqId();
+  reqDraft.status = 'draft';
+  const savedId = reqDraft.id;
+  reqTasks.push(JSON.parse(JSON.stringify(reqDraft)));
+  // Close create panel, open full page editor
+  document.getElementById('req-panel').classList.remove('open');
+  document.getElementById('req-overlay').classList.remove('open');
+  reqDraft = null;
+  reqAiState = null;
+  renderReqView();
+  openReqEdit(savedId);
+}
+
+/* ── Draft edit mode: basic info + dim/metric tables ── */
+function renderDraftBody() {
+  const r = reqDraft;
+  const aiHtml = reqAiState && reqAiState.step===1 ? renderAiBox(reqAiState) : '';
+  return `
+    <div class="rp-sec">基本信息</div>
+    <div class="fg">
+      <label class="flbl">需求标题</label>
+      <input class="finp" placeholder="一句话描述需求目标" value="${esc(r.title)}" oninput="reqDraft.title=this.value">
+    </div>
+    <div class="fg">
+      <label class="flbl">需求背景</label>
+      <textarea class="fta" placeholder="当前业务问题或数据缺口…" oninput="reqDraft.background=this.value">${esc(r.background)}</textarea>
+    </div>
+    <div class="fg">
+      <label class="flbl">需求收益</label>
+      <textarea class="fta" placeholder="预期带来的分析支撑或决策价值…" oninput="reqDraft.benefit=this.value">${esc(r.benefit)}</textarea>
+    </div>
+    <div class="fr2">
+      <div><label class="flbl">业务负责人</label><input class="finp" placeholder="姓名或工号" value="${esc(r.requester)}" oninput="reqDraft.requester=this.value"></div>
+      <div><label class="flbl">技术负责人</label><input class="finp" placeholder="数据开发同学" value="${esc(r.assignee)}" oninput="reqDraft.assignee=this.value"></div>
+    </div>
+    <div class="rp-sec" style="margin-top:8px">维度元数据
+      <span style="font-weight:400;color:var(--txm);text-transform:none;letter-spacing:0;font-size:11px">（先录维度，再录指标）</span>
+    </div>
+    <div id="dim-tbl-wrap" class="meta-wrap">${renderDimTable(false, false)}</div>
+    <button class="btn-add-row" onclick="addDimRow()" style="margin-bottom:16px">＋ 添加维度行</button>
+    <div class="rp-sec">指标元数据</div>
+    <div id="metric-tbl-wrap" class="meta-wrap">${renderMetricTable(false, false)}</div>
+    <button class="btn-add-row" onclick="addMetricRow()">＋ 添加指标行</button>
+    ${aiHtml}`;
+}
+
+function renderS2Body() {
+  const r = reqDraft;
+  const aiHtml = reqAiState && reqAiState.step===2 ? renderAiBox(reqAiState) : '';
+  return `
+    <div class="rp-sec">需求信息</div>
+    <div style="background:var(--bg-hover);border:1px solid var(--border);border-radius:var(--r-xs);padding:10px 12px;margin-bottom:12px;font-size:12px;color:var(--tx2);line-height:1.7">
+      <div style="margin-bottom:3px"><strong style="color:var(--tx)">背景：</strong>${esc(r.background||'—')}</div>
+      <div style="margin-bottom:6px"><strong style="color:var(--tx)">收益：</strong>${esc(r.benefit||'—')}</div>
+      <div style="display:flex;gap:16px">
+        <span>业务负责人：<strong style="color:var(--tx)">${esc(r.requester||'—')}</strong></span>
+        <span>技术负责人：<strong style="color:var(--tx)">${esc(r.assignee||'—')}</strong></span>
+      </div>
+    </div>
+    <div class="rp-sec">维度元数据
+      <span style="font-weight:400;color:#d97706;text-transform:none;letter-spacing:0;font-size:11px">（请补录来源表）</span>
+    </div>
+    <div id="dim-tbl-wrap" class="meta-wrap">${renderDimTable(true, false)}</div>
+    <div class="rp-sec" style="margin-top:12px">指标元数据
+      <span style="font-weight:400;color:#d97706;text-transform:none;letter-spacing:0;font-size:11px">（请补录来源表）</span>
+    </div>
+    <div id="metric-tbl-wrap" class="meta-wrap">${renderMetricTable(true, false)}</div>
+    ${aiHtml}`;
+}
+
+function renderPublishedBody() {
+  const r = reqDraft;
+  return `
+    <div class="rp-sec">需求信息</div>
+    <div style="background:var(--bg-hover);border:1px solid var(--border);border-radius:var(--r-xs);padding:10px 12px;margin-bottom:12px;font-size:12px;color:var(--tx2);line-height:1.7">
+      <div style="margin-bottom:3px"><strong style="color:var(--tx)">背景：</strong>${esc(r.background||'—')}</div>
+      <div style="margin-bottom:6px"><strong style="color:var(--tx)">收益：</strong>${esc(r.benefit||'—')}</div>
+      <div style="display:flex;gap:16px">
+        <span>业务负责人：<strong style="color:var(--tx)">${esc(r.requester||'—')}</strong></span>
+        <span>技术负责人：<strong style="color:var(--tx)">${esc(r.assignee||'—')}</strong></span>
+      </div>
+    </div>
+    <div class="rp-sec">已发布维度</div>
+    <div class="meta-wrap">${renderDimTable(true, true)}</div>
+    <div class="rp-sec" style="margin-top:12px">已发布指标</div>
+    <div class="meta-wrap">${renderMetricTable(true, true)}</div>
+    <div style="margin-top:12px;padding:10px 12px;background:rgba(5,150,105,.06);border:1px solid rgba(5,150,105,.2);border-radius:var(--r-xs);font-size:12px;color:#059669;display:flex;align-items:center;gap:7px">
+      ✓ 已发布，指标/维度已进入资产库可检索
+    </div>`;
+}
+
+/* ── Dim table (spreadsheet) ── */
+function renderDimTable(showSrc, readonly) {
+  const CATS = Object.keys(CAT_DOTS);
+  const rows = reqDraft.dimRows || [];
+  const defW = _defaultDimW(showSrc);
+  if (dimColWidths.length !== defW.length) dimColWidths = [...defW];
+  const ro = readonly ? 'readonly disabled' : '';
+  const dimTypes = [['categorical','枚举型'],['time','时间型'],['numerical','数值型'],['boolean','布尔型']];
+  const hcols = ['维度名称','维度类型','业务域','说明', ...(showSrc?['来源表']:[]), '更新频率',''];
+
+  const cg = '<colgroup>' + dimColWidths.map(w => `<col style="width:${w}px">`).join('') + '</colgroup>';
+  const thead = hcols.map((h, i) => {
+    const rzHandle = (i < hcols.length - 1 && !readonly)
+      ? `<div class="col-rz" onmousedown="startColResize(event,'dim-sp-tbl',${i})"></div>` : '';
+    return `<th>${esc(h)}${rzHandle}</th>`;
+  }).join('');
+
+  const tbody = rows.map((row, idx) => {
+    const typeOpts = dimTypes.map(([v,l]) =>
+      `<option value="${v}"${row.type===v?' selected':''}>${l}</option>`).join('');
+    const catOpts = ['', ...CATS].map(c =>
+      `<option value="${esc(c)}"${row.category===c?' selected':''}>${esc(c)||'—'}</option>`).join('');
+    const freqOpts = ['天','周','月','实时'].map(f =>
+      `<option value="${esc(f)}"${row.update_freq===f?' selected':''}>${esc(f)}</option>`).join('');
+    const srcCell = showSrc ? `<td>
+        <input class="ti" placeholder="表名" value="${esc(row.source_table)}" ${ro}
+          onchange="updateDimRow(${idx},'source_table',this.value)">
+      </td>` : '';
+    const delCell = readonly ? '<td></td>'
+      : `<td><button class="tbl-del" onclick="deleteDimRow(${idx})" title="删除">✕</button></td>`;
+
+    // display_name: contenteditable with autocomplete
+    const nameCell = readonly
+      ? `<td><div class="tc" style="pointer-events:none">${row.display_name||''}</div></td>`
+      : `<td style="position:relative">
+          <div class="tc" contenteditable="true"
+            data-ph="如：商品类目" data-dim="${idx}" data-tbl="dim" data-field="display_name"
+            oninput="updateDimRow(${idx},'display_name',this.innerHTML);showDimAc(${idx},pt(this.innerHTML))"
+            onfocus="showFmtToolbar(this)"
+            onblur="hideFmtToolbar(event.relatedTarget);setTimeout(()=>{var d=document.getElementById('dim-ac-${idx}');if(d)d.style.display='none'},150)"
+            onkeydown="if(event.key==='Enter'&&!event.shiftKey)event.preventDefault()"
+            >${row.display_name||''}</div>
+          <div class="ac-dd" id="dim-ac-${idx}" style="display:none"></div>
+        </td>`;
+
+    // description: contenteditable with rich text
+    const descCell = readonly
+      ? `<td><div class="tc" style="pointer-events:none">${row.description||''}</div></td>`
+      : `<td>
+          <div class="tc" contenteditable="true"
+            data-ph="枚举值或说明" data-dim="${idx}" data-tbl="dim" data-field="description"
+            oninput="updateDimRow(${idx},'description',this.innerHTML)"
+            onfocus="showFmtToolbar(this)"
+            onblur="hideFmtToolbar(event.relatedTarget)"
+            >${row.description||''}</div>
+        </td>`;
+
+    return `<tr>
+      ${nameCell}
+      <td><select class="ts" ${ro} onchange="updateDimRow(${idx},'type',this.value)">${typeOpts}</select></td>
+      <td><select class="ts" ${ro} onchange="updateDimRow(${idx},'category',this.value)">${catOpts}</select></td>
+      ${descCell}
+      ${srcCell}
+      <td><select class="ts" ${ro} onchange="updateDimRow(${idx},'update_freq',this.value)">${freqOpts}</select></td>
+      ${delCell}
+    </tr>`;
+  }).join('');
+
+  return `<table class="meta-tbl" id="dim-sp-tbl">${cg}<thead><tr>${thead}</tr></thead><tbody>${tbody}</tbody></table>`;
+}
+
+/* ── Metric table (spreadsheet) ── */
+function renderMetricTable(showSrc, readonly) {
+  const CATS = Object.keys(CAT_DOTS);
+  const rows = reqDraft.metricRows || [];
+  const defW = _defaultMetW(showSrc);
+  if (metricColWidths.length !== defW.length) metricColWidths = [...defW];
+  const ro = readonly ? 'readonly disabled' : '';
+  const hcols = ['指标名称','业务域','单位','正负向','指标说明','可拆解维度',
+    ...(showSrc?['来源表']:[]), '更新频率',''];
+
+  const cg = '<colgroup>' + metricColWidths.map(w => `<col style="width:${w}px">`).join('') + '</colgroup>';
+  const thead = hcols.map((h, i) => {
+    const rzHandle = (i < hcols.length - 1 && !readonly)
+      ? `<div class="col-rz" onmousedown="startColResize(event,'metric-sp-tbl',${i})"></div>` : '';
+    return `<th>${esc(h)}${rzHandle}</th>`;
+  }).join('');
+
+  const availDimNames = (reqDraft.dimRows||[]).filter(d=>pt(d.display_name).trim()).map(d=>pt(d.display_name));
+
+  const tbody = rows.map((row, idx) => {
+    const catOpts = ['', ...CATS].map(c =>
+      `<option value="${esc(c)}"${row.category===c?' selected':''}>${esc(c)||'—'}</option>`).join('');
+    const dirOpts = [['up','正向↑'],['down','负向↓']].map(([v,l]) =>
+      `<option value="${v}"${row.direction===v?' selected':''}>${l}</option>`).join('');
+    const freqOpts = ['天','周','月','实时'].map(f =>
+      `<option value="${esc(f)}"${row.update_freq===f?' selected':''}>${esc(f)}</option>`).join('');
+    const srcCell = showSrc ? `<td>
+        <input class="ti" placeholder="表名" value="${esc(row.source_table)}" ${ro}
+          onchange="updateMetricRow(${idx},'source_table',this.value)">
+      </td>` : '';
+    const delCell = readonly ? '<td></td>'
+      : `<td><button class="tbl-del" onclick="deleteMetricRow(${idx})" title="删除">✕</button></td>`;
+
+    // display_name: contenteditable with autocomplete
+    const nameCell = readonly
+      ? `<td><div class="tc" style="pointer-events:none">${row.display_name||''}</div></td>`
+      : `<td style="position:relative">
+          <div class="tc" contenteditable="true"
+            data-ph="指标名称" data-metric="${idx}" data-tbl="metric" data-field="display_name"
+            oninput="updateMetricRow(${idx},'display_name',this.innerHTML);showMetricAc(${idx},pt(this.innerHTML))"
+            onfocus="showFmtToolbar(this)"
+            onblur="hideFmtToolbar(event.relatedTarget);setTimeout(()=>{var d=document.getElementById('metric-ac-${idx}');if(d)d.style.display='none'},150)"
+            onkeydown="if(event.key==='Enter'&&!event.shiftKey)event.preventDefault()"
+            >${row.display_name||''}</div>
+          <div class="ac-dd" id="metric-ac-${idx}" style="display:none"></div>
+        </td>`;
+
+    // description: contenteditable with rich text
+    const descCell = readonly
+      ? `<td><div class="tc" style="pointer-events:none">${row.description||''}</div></td>`
+      : `<td>
+          <div class="tc" contenteditable="true"
+            data-ph="含义说明" data-metric="${idx}" data-tbl="metric" data-field="description"
+            oninput="updateMetricRow(${idx},'description',this.innerHTML)"
+            onfocus="showFmtToolbar(this)"
+            onblur="hideFmtToolbar(event.relatedTarget)"
+            >${row.description||''}</div>
+        </td>`;
+
+    // dim picker
+    const selDims = row.available_dims || [];
+    const dimChips = selDims.map(d =>
+      readonly
+        ? `<span class="dimpick-chip" style="cursor:default">${esc(d)}</span>`
+        : `<span class="dimpick-chip" onmousedown="removeMetricDim(${idx},'${d.replace(/\\/g,'\\\\').replace(/'/g,"\\'")}')">${esc(d)} ×</span>`
+    ).join('');
+    const dimPickerCell = readonly
+      ? `<td><div class="dimpick-wrap">${dimChips||'<span style="color:var(--txd);font-size:11px">—</span>'}</div></td>`
+      : `<td style="position:relative">
+          <div class="dimpick-wrap" id="dimpick-${idx}">
+            ${dimChips}
+            <button class="dimpick-btn" onmousedown="toggleDimPickerDd(${idx})">+ 维度</button>
+          </div>
+          <div class="dimpick-dd" id="dimpick-dd-${idx}" style="display:none">
+            ${availDimNames.length
+              ? availDimNames.map(d => `<div class="dimpick-opt${selDims.includes(d)?' selected':''}" onmousedown="toggleMetricDim(${idx},'${d.replace(/\\/g,'\\\\').replace(/'/g,"\\'")}')"><span style="width:14px;display:inline-block">${selDims.includes(d)?'✓':''}</span>${esc(d)}</div>`).join('')
+              : '<div style="padding:8px;font-size:12px;color:var(--txm)">先录入维度</div>'}
+          </div>
+        </td>`;
+
+    return `<tr>
+      ${nameCell}
+      <td><select class="ts" ${ro} onchange="updateMetricRow(${idx},'category',this.value)">${catOpts}</select></td>
+      <td><input class="ti" placeholder="元/%" value="${esc(row.unit)}" ${ro} oninput="updateMetricRow(${idx},'unit',this.value)"></td>
+      <td><select class="ts" ${ro} onchange="updateMetricRow(${idx},'direction',this.value)">${dirOpts}</select></td>
+      ${descCell}
+      ${dimPickerCell}
+      ${srcCell}
+      <td><select class="ts" ${ro} onchange="updateMetricRow(${idx},'update_freq',this.value)">${freqOpts}</select></td>
+      ${delCell}
+    </tr>`;
+  }).join('');
+
+  return `<table class="meta-tbl" id="metric-sp-tbl">${cg}<thead><tr>${thead}</tr></thead><tbody>${tbody}</tbody></table>`;
+}
+
+/* ── Row management ── */
+function updateDimRow(idx, field, value) {
+  if (reqDraft && reqDraft.dimRows && reqDraft.dimRows[idx] !== undefined) reqDraft.dimRows[idx][field] = value;
+}
+function updateMetricRow(idx, field, value) {
+  if (reqDraft && reqDraft.metricRows && reqDraft.metricRows[idx] !== undefined) reqDraft.metricRows[idx][field] = value;
+}
+function addDimRow() {
+  if (!reqDraft) return;
+  reqDraft.dimRows.push(emptyDimRow());
+  const w = document.getElementById('dim-tbl-wrap');
+  if (w) w.innerHTML = renderDimTable(false, false);
+}
+function deleteDimRow(idx) {
+  if (!reqDraft || reqDraft.dimRows.length <= 1) return;
+  reqDraft.dimRows.splice(idx, 1);
+  const w = document.getElementById('dim-tbl-wrap');
+  if (w) w.innerHTML = renderDimTable(false, false);
+}
+function addMetricRow() {
+  if (!reqDraft) return;
+  reqDraft.metricRows.push(emptyMetricRow());
+  const w = document.getElementById('metric-tbl-wrap');
+  if (w) w.innerHTML = renderMetricTable(false, false);
+}
+function deleteMetricRow(idx) {
+  if (!reqDraft || reqDraft.metricRows.length <= 1) return;
+  reqDraft.metricRows.splice(idx, 1);
+  const w = document.getElementById('metric-tbl-wrap');
+  if (w) w.innerHTML = renderMetricTable(false, false);
+}
+
+/* ── Autocomplete ── */
+function showDimAc(idx, value) {
+  const dd = document.getElementById('dim-ac-' + idx);
+  if (!dd) return;
+  const v = pt(value).trim();
+  if (!v) { dd.style.display = 'none'; return; }
+  const q = v.toLowerCase();
+  const sug = DIMENSIONS.filter(d =>
+    d.display_name.toLowerCase().includes(q) || d.name.toLowerCase().includes(q)
+  ).slice(0, 6);
+  if (!sug.length) { dd.style.display = 'none'; return; }
+  dd.innerHTML = sug.map(d =>
+    `<div class="ac-item" onmousedown="pickDimSuggestion(${idx},'${d.display_name.replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/"/g,"&quot;")}','${d.type||'categorical'}')">
+      <span>${esc(d.display_name)}</span><span style="color:var(--txm);font-size:10.5px">${esc(d.type||'')}</span>
+    </div>`
+  ).join('');
+  dd.style.display = 'block';
+}
+function pickDimSuggestion(idx, displayName, type) {
+  if (reqDraft && reqDraft.dimRows && reqDraft.dimRows[idx]) {
+    reqDraft.dimRows[idx].display_name = displayName;
+    if (type) reqDraft.dimRows[idx].type = type;
+  }
+  // Re-render to update type select + refresh cell content
+  const showSrc = reqDraft.status === 'in_dev';
+  const w = document.getElementById('dim-tbl-wrap');
+  if (w) w.innerHTML = renderDimTable(showSrc, false);
+}
+function showMetricAc(idx, value) {
+  const dd = document.getElementById('metric-ac-' + idx);
+  if (!dd) return;
+  const v = pt(value).trim();
+  if (!v) { dd.style.display = 'none'; return; }
+  const q = v.toLowerCase();
+  const sug = METRICS.filter(m =>
+    m.display_name.toLowerCase().includes(q) || m.name.toLowerCase().includes(q)
+  ).slice(0, 6);
+  if (!sug.length) { dd.style.display = 'none'; return; }
+  dd.innerHTML = sug.map(m =>
+    `<div class="ac-item" onmousedown="pickMetricSuggestion(${idx},'${m.display_name.replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/"/g,"&quot;")}','${m.category||''}','${m.unit||''}','${m.direction||'up'}')">
+      <span>${esc(m.display_name)}</span><span style="color:var(--txm);font-size:10.5px">${esc(m.category||'')}</span>
+    </div>`
+  ).join('');
+  dd.style.display = 'block';
+}
+function pickMetricSuggestion(idx, displayName, category, unit, direction) {
+  if (reqDraft && reqDraft.metricRows && reqDraft.metricRows[idx]) {
+    const row = reqDraft.metricRows[idx];
+    row.display_name = displayName;
+    if (category) row.category = category;
+    if (unit) row.unit = unit;
+    if (direction) row.direction = direction;
+  }
+  // Re-render to reflect filled-in selects
+  const w = document.getElementById('metric-tbl-wrap');
+  if (w) w.innerHTML = renderMetricTable(reqDraft.status === 'in_dev', false);
+}
+
+/* ── Dim picker for metric rows ── */
+function getAllAvailableDimNames() {
+  return (reqDraft && reqDraft.dimRows || []).map(d => pt(d.display_name).trim()).filter(Boolean);
+}
+function toggleDimPickerDd(idx) {
+  const dd = document.getElementById('dimpick-dd-' + idx);
+  if (!dd) return;
+  if (dd.style.display !== 'none') { dd.style.display = 'none'; return; }
+  const dims = getAllAvailableDimNames();
+  const row = reqDraft && reqDraft.metricRows && reqDraft.metricRows[idx];
+  if (!row) return;
+  const sel = row.available_dims || [];
+  dd.innerHTML = dims.length
+    ? dims.map(d => `<div class="dimpick-opt${sel.includes(d)?' selected':''}" onmousedown="toggleMetricDim(${idx},'${d.replace(/\\/g,'\\\\').replace(/'/g,"\\'")}')"><span style="width:14px;display:inline-block">${sel.includes(d)?'✓':''}</span>${esc(d)}</div>`).join('')
+    : '<div style="padding:8px;font-size:12px;color:var(--txm)">请先录入维度</div>';
+  dd.style.display = 'block';
+}
+function toggleMetricDim(metricIdx, dimName) {
+  if (!reqDraft || !reqDraft.metricRows || !reqDraft.metricRows[metricIdx]) return;
+  const dims = reqDraft.metricRows[metricIdx].available_dims;
+  const i = dims.indexOf(dimName);
+  if (i >= 0) dims.splice(i, 1); else dims.push(dimName);
+  const showSrc = reqDraft.status === 'in_dev';
+  const w = document.getElementById('metric-tbl-wrap');
+  if (w) w.innerHTML = renderMetricTable(showSrc, false);
+  // Reopen picker to allow continued selection
+  setTimeout(() => toggleDimPickerDd2(metricIdx), 0);
+}
+function toggleDimPickerDd2(idx) {
+  // Force-open (non-toggle) version used after re-render
+  const dd = document.getElementById('dimpick-dd-' + idx);
+  if (!dd) return;
+  const dims = getAllAvailableDimNames();
+  const row = reqDraft && reqDraft.metricRows && reqDraft.metricRows[idx];
+  if (!row) return;
+  const sel = row.available_dims || [];
+  dd.innerHTML = dims.length
+    ? dims.map(d => `<div class="dimpick-opt${sel.includes(d)?' selected':''}" onmousedown="toggleMetricDim(${idx},'${d.replace(/\\/g,'\\\\').replace(/'/g,"\\'")}')"><span style="width:14px;display:inline-block">${sel.includes(d)?'✓':''}</span>${esc(d)}</div>`).join('')
+    : '<div style="padding:8px;font-size:12px;color:var(--txm)">请先录入维度</div>';
+  dd.style.display = 'block';
+}
+function removeMetricDim(metricIdx, dimName) {
+  toggleMetricDim(metricIdx, dimName);
+}
+
+function renderDraftFooter() {
+  const canSubmit = reqAiState && reqAiState.step===1 && reqAiState.status==='pass';
+  return `<button class="btn-sec" onclick="closeReqPanel()">关闭</button>
+    <button class="btn-ai" id="btn-ai-1" onclick="runAiReview()">
+      <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M5.5 8l1.8 1.8 3.2-3.8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      AI 审核
+    </button>
+    <button class="btn-pri ml-auto" id="btn-submit-dev" onclick="submitToDev()" ${canSubmit?'':'disabled'}>提交开发</button>`;
+}
+
+function renderS2Footer() {
+  const canPublish = reqAiState && reqAiState.step===2 && reqAiState.status==='pass';
+  return `<button class="btn-sec" onclick="closeReqPanel()">关闭</button>
+    <button class="btn-ai" id="btn-ai-2" onclick="runAiTest()">
+      <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M5.5 8l1.8 1.8 3.2-3.8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      AI 测试
+    </button>
+    <button class="btn-pri ml-auto" id="btn-publish" onclick="publishTask()" ${canPublish?'':'disabled'}>发布任务</button>`;
+}
+
+function renderAiBox(state) {
+  if (state.status === 'checking') return `
+    <div class="ai-box checking">
+      <div class="ai-box-row">⏳ ${state.step===1?'AI 审核中…':'AI 测试中…'}</div>
+      <div class="ai-box-msg">正在检查${state.step===1?'元信息完整性':'数据源配置'}，请稍候</div>
+    </div>`;
+  const isPass = state.status === 'pass';
+  const itemsHtml = state.items.length
+    ? state.items.map(it => `<div class="ai-item ${it.ok?'ok':'err'}">${esc(it.text)}</div>`).join('')
+    : '';
+  return `<div class="ai-box ${isPass?'pass':'fail'}">
+    <div class="ai-box-row">${isPass?'✅':'❌'} ${state.step===1?(isPass?'审核通过':'审核未通过'):(isPass?'测试通过':'测试未通过')}</div>
+    <div class="ai-box-msg">${esc(state.message)}</div>
+    ${itemsHtml}
+  </div>`;
+}
+
+function runAiReview() {
+  reqAiState = { step:1, status:'checking', message:'', items:[] };
+  renderReqEditPage();
+  setTimeout(() => {
+    const r = reqDraft;
+    const items = [];
+    if (!r.title) items.push({ok:false, text:'需求标题不能为空'});
+    else items.push({ok:true, text:'需求标题已填写'});
+    if (!r.background) items.push({ok:false, text:'需求背景不能为空'});
+    else items.push({ok:true, text:'需求背景已填写'});
+    if (!r.benefit) items.push({ok:false, text:'需求收益不能为空'});
+    else items.push({ok:true, text:'需求收益已填写'});
+    if (!r.requester) items.push({ok:false, text:'业务负责人不能为空'});
+    else items.push({ok:true, text:`业务负责人：${r.requester}`});
+    if (!r.assignee) items.push({ok:false, text:'技术负责人不能为空'});
+    else items.push({ok:true, text:`技术负责人：${r.assignee}`});
+    const dimRows = r.dimRows || [];
+    const metricRows = r.metricRows || [];
+    if (!dimRows.length || dimRows.every(row => !pt(row.display_name).trim())) {
+      items.push({ok:false, text:'至少需要填写一条维度元信息'});
+    } else {
+      dimRows.forEach((row, i) => {
+        const n = pt(row.display_name).trim();
+        if (!n) items.push({ok:false, text:`维度第${i+1}行：名称不能为空`});
+        else items.push({ok:true, text:`维度「${n}」信息完整`});
+      });
+    }
+    if (!metricRows.length || metricRows.every(row => !pt(row.display_name).trim())) {
+      items.push({ok:false, text:'至少需要填写一条指标元信息'});
+    } else {
+      metricRows.forEach((row, i) => {
+        const n = pt(row.display_name).trim();
+        if (!n) items.push({ok:false, text:`指标第${i+1}行：名称不能为空`});
+        else if (!row.category) items.push({ok:false, text:`指标「${n}」：业务域不能为空`});
+        else items.push({ok:true, text:`指标「${n}」元信息完整`});
+      });
+    }
+    const passed = items.every(it => it.ok);
+    reqAiState = { step:1, status: passed?'pass':'fail',
+      message: passed ? '所有字段验证通过，可提交开发' : '请补全以下问题后重新审核', items };
+    renderReqEditPage();
+  }, 900);
+}
+
+function runAiTest() {
+  reqAiState = { step:2, status:'checking', message:'', items:[] };
+  renderReqEditPage();
+  setTimeout(() => {
+    const items = [];
+    (reqDraft.dimRows || []).forEach((row, i) => {
+      const n = pt(row.display_name).trim() || `维度第${i+1}条`;
+      if (!row.source_table) items.push({ok:false, text:`${n}：来源表未填写`});
+      else if (!row.source_table.includes('_')) items.push({ok:false, text:`${n}：表名格式不规范（建议 层级_主题_粒度）`});
+      else items.push({ok:true, text:`${n} → ${row.source_table} 验证通过`});
+    });
+    (reqDraft.metricRows || []).forEach((row, i) => {
+      const n = pt(row.display_name).trim() || `指标第${i+1}条`;
+      if (!row.source_table) items.push({ok:false, text:`${n}：来源表未填写`});
+      else if (!row.source_table.includes('_')) items.push({ok:false, text:`${n}：表名格式不规范（建议 层级_主题_粒度）`});
+      else items.push({ok:true, text:`${n} → ${row.source_table} 验证通过`});
+      if (!row.unit) items.push({ok:false, text:`${n}：单位未填写`});
+    });
+    const passed = items.every(it => it.ok);
+    reqAiState = { step:2, status: passed?'pass':'fail',
+      message: passed ? '数据源配置验证通过，指标/维度即将进入资产库' : '请补充以下信息后重新测试', items };
+    renderReqEditPage();
+  }, 1100);
+}
+
+function submitToDev() {
+  if (!reqDraft || !reqAiState || reqAiState.step!==1 || reqAiState.status!=='pass') return;
+  reqDraft.status = 'in_dev';
+  reqDraft.step1Review = { passed:true, feedback:reqAiState.message };
+  const idx = reqTasks.findIndex(t => t.id === reqDraft.id);
+  if (idx >= 0) reqTasks[idx] = JSON.parse(JSON.stringify(reqDraft));
+  reqAiState = null;
+  renderReqView();
+  renderReqEditPage();
+}
+
+function publishTask() {
+  if (!reqDraft || !reqAiState || reqAiState.step!==2 || reqAiState.status!=='pass') return;
+  reqDraft.status = 'published';
+  reqDraft.step2Test = { passed:true, feedback:reqAiState.message };
+  // Register dimensions first
+  (reqDraft.dimRows || []).forEach(row => {
+    const dname = pt(row.display_name).trim();
+    if (!dname) return;
+    const id = dname.toLowerCase().replace(/\s+/g,'_').replace(/[^\w_]/g,'') || ('dim_' + Date.now().toString(36));
+    if (!DIMENSIONS.find(d => d.display_name === dname)) {
+      DIMENSIONS.push({ id, name:dname, display_name:dname,
+        type:row.type||'categorical',
+        description:pt(row.description)||`来自需求任务 "${reqDraft.title}"`,
+        values_example:[], cardinality:'未知' });
+    }
+  });
+  // Register metrics, mapping available_dims names to dim IDs
+  (reqDraft.metricRows || []).forEach(row => {
+    const dname = pt(row.display_name).trim();
+    if (!dname) return;
+    const id = dname.toLowerCase().replace(/\s+/g,'_').replace(/[^\w_]/g,'') || ('met_' + Date.now().toString(36));
+    if (!METRICS.find(m => m.display_name === dname)) {
+      const availDimIds = (row.available_dims || []).map(dname => {
+        const d = DIMENSIONS.find(d => d.display_name === dname);
+        return d ? d.id : dname;
+      });
+      METRICS.push({ id, name:id, display_name:dname,
+        category:row.category||'其他', unit:row.unit||'—', formula:'待完善',
+        description:pt(row.description)||`来自需求任务 "${reqDraft.title}"`,
+        source_table:row.source_table, direction:row.direction||'up',
+        update_freq:row.update_freq||'天', owner:reqDraft.assignee||'',
+        tags:[row.category||'自定义'],
+        available_dimensions:availDimIds.length ? availDimIds : ['date'],
+        sim:{base:100,variance:.10,trend:.02} });
+    }
+  });
+  const idx = reqTasks.findIndex(t => t.id === reqDraft.id);
+  if (idx >= 0) reqTasks[idx] = JSON.parse(JSON.stringify(reqDraft));
+  reqAiState = null;
+  renderReqView();
+  renderReqEditPage();
+  if (currentTab === 'search' && currentSubTab === 'metrics') { renderSidebar(); renderList(); }
+}
 
 /* ── Init ── */
-renderSidebar();
-renderGrid();
+(function() {
+  const hash = location.hash.replace('#', '');
+  if (hash === 'assets' || hash === 'request') {
+    switchTab(hash);
+  } else {
+    renderSidebar();
+    renderList();
+  }
+})();
+
+/* ── PostMessage from DataClaw parent ── */
+window.addEventListener('message', e => {
+  if (!e.data) return;
+  if (e.data.type === 'openMetric') {
+    const id = e.data.id;
+    if (currentTab !== 'search') switchTab('search');
+    if (METRICS.find(m => m.id === id)) openDetail(id);
+  }
+  if (e.data.type === 'switchTab') {
+    const tab = e.data.tab;
+    if (tab === 'search' || tab === 'request' || tab === 'assets') switchTab(tab);
+  }
+});
+try { window.parent.postMessage({ type: 'assetLibReady' }, '*'); } catch(e) {}
 </script>
 </body>
 </html>

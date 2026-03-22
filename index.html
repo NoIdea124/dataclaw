@@ -111,6 +111,46 @@ body{font-family:var(--font);font-feature-settings:'ss01','cv01';background:var(
 .hdr-right{display:flex;align-items:center;gap:5px}
 .ibtn{width:30px;height:30px;border:1px solid var(--border);background:none;border-radius:4px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--tx2);transition:all var(--t)}
 .ibtn:hover{border-color:var(--border-med);color:var(--tx);background:var(--bg-hover)}
+/* ── Top nav ── */
+.asset-lib-wrap{position:relative;display:flex;align-items:center}
+.asset-lib-btn{display:flex;align-items:center;gap:5px;padding:0 10px;height:30px;border:1px solid var(--border);background:none;border-radius:var(--r-xs);cursor:pointer;font-size:12px;font-weight:500;color:var(--tx2);font-family:var(--font);transition:all var(--t);white-space:nowrap}
+.asset-lib-btn:hover{border-color:var(--border-med);color:var(--tx);background:var(--bg-hover)}
+.al-chevron{font-size:10px;color:var(--txm);transition:transform var(--t);line-height:1}
+.asset-lib-wrap.open .al-chevron{transform:rotate(180deg)}
+.asset-lib-dropdown{position:absolute;top:calc(100% + 6px);right:0;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r-sm);box-shadow:var(--sh-md);min-width:136px;padding:4px;opacity:0;pointer-events:none;transform:translateY(-4px);transition:opacity var(--t),transform var(--t);z-index:200}
+.asset-lib-wrap.open .asset-lib-dropdown{opacity:1;pointer-events:all;transform:translateY(0)}
+.al-item{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:var(--r-xs);font-size:12.5px;color:var(--tx2);text-decoration:none;transition:background var(--t),color var(--t)}
+.al-item:hover{background:var(--bg-hover);color:var(--tx)}
+.al-ico{font-size:14px;width:18px;text-align:center;flex-shrink:0}
+/* ── Metric List Card (ml-*) ── */
+.ml-body{padding:6px 0}
+.ml-item{display:flex;align-items:flex-start;gap:0;padding:9px 14px;border-bottom:1px solid var(--border);cursor:pointer;transition:background var(--t)}
+.ml-item:last-child{border-bottom:none}
+.ml-item:hover{background:var(--bg-hover)}
+.ml-rank{flex-shrink:0;width:22px;font-size:11px;font-weight:700;color:var(--txd);font-family:var(--mono);padding-top:2px}
+.ml-rank-top{color:var(--accent)}
+.ml-main{flex:1;min-width:0}
+.ml-name-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:2px}
+.ml-name{font-size:13px;font-weight:600;color:var(--tx);letter-spacing:-.1px}
+.ml-cat{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:600;color:var(--txm)}
+.ml-cat-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+.ml-dir{font-size:10px;font-weight:600;padding:1px 6px;border-radius:3px}
+.ml-dir.up{background:rgba(5,150,105,.09);color:#059669}
+.ml-dir.down{background:rgba(124,58,237,.09);color:#7c3aed}
+[data-theme="dark"] .ml-dir.up{background:rgba(0,192,135,.1);color:#00c087}
+[data-theme="dark"] .ml-dir.down{background:rgba(167,139,250,.1);color:#a78bfa}
+.ml-id{font-size:10.5px;font-family:var(--mono);color:var(--txd);margin-bottom:3px}
+.ml-desc{font-size:11.5px;color:var(--tx2);line-height:1.5;margin-bottom:5px;display:-webkit-box;-webkit-line-clamp:1;line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
+.ml-footer{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.ml-chip{font-size:10px;font-family:var(--mono);color:var(--txm);background:var(--bg-hover);border:1px solid var(--border);padding:1px 6px;border-radius:3px}
+.ml-score-col{flex-shrink:0;display:flex;flex-direction:column;align-items:flex-end;gap:4px;padding-left:10px;min-width:36px}
+.ml-score{font-size:13px;font-weight:700;font-family:var(--mono);color:var(--tx)}
+.ml-score-bar-wrap{width:32px;height:3px;background:var(--border);border-radius:2px;overflow:hidden}
+.ml-score-bar{height:100%;border-radius:2px;background:var(--accent)}
+.ml-open-hint{font-size:9.5px;color:var(--txm);margin-top:3px}
+.ml-total{font-size:11px;color:var(--txm);margin-left:auto;padding-right:2px}
+/* metric dict view */
+#metric-dict-frame{width:100%;height:100%;border:none;display:block}
 
 /* ── Chat column ── */
 .chat-col{flex:1;display:flex;flex-direction:column;overflow:hidden;transition:margin-right var(--t) var(--ease)}
@@ -911,6 +951,8 @@ textarea.mf-inp{resize:vertical;line-height:1.55;font-size:12px;font-family:var(
 .ac-score-bar-wrap{width:32px;height:3px;background:var(--border);border-radius:2px;overflow:hidden}
 .ac-score-bar{height:100%;border-radius:2px;background:var(--acc)}
 .ac-total{font-size:11px;color:var(--txm);margin-left:auto;padding-right:2px}
+.ac-fold-btn{display:block;width:100%;margin-top:4px;padding:7px 12px;background:none;border:none;border-top:1px solid var(--border);font-size:12px;color:var(--txm);cursor:pointer;text-align:center;font-family:var(--font);transition:color var(--t),background var(--t)}
+.ac-fold-btn:hover{color:var(--tx2);background:var(--bg-hover)}
 @keyframes spin{to{transform:rotate(360deg)}}
 
 
@@ -1093,6 +1135,26 @@ textarea.mf-inp{resize:vertical;line-height:1.55;font-size:12px;font-family:var(
   </div>
 
   <div class="hdr-right">
+    <div class="asset-lib-wrap">
+      <button class="asset-lib-btn" onclick="toggleAssetLib(event)">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
+        资产库
+        <span class="al-chevron">▾</span>
+      </button>
+      <div class="asset-lib-dropdown">
+        <div style="padding:4px 10px 3px;font-size:10px;font-weight:600;color:var(--txm);letter-spacing:.5px;text-transform:uppercase">资产库</div>
+        <a class="al-item" href="metric-dict/index.html#search" target="_blank">
+          <svg class="al-ico" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>指标管理
+        </a>
+        <a class="al-item" href="metric-dict/index.html#assets" target="_blank">
+          <svg class="al-ico" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>数据管理
+        </a>
+        <div style="height:1px;background:var(--border);margin:3px 6px"></div>
+        <a class="al-item" href="asset-catalog/index.html" target="_blank">
+          <svg class="al-ico" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>资产目录
+        </a>
+      </div>
+    </div>
     <div class="ibtn-wrap">
       <button class="ibtn" id="task-btn" title="任务中心" onclick="toggleTaskPanel()">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
@@ -1353,7 +1415,6 @@ textarea.mf-inp{resize:vertical;line-height:1.55;font-size:12px;font-family:var(
           <input type="number" id="s-ctx" class="set-inp" min="1" max="100" step="1" />
         </div>
       </div>
-      </div><!-- /set-dev-sections -->
       <!-- 系统提示词 -->
       <div class="set-section">
         <div class="set-sec-row" style="margin-bottom:13px">
@@ -1362,6 +1423,7 @@ textarea.mf-inp{resize:vertical;line-height:1.55;font-size:12px;font-family:var(
         </div>
         <textarea id="s-sys" class="set-inp" rows="7" placeholder="输入系统提示词…"></textarea>
       </div>
+      </div><!-- /set-dev-sections -->
       <!-- 外观 -->
       <div class="set-section">
         <div class="set-sec-title">外观</div>
@@ -1739,6 +1801,7 @@ textarea.mf-inp{resize:vertical;line-height:1.55;font-size:12px;font-family:var(
 <!-- Toast -->
 <div class="toast" id="toast"></div>
 
+
 <script>
 /* ═══════════════════════════════════════════
    CONFIG
@@ -1898,11 +1961,11 @@ const MCP_MARKET = [
   },
   {
     id: 'metrics',
-    name: '指标字典',
+    name: '资产库',
     icon: '📐',
     category: '数据',
     type: 'local',
-    description: '电商指标字典，收录 35 个核心指标 × 8 个公共维度，覆盖用户、订单、商品、营销、物流、财务、流量 7 大域。支持指标搜索、元数据查询、模拟时序数据取数和维度拆解。',
+    description: '资产库，收录 35 个核心指标 × 8 个公共维度，覆盖用户、订单、商品、营销、物流、财务、流量 7 大域。支持指标搜索、元数据查询、模拟时序数据取数和维度拆解。',
     tools: [
       { name: 'search_metrics',    desc: '根据关键词找指标，返回相关度排序结果' },
       { name: 'get_metric_detail', desc: '获取指标计算口径、取数来源、可拆解维度等完整元数据' },
@@ -1917,7 +1980,7 @@ const MCP_MARKET = [
   },
   {
     id: 'catalog',
-    name: '数据资产目录',
+    name: '资产目录',
     icon: '🗂️',
     category: '数据',
     type: 'local',
@@ -1931,23 +1994,6 @@ const MCP_MARKET = [
     defaultHeaders: '',
     setupNote: '需先在本地启动服务器',
     setupCmd: 'cd mcp-catalog && node server.js',
-  },
-  {
-    id: 'weather',
-    name: '天气查询',
-    icon: '🌤',
-    category: '生活',
-    type: 'local',
-    description: '查询全球城市实时天气、多日预报及空气质量。基于 Open-Meteo 免费数据，无需注册或 API Key。',
-    tools: [
-      { name: 'get_current_weather', desc: '实时天气（温度/湿度/风/气压/能见度）' },
-      { name: 'get_weather_forecast', desc: '1~16 天预报（含 UV 指数）' },
-      { name: 'get_air_quality', desc: '空气质量（AQI/PM2.5/PM10/CO₂）' },
-    ],
-    defaultUrl: 'http://localhost:3456',
-    defaultHeaders: '',
-    setupNote: '需先在本地启动服务器',
-    setupCmd: 'cd mcp-weather && node server.js',
   },
 ];
 
@@ -3535,6 +3581,49 @@ function renderSparkline(values) {
   </svg>`;
 }
 
+// Render metric list card — for 取数指标 skill
+function renderMetricList(data) {
+  const CAT_DOTS = {'用户域':'#06b6d4','订单域':'#f59e0b','商品域':'#10b981','营销域':'#ec4899','物流域':'#8b5cf6','财务域':'#ef4444','流量域':'#3b82f6'};
+  const items = data.items || [];
+
+  const rows = items.map((item, i) => {
+    const rank = i + 1;
+    const dot = CAT_DOTS[item.category] || '#999';
+    const score = Math.max(0, Math.min(100, item.score || 0));
+    return `<div class="ml-item" onclick="window.open('metric-dict/index.html#search','_blank')">
+      <div class="ml-rank${rank <= 3 ? ' ml-rank-top' : ''}">${rank}</div>
+      <div class="ml-main">
+        <div class="ml-name-row">
+          <span class="ml-name">${esc(item.display_name || item.name)}</span>
+          <span class="ml-cat"><span class="ml-cat-dot" style="background:${dot}"></span>${esc(item.category)}</span>
+          <span class="ml-dir ${item.direction || 'up'}">${item.direction === 'down' ? '↓ 负向' : '↑ 正向'}</span>
+        </div>
+        <div class="ml-id">${esc(item.name)}</div>
+        ${item.description ? `<div class="ml-desc">${esc(item.description)}</div>` : ''}
+        <div class="ml-footer">
+          ${item.unit ? `<span class="ml-chip">${esc(item.unit)}</span>` : ''}
+          ${item.source_table ? `<span class="ml-chip">${esc(item.source_table)}</span>` : ''}
+          <span class="ml-open-hint">点击查看详情 →</span>
+        </div>
+      </div>
+      <div class="ml-score-col">
+        <div class="ml-score">${score}</div>
+        <div class="ml-score-bar-wrap"><div class="ml-score-bar" style="width:${score}%"></div></div>
+      </div>
+    </div>`;
+  }).join('');
+
+  const totalHtml = data.total != null ? `<span class="ml-total">共 ${data.total} 条</span>` : '';
+  const queryHtml = data.query
+    ? `<span class="dc-card-lbl">${esc(data.icon || '📐')} ${esc(data.title || '指标搜索')} · "${esc(data.query)}"</span>`
+    : `<span class="dc-card-lbl">${esc(data.icon || '📐')} ${esc(data.title || '指标搜索')}</span>`;
+
+  return `<div class="dc-card">
+    <div class="dc-card-hdr">${queryHtml}${totalHtml}</div>
+    <div class="ml-body">${rows}</div>
+  </div>`;
+}
+
 // Render asset list card
 function renderAssetList(data) {
   const items = data.items || [];
@@ -3542,7 +3631,7 @@ function renderAssetList(data) {
   const SENS_CLS  = { '机密': 'high', '高': 'high', '内部': 'mid', '中': 'mid', '公开': 'low', '低': 'low' };
   const STAT_CLS  = { '正常': 'prod', '生产': 'prod', '测试': 'test', '废弃': 'deprecated' };
 
-  const rows = items.map((item, i) => {
+  const renderItem = (item, i) => {
     const rank = i + 1;
     const layerCls = LAYER_CLS[item.layer] || 'ods';
     const sensCls  = SENS_CLS[item.sensitivity] || 'low';
@@ -3573,7 +3662,30 @@ function renderAssetList(data) {
         <div class="ac-score-bar-wrap"><div class="ac-score-bar" style="width:${scoreBar}%"></div></div>
       </div>
     </div>`;
-  }).join('');
+  };
+
+  const FOLD_THRESHOLD = 10;
+  const needsFold = items.length > FOLD_THRESHOLD;
+  const cardId = 'ac_' + Math.random().toString(36).slice(2, 8);
+
+  let bodyHtml;
+  if (needsFold) {
+    const visibleRows = items.slice(0, 3).map(renderItem).join('');
+    const hiddenRows  = items.slice(3).map((item, i) => renderItem(item, i + 3)).join('');
+    const extra = items.length - 3;
+    bodyHtml = `
+      <div>${visibleRows}</div>
+      <div id="${cardId}_more" style="display:none">${hiddenRows}</div>
+      <button class="ac-fold-btn" id="${cardId}_btn" onclick="
+        var m=document.getElementById('${cardId}_more');
+        var b=document.getElementById('${cardId}_btn');
+        var open=m.style.display!=='none';
+        m.style.display=open?'none':'';
+        b.innerHTML=open?'展开查看更多 ${extra} 条 ▾':'收起 ▴';
+      ">展开查看更多 ${extra} 条 ▾</button>`;
+  } else {
+    bodyHtml = items.map(renderItem).join('');
+  }
 
   const totalHtml = data.total != null
     ? `<span class="ac-total">共 ${data.total} 条</span>`
@@ -3584,7 +3696,7 @@ function renderAssetList(data) {
 
   return `<div class="dc-card">
     <div class="dc-card-hdr">${queryHtml}${totalHtml}</div>
-    <div class="ac-body">${rows}</div>
+    <div class="ac-body">${bodyHtml}</div>
   </div>`;
 }
 
@@ -3592,6 +3704,7 @@ function renderAssetList(data) {
 function renderDataCard(data) {
   if (!data) return '';
   if (data.type === 'asset_list') return renderAssetList(data);
+  if (data.type === 'metric_list') return renderMetricList(data);
   if (data.type !== 'metric_card') return '';
   const metrics = data.metrics || [];
   if (!metrics.length) return '';
@@ -5404,6 +5517,16 @@ function seedDefaultMCPServers() {
   });
   saveMCPServers(mcpServers);
 }
+
+
+/* ── 资产库下拉 ── */
+function toggleAssetLib(e) {
+  e.stopPropagation();
+  document.querySelector('.asset-lib-wrap').classList.toggle('open');
+}
+document.addEventListener('click', () => {
+  document.querySelector('.asset-lib-wrap')?.classList.remove('open');
+});
 
 seedDefaultMCPServers();
 init();
