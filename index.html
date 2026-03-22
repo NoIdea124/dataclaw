@@ -5263,8 +5263,10 @@ function seedDefaultMCPServers() {
 }
 
 function seedDefaultSkills() {
-  if (skills.length > 0) return; // 已有技能则不初始化
-  skills = [
+  const existingIds = new Set(skills.map(s => s.id));
+  // 全量初始化（首次）或补全缺失的默认技能（已有用户）
+  if (skills.length > 0 && existingIds.has('default_structured_analysis') && existingIds.has('default_data_query')) return;
+  const allDefaults = [
     {
       id: 'default_structured_analysis',
       name: '结构化问题分析',
@@ -5337,7 +5339,15 @@ function seedDefaultSkills() {
       ts: new Date().toISOString()
     }
   ];
-  saveSkills(skills);
+  // 补全缺失的默认技能，不覆盖已有技能
+  let changed = false;
+  allDefaults.forEach(def => {
+    if (!existingIds.has(def.id)) {
+      skills.push(def);
+      changed = true;
+    }
+  });
+  if (changed) saveSkills(skills);
 }
 
 seedDefaultSkills();
