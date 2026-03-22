@@ -47,18 +47,28 @@ function parseMD(content) {
     if (colon < 0) return;
     meta[line.slice(0, colon).trim()] = line.slice(colon + 1).trim();
   });
+  // 从正文中拆分出 "## 输出格式" 小节作为 output_template
+  const body = m[2].trim();
+  const outSecRe = /\n##\s+输出格式\s*\n([\s\S]*?)(?=\n##\s|$)/;
+  const outMatch = body.match(outSecRe);
+  const output_template = outMatch ? outMatch[1].trim() : null;
+  const instructions    = outMatch
+    ? body.replace(/\n##\s+输出格式[\s\S]*/, '').trim()
+    : body;
+
   const skill = {
     name:         meta.name        || '',
     trigger:      meta.trigger     || '',
     description:  meta.description || '',
     enabled:      meta.enabled !== 'false',
-    instructions: m[2].trim(),
+    instructions,
   };
-  if (meta.output_type) skill.output_type = meta.output_type;
+  if (meta.output_type)  skill.output_type     = meta.output_type;
+  if (output_template)   skill.output_template = output_template;
   return skill;
 }
 
-function buildMD({ name, trigger, description, enabled, output_type, instructions }) {
+function buildMD({ name, trigger, description, enabled, output_type, instructions, output_template }) {
   const lines = ['---'];
   if (name)        lines.push(`name: ${name}`);
   if (trigger)     lines.push(`trigger: ${trigger}`);
@@ -66,6 +76,7 @@ function buildMD({ name, trigger, description, enabled, output_type, instruction
   if (output_type) lines.push(`output_type: ${output_type}`);
   if (enabled === false) lines.push(`enabled: false`);
   lines.push('---', '', instructions || '');
+  if (output_template) lines.push('', '## 输出格式', '', output_template);
   return lines.join('\n');
 }
 
@@ -164,12 +175,13 @@ const server = http.createServer(async (req, res) => {
     const body = await readBody(req);
     const existing = parseMD(fs.readFileSync(filepath, 'utf8'));
     const merged = {
-      name:         body.name         ?? existing.name,
-      trigger:      body.trigger      ?? existing.trigger,
-      description:  body.description  ?? existing.description,
-      enabled:      body.enabled      ?? existing.enabled,
-      output_type:  body.output_type  ?? existing.output_type,
-      instructions: body.instructions ?? existing.instructions,
+      name:            body.name            ?? existing.name,
+      trigger:         body.trigger         ?? existing.trigger,
+      description:     body.description     ?? existing.description,
+      enabled:         body.enabled         ?? existing.enabled,
+      output_type:     body.output_type     ?? existing.output_type,
+      instructions:    body.instructions    ?? existing.instructions,
+      output_template: body.output_template ?? existing.output_template,
     };
     fs.writeFileSync(filepath, buildMD(merged), 'utf8');
     console.log(`[更新] ${filename}`);

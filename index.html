@@ -3379,10 +3379,10 @@ function buildSystemPrompt(query = '', forcedMentions = [], ragChunks = null) {
     }
   }
 
-  // 如果激活的技能声明了 output_type，注入结构化输出格式指令
+  // 如果激活的技能声明了 output_type，注入该技能自定义的输出格式指令
   const cardSkill = activeSkills.find(s => s.output_type);
-  if (cardSkill) {
-    prompt += `\n\n【结构化输出要求】\n在正常文字回复之后，必须紧跟一段 JSON 数据块，格式如下（不要加 markdown 代码块，直接输出标签）：\n<dataclaw-data>\n{\n  "type": "${cardSkill.output_type}",\n  "icon": "📊",\n  "title": "数据看板标题",\n  "metrics": [\n    { "label": "指标名", "value": "¥12,345", "delta": "+5.2%", "delta_positive": true }\n  ],\n  "chart": {\n    "title": "趋势图标题",\n    "labels": ["标签1", "标签2"],\n    "values": [1000, 2000]\n  }\n}\n</dataclaw-data>\n请用实际查询到的数据填充，确保 JSON 严格合法。`;
+  if (cardSkill && cardSkill.output_template) {
+    prompt += `\n\n【结构化输出要求】\n${cardSkill.output_template}`;
   }
 
   // 用户手动 @ 指定的 MCP 工具
