@@ -844,6 +844,21 @@ textarea.mf-inp{resize:vertical;line-height:1.55;font-size:12px;font-family:var(
 .mcp-call-status.done{color:#22c55e;border-color:rgba(34,197,94,.3);background:rgba(34,197,94,.06)}
 .mcp-call-status.error{color:#ef4444;border-color:rgba(239,68,68,.3);background:rgba(239,68,68,.06)}
 .mcp-call-result{margin-top:5px;font-size:11px;font-family:var(--mono);color:var(--tx2);line-height:1.5;white-space:pre-wrap;word-break:break-all;max-height:80px;overflow-y:auto}
+/* ── Think block (折叠思考过程) ── */
+.think-block{margin-bottom:10px;border:1px solid var(--border);border-radius:var(--r-sm);overflow:hidden}
+.think-hdr{display:flex;align-items:center;gap:7px;padding:7px 11px;cursor:pointer;background:var(--bg-hover);user-select:none;transition:background var(--t)}
+.think-hdr:hover{background:var(--border)}
+.think-spinner{width:8px;height:8px;border:1.5px solid var(--border-med);border-top-color:var(--tx2);border-radius:50%;animation:spin .8s linear infinite;flex-shrink:0}
+.think-block.done .think-spinner{display:none}
+.think-label{flex:1;font-weight:500;color:var(--tx2);font-size:12px}
+.think-chevron{font-size:11px;color:var(--txm);transition:transform .2s;display:inline-block;line-height:1}
+.think-block.open .think-chevron{transform:rotate(90deg)}
+.think-body{display:none;border-top:1px solid var(--border)}
+.think-block.open .think-body{display:block}
+.think-body .mcp-call-block{margin:0;border:none;border-radius:0;border-bottom:1px solid var(--border)}
+.think-body .mcp-call-block:last-child{border-bottom:none}
+.msg-text:empty{display:none}
+@keyframes spin{to{transform:rotate(360deg)}}
 
 
 /* ════════════════════════════════════════
@@ -1812,6 +1827,23 @@ const taskTimers = {}; // id -> intervalId | timeoutId
 
 const MCP_MARKET = [
   {
+    id: 'feishu',
+    name: '飞书文档',
+    icon: '📄',
+    category: '效率',
+    type: 'local',
+    description: '在飞书中创建文档并写入内容。支持标题、正文、列表、代码块、分割线等富文本格式，AI 可直接生成并保存文档。',
+    tools: [
+      { name: 'create_document', desc: '创建新文档，返回文档 ID 和链接' },
+      { name: 'write_content',   desc: '向文档追加内容块（标题/正文/列表/代码等）' },
+      { name: 'get_document_info', desc: '查询文档标题、版本和链接' },
+    ],
+    defaultUrl: 'http://localhost:3461',
+    defaultHeaders: '',
+    setupNote: '需先在本地启动服务器',
+    setupCmd: 'cd mcp-feishu && node server.js',
+  },
+  {
     id: 'weather',
     name: '天气查询',
     icon: '🌤',
@@ -1827,106 +1859,6 @@ const MCP_MARKET = [
     defaultHeaders: '',
     setupNote: '需先在本地启动服务器',
     setupCmd: 'cd mcp-weather && node server.js',
-  },
-  {
-    id: 'docs',
-    name: '文档助手',
-    icon: '📄',
-    category: '效率',
-    type: 'local',
-    description: '让 AI 生成精美 HTML 文档并保存到本地，支持在网页内直接点击打开。适合报告、分析、教程等场景。',
-    tools: [
-      { name: 'save_document', desc: '保存 HTML 文档到本地' },
-      { name: 'list_documents', desc: '列出所有已保存文档' },
-      { name: 'open_document', desc: '在浏览器中打开文档' },
-      { name: 'delete_document', desc: '删除指定文档' },
-    ],
-    defaultUrl: 'http://localhost:3457',
-    defaultHeaders: '',
-    setupNote: '需先在本地启动服务器',
-    setupCmd: 'cd mcp-docs && node server.js',
-  },
-  {
-    id: 'filesystem',
-    name: '文件系统',
-    icon: '📁',
-    category: '效率',
-    type: 'local',
-    description: '读写本地文件、列出目录、搜索文件内容。需配合官方 MCP Filesystem Server 使用。',
-    tools: [
-      { name: 'read_file', desc: '读取文件内容' },
-      { name: 'write_file', desc: '写入文件' },
-      { name: 'list_directory', desc: '列出目录' },
-      { name: 'search_files', desc: '搜索文件' },
-    ],
-    defaultUrl: 'http://localhost:3001',
-    defaultHeaders: '',
-    setupNote: '使用官方 MCP Filesystem Server',
-    setupCmd: 'npx @modelcontextprotocol/server-filesystem /path/to/dir',
-    comingSoon: false,
-  },
-  {
-    id: 'brave-search',
-    name: '网页搜索',
-    icon: '🔍',
-    category: '搜索',
-    type: 'remote',
-    description: '通过 Brave Search API 实时搜索互联网内容，获取最新新闻和网页信息。需要 Brave API Key。',
-    tools: [
-      { name: 'brave_web_search', desc: '互联网搜索' },
-      { name: 'brave_local_search', desc: '本地信息搜索' },
-    ],
-    defaultUrl: 'http://localhost:3002',
-    defaultHeaders: '{"X-API-Key": "your-brave-api-key"}',
-    setupNote: '需要 Brave Search API Key',
-    setupCmd: 'BRAVE_API_KEY=xxx npx @modelcontextprotocol/server-brave-search',
-    comingSoon: false,
-  },
-  {
-    id: 'github',
-    name: 'GitHub',
-    icon: '🐙',
-    category: '开发',
-    type: 'remote',
-    description: '操作 GitHub 仓库：读取代码、创建 Issue、查看 PR、搜索代码库。需要 Personal Access Token。',
-    tools: [
-      { name: 'search_repositories', desc: '搜索仓库' },
-      { name: 'get_file_contents', desc: '读取文件' },
-      { name: 'create_issue', desc: '创建 Issue' },
-    ],
-    defaultUrl: 'http://localhost:3003',
-    defaultHeaders: '{"Authorization": "Bearer ghp_your_token"}',
-    setupNote: '需要 GitHub Personal Access Token',
-    setupCmd: 'GITHUB_TOKEN=xxx npx @modelcontextprotocol/server-github',
-    comingSoon: false,
-  },
-  {
-    id: 'sqlite',
-    name: 'SQLite 数据库',
-    icon: '🗄️',
-    category: '数据',
-    type: 'local',
-    description: '连接本地 SQLite 数据库，执行 SQL 查询、查看表结构、分析数据。无需额外配置。',
-    tools: [
-      { name: 'query', desc: '执行 SQL 查询' },
-      { name: 'list_tables', desc: '查看所有表' },
-      { name: 'describe_table', desc: '查看表结构' },
-    ],
-    defaultUrl: 'http://localhost:3004',
-    defaultHeaders: '',
-    setupNote: '指定数据库文件路径',
-    setupCmd: 'npx @modelcontextprotocol/server-sqlite /path/to/db.sqlite',
-    comingSoon: false,
-  },
-  {
-    id: 'custom-placeholder',
-    name: '更多即将推出',
-    icon: '✨',
-    category: '',
-    type: 'placeholder',
-    description: '更多 MCP 服务器（Slack、Notion、PostgreSQL、Puppeteer 等）即将上线，敬请期待。',
-    tools: [],
-    comingSoon: true,
   },
 ];
 
@@ -2176,7 +2108,8 @@ function populateSearchForm() {
 
 function getMCPTools() {
   const arr = [];
-  // 联网搜索已改为发送前预检索，不再作为工具调用
+  const searchTool = getSearchTool();
+  if (searchTool) arr.push(searchTool);
   // External knowledge base tools (filtered by user selection)
   for (const t of kbServerTools) {
     const kbId = KB_TOOL_SOURCE_MAP[t.name];
@@ -2294,7 +2227,16 @@ function appendToolCallUI(bubble, fnName) {
     <span class="mcp-call-status running" id="${callId}-s">执行中…</span>
   </div>
   <div class="mcp-call-result" id="${callId}-r" style="display:none"></div>`;
-  bubble.appendChild(el);
+  const thinkBody  = document.getElementById('sb-think-body');
+  const thinkBlock = document.getElementById('sb-think');
+  if (thinkBlock) {
+    thinkBlock.style.display = '';
+    thinkBlock.classList.add('open');
+    const count = (thinkBody ? thinkBody.querySelectorAll('.mcp-call-block').length : 0) + 1;
+    const lbl = document.getElementById('sb-think-label');
+    if (lbl) lbl.textContent = `思考中…（${count} 步）`;
+  }
+  (thinkBody || bubble).appendChild(el);
   scrollBot();
   return callId;
 }
@@ -3636,6 +3578,11 @@ function updateThemeIcons(t) {
    MARKED
 ═══════════════════════════════════════════ */
 const rdr = new marked.Renderer();
+rdr.link = (token) => {
+  const href = typeof token === 'object' ? (token.href ?? '') : String(token ?? '');
+  const text  = typeof token === 'object' ? (token.text ?? href) : String(arguments[1] ?? href);
+  return `<a href="${esc(href)}" target="_blank" rel="noopener noreferrer">${text}</a>`;
+};
 rdr.code = (token, lang) => {
   // marked v5+ passes a token object {text, lang}; v4 passes (code, lang) strings
   const code = typeof token === 'object' ? (token.text ?? '') : String(token ?? '');
@@ -3771,6 +3718,31 @@ function makeMsgEl(msg, animate=true) {
     : renderMd(msg.content);
   const aiExtra = !isUser ? `
     <button class="mact" onclick="regen()">重新生成</button>` : '';
+
+  // 渲染历史思考块
+  let thinkHtml = '';
+  if (!isUser && msg.thinkSteps?.length) {
+    const count = msg.thinkSteps.length;
+    const stepsHtml = msg.thinkSteps.map(s => {
+      const rs = s.result.slice(0, 400) + (s.result.length > 400 ? '\n…' : '');
+      return `<div class="mcp-call-block">
+        <div class="mcp-call-row">
+          <span class="mcp-call-icon"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg></span>
+          <span class="mcp-call-name">${esc(s.label || s.name)}</span>
+          <span class="mcp-call-status ${s.ok === false ? 'error' : 'done'}">${s.ok === false ? '失败' : '完成'}</span>
+        </div>
+        <div class="mcp-call-result">${esc(rs)}</div>
+      </div>`;
+    }).join('');
+    thinkHtml = `<div class="think-block done">
+      <div class="think-hdr" onclick="toggleThink(this.closest('.think-block'))">
+        <span class="think-label">查看过程（${count} 步）</span>
+        <span class="think-chevron">›</span>
+      </div>
+      <div class="think-body">${stepsHtml}</div>
+    </div>`;
+  }
+
   div.innerHTML = `
     <div class="ava ${isUser?'user':'ai'}">${isUser?'U':'DC'}</div>
     <div class="mbody">
@@ -3778,7 +3750,7 @@ function makeMsgEl(msg, animate=true) {
         <span class="mauthor">${isUser?'You':'DataClaw'}</span>
         <span class="mtime">${fmtTime(msg.ts)}</span>
       </div>
-      <div class="bubble">${imgHtml}${content}</div>
+      <div class="bubble">${imgHtml}${thinkHtml}<div class="msg-text">${content}</div></div>
       <div class="macts">
         ${aiExtra}
       </div>
@@ -3789,14 +3761,45 @@ function makeMsgEl(msg, animate=true) {
 function addStreamBubble() {
   document.getElementById('sm')?.remove();
   const div = document.createElement('div'); div.className = 'msg ai'; div.id = 'sm';
-  div.innerHTML = `<div class="ava ai">DC</div><div class="mbody"><div class="mhead"><span class="mauthor">DataClaw</span><span class="mtime">${fmtTime(new Date().toISOString())}</span></div><div class="bubble" id="sb"><div class="tdots"><div class="td"></div><div class="td"></div><div class="td"></div></div></div></div>`;
+  div.innerHTML = `<div class="ava ai">DC</div><div class="mbody"><div class="mhead"><span class="mauthor">DataClaw</span><span class="mtime">${fmtTime(new Date().toISOString())}</span></div><div class="bubble" id="sb">
+    <div class="think-block" id="sb-think" style="display:none">
+      <div class="think-hdr" onclick="toggleThink(this.closest('.think-block'))">
+        <span class="think-spinner"></span>
+        <span class="think-label" id="sb-think-label">思考中…</span>
+        <span class="think-chevron">›</span>
+      </div>
+      <div class="think-body" id="sb-think-body"></div>
+    </div>
+    <div class="msg-text" id="sb-text"><div class="tdots"><div class="td"></div><div class="td"></div><div class="td"></div></div></div>
+  </div></div>`;
   document.getElementById('msgs').appendChild(div); scrollBot();
   return document.getElementById('sb');
 }
 
+function toggleThink(el) {
+  el.classList.toggle('open');
+}
+
 function finalStream(bubble, text) {
-  bubble.innerHTML = renderMd(text);
-  bubble.removeAttribute('id'); // 清除 id="sb"，防止下次 getElementById('sb') 返回旧元素
+  // 更新 think-block 为折叠完成状态
+  const thinkBlock = bubble.querySelector('.think-block');
+  if (thinkBlock && thinkBlock.style.display !== 'none') {
+    thinkBlock.classList.remove('open');
+    thinkBlock.classList.add('done');
+    const count = thinkBlock.querySelectorAll('.mcp-call-block').length;
+    const lbl = thinkBlock.querySelector('.think-label');
+    if (lbl) lbl.textContent = `查看过程（${count} 步）`;
+  }
+  // 渲染最终回复到 msg-text
+  const textEl = bubble.querySelector('.msg-text') || bubble;
+  textEl.innerHTML = renderMd(text);
+
+  // 清除所有子元素 ID，防止被下一条消息的 getElementById 找到旧气泡
+  bubble.querySelector('#sb-think')?.removeAttribute('id');
+  bubble.querySelector('#sb-think-body')?.removeAttribute('id');
+  bubble.querySelector('#sb-think-label')?.removeAttribute('id');
+  bubble.querySelector('#sb-text')?.removeAttribute('id');
+  bubble.removeAttribute('id'); // 清除 id="sb"
 
   const body = bubble.closest('.mbody');
   if (body && !body.querySelector('.macts')) {
@@ -3941,21 +3944,6 @@ async function callAPI(imageItems = [], forcedMentions = []) {
 
   const qaTask = addQATask(query);
 
-  // Pre-search: 联网搜索先于 AI 调用，将结果作为参考资料注入
-  let searchContext = null;
-  if (C.searchEnabled && C.searchKey && query.trim()) {
-    setStatus('联网搜索中…', 'warn');
-    const searchCallId = appendToolCallUI(bubble, '__builtin_web_search');
-    try {
-      searchContext = await executeWebSearch(query);
-      updateToolCallUI(searchCallId, searchContext, false);
-    } catch(e) {
-      updateToolCallUI(searchCallId, 'Error: ' + e.message, true);
-      toast('联网搜索失败：' + e.message, 'error');
-    }
-    setStatus('生成中…', 'warn');
-  }
-
   // RAG: async vector retrieval before building system prompt
   let ragChunks = null;
   if (C.ragEnabled && C.key && query.trim()) {
@@ -3964,19 +3952,6 @@ async function callAPI(imageItems = [], forcedMentions = []) {
   }
 
   let messages = [{ role:'system', content:buildSystemPrompt(query, forcedMentions, ragChunks) }, ...ctx];
-
-  // 将搜索结果注入最后一条用户消息
-  if (searchContext) {
-    const last = messages[messages.length - 1];
-    if (last && last.role === 'user') {
-      const extra = `\n\n---\n以下是联网搜索获取的参考资料，请结合这些内容进行回答：\n\n${searchContext}`;
-      if (typeof last.content === 'string') {
-        last.content += extra;
-      } else if (Array.isArray(last.content)) {
-        last.content[0].text += extra;
-      }
-    }
-  }
 
   // Inject images into last user message for vision models
   if (imageItems.length) {
@@ -3992,6 +3967,8 @@ async function callAPI(imageItems = [], forcedMentions = []) {
 
   try {
     let loopIter = 0;
+    const feishuLinks = []; // 收集飞书工具返回的文档链接
+    const thinkSteps = []; // 记录每步工具调用，保存到消息历史
     while (loopIter++ < 8) {
       const reqBody = { model:C.model, messages, max_tokens:C.maxTok, temperature:C.temp, stream:true };
       if (mcpTools.length) reqBody.tools = mcpTools;
@@ -4020,7 +3997,7 @@ async function callAPI(imageItems = [], forcedMentions = []) {
             if (!choice) continue;
             if (choice.delta?.content) {
               full += choice.delta.content;
-              bubble.innerHTML = renderMd(full) + '<span class="cur"></span>';
+              (document.getElementById('sb-text') || bubble).innerHTML = renderMd(full) + '<span class="cur"></span>';
               scrollBot();
             }
             if (choice.delta?.tool_calls) {
@@ -4061,6 +4038,15 @@ async function callAPI(imageItems = [], forcedMentions = []) {
             qaToolEntry.ok = false;
             toast(`工具调用失败：${e.message}`, 'error');
           }
+          // 记录思考步骤
+          const resolved2 = resolveMCPTool(fnName);
+          const stepLabel = fnName === '__builtin_web_search' ? '联网搜索'
+            : fnName.startsWith('__kb_') ? ('知识库 · ' + fnName.slice(5))
+            : (resolved2 ? `${resolved2.server.name} · ${resolved2.toolName}` : fnName);
+          thinkSteps.push({ name: fnName, label: stepLabel, result: String(result ?? ''), ok: qaToolEntry.ok });
+          // 提取飞书文档链接
+          const fMatches = String(result).match(/https:\/\/feishu\.cn\/docx\/\w+/g);
+          if (fMatches) feishuLinks.push(...fMatches);
           messages.push({ role:'tool', content: result, tool_call_id: tc.id });
         }
         full = ''; // reset for next text turn
@@ -4071,6 +4057,14 @@ async function callAPI(imageItems = [], forcedMentions = []) {
       break; // normal finish_reason (stop / null / length)
     }
     if (loopIter > 8 && !full) full = '⚠️ 工具调用次数超过上限，已自动终止。';
+
+    // 确保飞书文档链接出现在最终回复中
+    if (feishuLinks.length) {
+      const missing = [...new Set(feishuLinks)].filter(url => !full.includes(url));
+      if (missing.length) {
+        full += '\n\n' + missing.map(url => `👉 [点击打开飞书文档](${url})`).join('\n');
+      }
+    }
 
     // Parse memory + task + plan tags from final response
     const { cleaned: memCleaned, extracted: memExtracted } = parseMemoryFromResponse(full);
@@ -4100,6 +4094,7 @@ async function callAPI(imageItems = [], forcedMentions = []) {
     }
 
     const aiMsg = { role:'assistant', content:displayText, ts:new Date().toISOString() };
+    if (thinkSteps.length) aiMsg.thinkSteps = thinkSteps;
     allMsgs.push(aiMsg); saveMsgs(allMsgs);
     finalStream(bubble, displayText);
     setStatus('已就绪','ok');
@@ -4112,6 +4107,7 @@ async function callAPI(imageItems = [], forcedMentions = []) {
         const { cleaned: tc } = parseTasksFromResponse(mc || full);
         const abortText = tc || mc || full;
         const aiMsg = { role:'assistant', content:abortText, ts:new Date().toISOString() };
+        if (thinkSteps.length) aiMsg.thinkSteps = thinkSteps;
         allMsgs.push(aiMsg); saveMsgs(allMsgs);
         finalStream(bubble, abortText);
       } else {

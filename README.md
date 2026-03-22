@@ -4,11 +4,13 @@
 
 ## 功能特性
 
-- **联网搜索** — 发问前自动检索，将实时结果作为参考资料注入上下文（支持 Tavily / Serper / Brave）
+- **联网搜索** — 发问前 AI 自主决策是否检索，将实时结果注入上下文（支持 Tavily / Serper / Brave）
 - **长短期记忆** — AI 自动提炼或手动添加记忆条目，跨会话持久化，语义检索注入上下文
 - **技能系统** — 通过 `@` 触发预定义技能，支持自定义技能文件（Markdown 格式）
 - **外联知识库** — 接入 Wikipedia、PubMed、arXiv、Semantic Scholar、SEC EDGAR、World Bank、CourtListener
-- **MCP 工具调用** — 支持任意 MCP 服务（JSON-RPC 2.0），自动工具循环调用
+- **MCP 工具调用** — 支持任意 MCP 服务（JSON-RPC 2.0），自动工具循环调用，最多 8 轮
+- **飞书文档** — 通过 MCP 服务直接创建并写入飞书文档，生成后可一键打开
+- **思考过程展示** — 每条回复气泡内置可折叠思考模块，记录工具调用全过程，支持历史查看
 - **复杂任务规划** — AI 分解多步计划，支持顺序/并行执行，HTTP·代码·AI 三种步骤类型
 - **多模态上传** — 支持图片视觉问答、TXT/MD/CSV 等文档内容询问
 - **流式渲染** — SSE 实时输出，Markdown 代码高亮，思考链折叠展示
@@ -28,6 +30,9 @@ dataclaw/
 ├── mcp-knowledge/      # 外联知识库 MCP 服务 (端口 3459)
 │   ├── server.js
 │   └── package.json
+├── mcp-feishu/         # 飞书文档 MCP 服务 (端口 3461)
+│   ├── server.js
+│   └── package.json
 └── skills/             # 技能文件目录
     ├── 代码审查.md
     └── 数据分析.md
@@ -41,6 +46,7 @@ dataclaw/
 node mcp-weather/server.js &
 node mcp-skills/server.js &
 node mcp-knowledge/server.js &
+node mcp-feishu/server.js &
 ```
 
 **2. 启动前端**
@@ -58,6 +64,7 @@ python3 -m http.server 8080
 | mcp-weather | 3456 | 当前天气、天气预报、空气质量（Open-Meteo，无需 Key）|
 | mcp-skills | 3458 | 技能文件 CRUD REST API |
 | mcp-knowledge | 3459 | 学术/财经/法律等 7 个外联知识库检索 |
+| mcp-feishu | 3461 | 飞书文档创建、内容写入、文档信息查询 |
 
 ## 配置说明
 
@@ -70,7 +77,7 @@ python3 -m http.server 8080
 
 ### 开发者模式
 
-在设置面板开启"开发者模式"后可配置：
+在设置面板开启「开发者模式」后可配置：
 
 - **API Key** — 兼容 OpenAI 格式的任意服务商
 - **Base URL** — 默认 `https://api.deepseek.com/v1/chat/completions`
@@ -80,7 +87,7 @@ python3 -m http.server 8080
 
 ### 联网搜索
 
-提问框左侧"联网"按钮可一键开启/关闭。开启后每次提问会先检索，结果作为参考资料传给 AI。
+提问框左侧「联网」按钮可一键开启/关闭。开启后 AI 自主决策是否检索，结果作为参考资料传入上下文。
 
 默认使用 Tavily，可在「开发者模式 → 搜索」中切换引擎和配置 Key：
 
@@ -89,6 +96,14 @@ python3 -m http.server 8080
 | Tavily | 1000 次/月 · tavily.com |
 | Serper | 2500 次/月 · serper.dev |
 | Brave | 2000 次/月 · api.search.brave.com |
+
+### 飞书文档
+
+在「设置 → MCP」中添加飞书服务后，AI 可自动创建和写入飞书文档：
+
+1. 启动 `node mcp-feishu/server.js`
+2. 在 MCP 设置中添加：名称 `飞书文档`，URL `http://localhost:3461`
+3. 对话中指示 AI 创建飞书文档，完成后点击链接直接打开
 
 ## 技能文件格式
 

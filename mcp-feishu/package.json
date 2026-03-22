@@ -1,0 +1,12 @@
+{
+  "name": "dataclaw-feishu-mcp",
+  "version": "1.0.0",
+  "description": "DataClaw 飞书文档 MCP 服务器 — 创建并写入飞书文档",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=14"
+  }
+}
