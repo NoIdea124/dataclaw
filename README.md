@@ -33,6 +33,9 @@ dataclaw/
 ├── mcp-feishu/         # 飞书文档 MCP 服务 (端口 3461)
 │   ├── server.js
 │   └── package.json
+├── mcp-database/       # 模拟订单数据库 MCP 服务 (端口 3462)
+│   ├── server.js
+│   └── package.json
 └── skills/             # 技能文件目录
     ├── 代码审查.md
     └── 数据分析.md
@@ -47,6 +50,7 @@ node mcp-weather/server.js &
 node mcp-skills/server.js &
 node mcp-knowledge/server.js &
 node mcp-feishu/server.js &
+node mcp-database/server.js &
 ```
 
 **2. 启动前端**
@@ -65,6 +69,7 @@ python3 -m http.server 8080
 | mcp-skills | 3458 | 技能文件 CRUD REST API |
 | mcp-knowledge | 3459 | 学术/财经/法律等 7 个外联知识库检索 |
 | mcp-feishu | 3461 | 飞书文档创建、内容写入、文档信息查询 |
+| mcp-database | 3462 | 模拟订单数据库（1000条/全年），支持多维过滤查询与聚合分析 |
 
 ## 配置说明
 

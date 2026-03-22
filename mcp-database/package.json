@@ -1,0 +1,12 @@
+{
+  "name": "dataclaw-database-mcp",
+  "version": "1.0.0",
+  "description": "DataClaw 模拟订单数据库 MCP 服务器 — 1000条订单明细查询与分析",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=14"
+  }
+}
