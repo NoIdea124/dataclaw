@@ -200,7 +200,7 @@ function queryOrders(args) {
 // 2. 聚合分析
 function aggregateOrders(args) {
   const { group_by, metric = 'count', date_from, date_to, status, region, category, channel } = args;
-  const VALID_GROUP = ['status', 'region', 'category', 'payment', 'channel', 'city', 'month'];
+  const VALID_GROUP = ['status', 'region', 'category', 'payment', 'channel', 'city', 'month', 'day'];
   if (!group_by || !VALID_GROUP.includes(group_by)) {
     return `group_by 必须是以下之一：${VALID_GROUP.join(' / ')}`;
   }
@@ -209,7 +209,9 @@ function aggregateOrders(args) {
 
   const buckets = {};
   for (const r of filtered) {
-    const key = group_by === 'month' ? r.created_at.slice(0, 7) : r[group_by];
+    const key = group_by === 'month' ? r.created_at.slice(0, 7)
+              : group_by === 'day'   ? r.created_at
+              : r[group_by];
     if (!buckets[key]) buckets[key] = { count: 0, sum: 0 };
     buckets[key].count++;
     buckets[key].sum += r.amount;
@@ -220,8 +222,9 @@ function aggregateOrders(args) {
     return { [group_by]: k, 订单数: v.count, 总金额: v.sum.toFixed(2), 均单价: avg };
   });
 
-  // 排序
-  if (metric === 'count') rows.sort((a, b) => b['订单数'] - a['订单数']);
+  // day/month 按日期升序，其余按指标降序
+  if (group_by === 'day' || group_by === 'month') rows.sort((a, b) => a[group_by] < b[group_by] ? -1 : 1);
+  else if (metric === 'count') rows.sort((a, b) => b['订单数'] - a['订单数']);
   else rows.sort((a, b) => parseFloat(b['总金额']) - parseFloat(a['总金额']));
 
   const cols = [group_by, '订单数', '总金额', '均单价'];
@@ -324,8 +327,8 @@ const TOOLS = [
       properties: {
         group_by: {
           type: 'string',
-          enum: ['status', 'region', 'category', 'payment', 'channel', 'city', 'month'],
-          description: '分组维度：status=订单状态, region=区域, category=类目, payment=支付方式, channel=渠道, city=城市, month=月份',
+          enum: ['status', 'region', 'category', 'payment', 'channel', 'city', 'month', 'day'],
+          description: '分组维度：status=订单状态, region=区域, category=类目, payment=支付方式, channel=渠道, city=城市, month=月份, day=每天',
         },
         metric: {
           type: 'string',

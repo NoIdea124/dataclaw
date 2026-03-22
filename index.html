@@ -3507,7 +3507,16 @@ function renderDataCard(data) {
     let chartHtml = '';
     const ch = m.chart;
     if (ch && ch.values && ch.values.length > 1) {
-      const xlabels = (ch.labels || []).map(l =>
+      // 稀疏化 x 轴标签：超过 10 个时均匀抽取 ~6 个显示，其余留空
+      const allLabels = ch.labels || [];
+      const n = allLabels.length;
+      let shownLabels = allLabels;
+      if (n > 10) {
+        const step = Math.ceil(n / 5);
+        shownLabels = allLabels.map((l, i) =>
+          (i === 0 || i === n - 1 || i % step === 0) ? l : '');
+      }
+      const xlabels = shownLabels.map(l =>
         `<span class="dc-xlabel">${esc(String(l))}</span>`).join('');
       chartHtml = `<div class="dc-chart-area">
         ${ch.title ? `<div class="dc-chart-title-sm">${esc(ch.title)}</div>` : ''}
