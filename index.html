@@ -1897,23 +1897,23 @@ const MCP_MARKET = [
     setupCmd: 'cd mcp-feishu && node server.js',
   },
   {
-    id: 'database',
-    name: '订单数据库',
-    icon: '🗄️',
+    id: 'metrics',
+    name: '指标字典',
+    icon: '📐',
     category: '数据',
     type: 'local',
-    description: '内置 1000 条 2024 全年模拟订单数据，覆盖 5 大商品类目、5 大区域。支持多维过滤查询、分组聚合分析（按月/渠道/区域等），适合数据分析类问答。',
+    description: '电商指标字典，收录 35 个核心指标 × 8 个公共维度，覆盖用户、订单、商品、营销、物流、财务、流量 7 大域。支持指标搜索、元数据查询、模拟时序数据取数和维度拆解。',
     tools: [
-      { name: 'get_schema',       desc: '查看表结构和字段说明' },
-      { name: 'get_summary',      desc: '整体统计摘要（总量/总额/状态分布）' },
-      { name: 'query_orders',     desc: '多维过滤查询订单明细（12 个条件 + 分页）' },
-      { name: 'aggregate_orders', desc: '分组聚合分析（按状态/区域/类目/渠道/月份）' },
-      { name: 'get_order_detail', desc: '按订单号查完整信息' },
+      { name: 'search_metrics',    desc: '根据关键词找指标，返回相关度排序结果' },
+      { name: 'get_metric_detail', desc: '获取指标计算口径、取数来源、可拆解维度等完整元数据' },
+      { name: 'get_metric_data',   desc: '按日期范围或维度拆解查询指标数据（模拟数据）' },
+      { name: 'list_dimensions',   desc: '查看指标可用维度或全部维度定义' },
+      { name: 'list_categories',   desc: '指标分类统计概览' },
     ],
-    defaultUrl: 'http://localhost:3462',
+    defaultUrl: 'http://localhost:3464',
     defaultHeaders: '',
     setupNote: '需先在本地启动服务器',
-    setupCmd: 'cd mcp-database && node server.js',
+    setupCmd: 'cd mcp-metrics && node server.js',
   },
   {
     id: 'catalog',
@@ -5385,7 +5385,7 @@ function saveKBForm() {
 function seedDefaultMCPServers() {
   // 仅在从未添加过任何 MCP 服务时执行（首次使用）
   if (mcpServers.length > 0) return;
-  const defaults = ['feishu', 'database'];
+  const defaults = ['feishu'];
   defaults.forEach(marketId => {
     const item = MCP_MARKET.find(m => m.id === marketId);
     if (!item) return;

@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>指标字典</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0d0f16;--bg2:#13161f;--bg3:#1a1d28;--bg4:#21263a;
+  --border:#272b3d;--border2:#323754;
+  --tx:#e8eaf6;--tx2:#a0a8c8;--txm:#6b7494;--txd:#3d4260;
+  --acc:#6366f1;--acc2:#818cf8;
+  --r:8px;--r-sm:5px;
+  --mono:'JetBrains Mono','Fira Mono','Consolas',monospace;
+  --sans:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Hiragino Sans GB',sans-serif;
+  --sh:0 2px 12px rgba(0,0,0,.4);
+  --ease:cubic-bezier(.4,0,.2,1);
+  --t:.18s;
+  /* category colors */
+  --c-user:#06b6d4;--c-order:#f59e0b;--c-product:#10b981;
+  --c-marketing:#ec4899;--c-logistics:#8b5cf6;--c-finance:#ef4444;--c-traffic:#3b82f6;
+}
+html,body{height:100%;overflow:hidden}
+body{background:var(--bg);color:var(--tx);font-family:var(--sans);font-size:13px;line-height:1.5;display:flex;flex-direction:column}
+
+/* ── Header ── */
+.hdr{display:flex;align-items:center;gap:16px;padding:0 20px;height:52px;border-bottom:1px solid var(--border);background:var(--bg2);flex-shrink:0}
+.hdr-logo{font-size:15px;font-weight:700;color:var(--tx);letter-spacing:-.3px;white-space:nowrap}
+.hdr-logo span{color:var(--acc)}
+.hdr-search{flex:1;max-width:420px;position:relative}
+.hdr-search input{width:100%;height:32px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-sm);padding:0 12px 0 32px;color:var(--tx);font-size:12.5px;outline:none;transition:border-color var(--t)}
+.hdr-search input:focus{border-color:var(--border2)}
+.hdr-search input::placeholder{color:var(--txm)}
+.hdr-search-ico{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--txm);pointer-events:none;font-size:13px}
+.hdr-count{font-size:11.5px;color:var(--txm);margin-left:auto;white-space:nowrap}
+.hdr-tabs{display:flex;gap:4px;margin-left:16px}
+.hdr-tab{padding:5px 12px;border-radius:var(--r-sm);border:1px solid transparent;font-size:12px;font-weight:500;cursor:pointer;color:var(--tx2);transition:all var(--t);background:none}
+.hdr-tab:hover{background:var(--bg3);color:var(--tx)}
+.hdr-tab.active{background:var(--acc);color:#fff;border-color:var(--acc)}
+
+/* ── Layout ── */
+.layout{display:flex;flex:1;overflow:hidden}
+
+/* ── Sidebar ── */
+.sidebar{width:168px;flex-shrink:0;border-right:1px solid var(--border);overflow-y:auto;padding:12px 8px;background:var(--bg2)}
+.sidebar::-webkit-scrollbar{width:4px}
+.sidebar::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+.sidebar-section{margin-bottom:4px}
+.sidebar-title{font-size:10px;font-weight:600;color:var(--txd);letter-spacing:.6px;text-transform:uppercase;padding:8px 8px 4px}
+.cat-btn{display:flex;align-items:center;justify-content:space-between;width:100%;padding:6px 9px;border-radius:var(--r-sm);border:none;background:none;cursor:pointer;color:var(--tx2);font-size:12px;font-weight:500;transition:all var(--t);text-align:left}
+.cat-btn:hover{background:var(--bg3);color:var(--tx)}
+.cat-btn.active{background:var(--bg4);color:var(--tx)}
+.cat-btn .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-right:7px}
+.cat-btn .cnt{font-size:10.5px;color:var(--txm);font-family:var(--mono);margin-left:auto}
+.cat-btn.active .cnt{color:var(--acc2)}
+
+/* ── Main ── */
+.main{flex:1;overflow-y:auto;padding:16px 20px}
+.main::-webkit-scrollbar{width:6px}
+.main::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+
+/* ── Metric Card ── */
+.mc{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:14px 15px;cursor:pointer;transition:border-color var(--t),background var(--t),transform .12s var(--ease);position:relative;overflow:hidden}
+.mc::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,transparent 60%,rgba(99,102,241,.04));pointer-events:none}
+.mc:hover{border-color:var(--border2);background:var(--bg4);transform:translateY(-1px)}
+.mc.active{border-color:var(--acc);background:var(--bg4)}
+.mc-top{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.mc-cat{font-size:10px;font-weight:700;letter-spacing:.4px;padding:2px 7px;border-radius:3px;flex-shrink:0}
+.mc-dir{font-size:10.5px;font-weight:600;font-family:var(--mono);margin-left:auto}
+.mc-dir.up{color:#00c087}.mc-dir.down{color:#818cf8}
+.mc-name{font-size:14px;font-weight:700;color:var(--tx);letter-spacing:-.2px;margin-bottom:2px;line-height:1.3}
+.mc-id{font-size:10.5px;font-family:var(--mono);color:var(--txd);margin-bottom:7px}
+.mc-desc{font-size:11.5px;color:var(--tx2);line-height:1.55;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:10px}
+.mc-footer{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.mc-unit{font-size:11px;font-family:var(--mono);color:var(--txm);background:var(--bg);padding:2px 7px;border-radius:3px;border:1px solid var(--border)}
+.mc-table{font-size:10.5px;font-family:var(--mono);color:var(--txm);background:var(--bg);padding:2px 7px;border-radius:3px;border:1px solid var(--border);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:180px}
+
+/* ── Dimension Card (tab 2) ── */
+.dim-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:12px}
+.dim-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:15px 16px}
+.dim-top{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.dim-name{font-size:14px;font-weight:700;color:var(--tx)}
+.dim-type{font-size:10px;font-weight:700;letter-spacing:.3px;padding:2px 6px;border-radius:3px;background:rgba(99,102,241,.12);color:var(--acc2)}
+.dim-id{font-size:10.5px;font-family:var(--mono);color:var(--txd);margin-bottom:6px}
+.dim-desc{font-size:11.5px;color:var(--tx2);line-height:1.55;margin-bottom:10px}
+.dim-meta{display:flex;gap:10px;margin-bottom:8px}
+.dim-meta-item{font-size:10.5px;color:var(--txm)}
+.dim-meta-item strong{color:var(--tx2)}
+.dim-vals{display:flex;gap:5px;flex-wrap:wrap}
+.dim-val{font-size:10px;font-family:var(--mono);background:var(--bg);border:1px solid var(--border);padding:2px 7px;border-radius:3px;color:var(--txm)}
+
+/* ── Detail Panel ── */
+.detail-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);opacity:0;pointer-events:none;transition:opacity var(--t);z-index:40}
+.detail-overlay.open{opacity:1;pointer-events:all}
+.detail-panel{position:fixed;top:0;right:0;bottom:0;width:460px;background:var(--bg2);border-left:1px solid var(--border);overflow-y:auto;transform:translateX(100%);transition:transform .24s var(--ease);z-index:41;display:flex;flex-direction:column}
+.detail-panel::-webkit-scrollbar{width:4px}
+.detail-panel::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+.detail-panel.open{transform:translateX(0)}
+.dp-hdr{display:flex;align-items:flex-start;gap:12px;padding:18px 20px 14px;border-bottom:1px solid var(--border);flex-shrink:0}
+.dp-hdr-info{flex:1;min-width:0}
+.dp-cat-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.dp-name{font-size:17px;font-weight:700;color:var(--tx);letter-spacing:-.3px;line-height:1.3;margin-bottom:3px}
+.dp-id{font-size:11px;font-family:var(--mono);color:var(--txd)}
+.dp-close{flex-shrink:0;width:28px;height:28px;border:1px solid var(--border);background:var(--bg3);border-radius:var(--r-sm);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--txm);font-size:16px;line-height:1;transition:all var(--t)}
+.dp-close:hover{color:var(--tx);border-color:var(--border2)}
+.dp-body{padding:18px 20px;flex:1}
+.dp-section{margin-bottom:20px}
+.dp-section-title{font-size:10px;font-weight:700;color:var(--txd);letter-spacing:.6px;text-transform:uppercase;margin-bottom:8px;padding-bottom:5px;border-bottom:1px solid var(--border)}
+.dp-formula{background:var(--bg);border:1px solid var(--border);border-radius:var(--r-sm);padding:10px 13px;font-family:var(--mono);font-size:11.5px;color:#a5f3fc;line-height:1.6;word-break:break-all}
+.dp-desc{font-size:12.5px;color:var(--tx2);line-height:1.7}
+.dp-meta-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.dp-meta-item{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-sm);padding:9px 12px}
+.dp-meta-label{font-size:10px;font-weight:600;color:var(--txd);letter-spacing:.3px;margin-bottom:3px}
+.dp-meta-value{font-size:12.5px;color:var(--tx);font-weight:500}
+.dp-meta-value.mono{font-family:var(--mono);font-size:11.5px}
+.dp-dir-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:3px;font-size:11px;font-weight:600}
+.dp-dir-badge.up{background:rgba(0,192,135,.12);color:#00c087}
+.dp-dir-badge.down{background:rgba(129,140,248,.12);color:#818cf8}
+.dp-table{background:var(--bg);border:1px solid var(--border);border-radius:var(--r-sm);padding:8px 12px;font-family:var(--mono);font-size:11.5px;color:#fbbf24;word-break:break-all}
+.dp-tags{display:flex;gap:5px;flex-wrap:wrap}
+.dp-tag{font-size:10.5px;background:var(--bg3);border:1px solid var(--border);padding:3px 8px;border-radius:3px;color:var(--txm)}
+.dp-dims{display:flex;gap:5px;flex-wrap:wrap}
+.dp-dim{font-size:10.5px;background:rgba(99,102,241,.1);border:1px solid rgba(99,102,241,.2);padding:3px 8px;border-radius:3px;color:var(--acc2)}
+/* Sparkline */
+.dp-chart{margin-top:4px}
+.dp-chart-title{font-size:10px;color:var(--txm);margin-bottom:6px}
+.dp-chart svg{display:block;width:100%;overflow:visible}
+.dp-chart-xlabels{display:flex;justify-content:space-between;padding:4px 1px 0;margin-top:2px}
+.dp-chart-xlabel{font-size:9.5px;color:var(--txm);font-family:var(--mono)}
+/* Stat row */
+.dp-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}
+.dp-stat{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-sm);padding:8px 10px;text-align:center}
+.dp-stat-label{font-size:9.5px;color:var(--txm);margin-bottom:3px}
+.dp-stat-value{font-size:13px;font-weight:700;font-family:var(--mono);color:var(--tx)}
+
+/* Category colors helper */
+.cat-用户域{background:rgba(6,182,212,.12);color:#22d3ee}
+.cat-订单域{background:rgba(245,158,11,.12);color:#fbbf24}
+.cat-商品域{background:rgba(16,185,129,.12);color:#34d399}
+.cat-营销域{background:rgba(236,72,153,.12);color:#f472b6}
+.cat-物流域{background:rgba(139,92,246,.12);color:#a78bfa}
+.cat-财务域{background:rgba(239,68,68,.12);color:#f87171}
+.cat-流量域{background:rgba(59,130,246,.12);color:#60a5fa}
+
+.dot-用户域{background:#06b6d4}.dot-订单域{background:#f59e0b}.dot-商品域{background:#10b981}
+.dot-营销域{background:#ec4899}.dot-物流域{background:#8b5cf6}.dot-财务域{background:#ef4444}.dot-流量域{background:#3b82f6}
+
+/* Empty */
+.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;height:240px;color:var(--txm);font-size:13px}
+.empty-icon{font-size:28px;margin-bottom:10px;opacity:.4}
+
+/* Scrollbar */
+.main::-webkit-scrollbar-track{background:transparent}
+</style>
+</head>
+<body>
+
+<header class="hdr">
+  <div class="hdr-logo">⚡ 指标<span>字典</span></div>
+  <div class="hdr-search">
+    <span class="hdr-search-ico">⌕</span>
+    <input type="text" id="search-input" placeholder="搜索指标名称、标签、取数表…" autocomplete="off">
+  </div>
+  <div class="hdr-tabs">
+    <button class="hdr-tab active" data-tab="metrics">指标</button>
+    <button class="hdr-tab" data-tab="dimensions">维度</button>
+  </div>
+  <div class="hdr-count" id="count-label"></div>
+</header>
+
+<div class="layout">
+  <nav class="sidebar" id="sidebar"></nav>
+  <main class="main" id="main">
+    <div id="metric-grid" class="grid"></div>
+    <div id="dim-grid" class="dim-grid" style="display:none"></div>
+  </main>
+</div>
+
+<div class="detail-overlay" id="detail-overlay" onclick="closeDetail()"></div>
+<div class="detail-panel" id="detail-panel">
+  <div id="dp-content"></div>
+</div>
+
+<script>
+/* ── Data ── */
+const DIMENSIONS = [
+  { id:'date', name:'日期', display_name:'统计日期', type:'time',
+    description:'指标统计的自然日，格式 YYYY-MM-DD，支持按天/周/月聚合。',
+    values_example:['2024-12-01','2024-12-15','2024-12-30'], cardinality:'365+' },
+  { id:'channel', name:'渠道', display_name:'流量/推广渠道', type:'categorical',
+    description:'用户来源渠道，含自然流量、SEO、SEM付费、社交媒体、直播、短视频、联盟推广等。',
+    values_example:['organic','sem','social','live','short_video','affiliate'], cardinality:'20~50' },
+  { id:'category', name:'商品类目', display_name:'商品一级类目', type:'categorical',
+    description:'商品标准三级类目中的一级类目，如服装、电子、食品、美妆、家居等。',
+    values_example:['服装','电子','食品','美妆','家居','运动','母婴'], cardinality:'20~30' },
+  { id:'region', name:'地域', display_name:'收货省份/地区', type:'categorical',
+    description:'买家收货地址所在省份，可进一步聚合为城市等级（一线/新一线/二线/三线以下）。',
+    values_example:['北京','上海','广东','浙江','四川','湖北','江苏'], cardinality:'34' },
+  { id:'user_segment', name:'用户分群', display_name:'RFM用户分群', type:'categorical',
+    description:'基于RFM模型的用户价值分层，含高价值、成长型、潜力、睡眠、流失风险等标签。',
+    values_example:['高价值','成长型','潜力用户','睡眠用户','流失风险'], cardinality:'5~8' },
+  { id:'device', name:'设备类型', display_name:'终端设备类型', type:'categorical',
+    description:'用户访问或下单使用的终端类型，区分 iOS、Android、PC Web、小程序等。',
+    values_example:['ios','android','pc_web','miniapp','pad'], cardinality:'5' },
+  { id:'platform', name:'平台', display_name:'站点/平台', type:'categorical',
+    description:'多平台运营场景下的平台标识，如主站、海外站、B2B平台、直播间等。',
+    values_example:['主站','海外站','B2B','直播间','小程序商城'], cardinality:'5~10' },
+  { id:'payment_method', name:'支付方式', display_name:'支付渠道', type:'categorical',
+    description:'买家完成支付所使用的支付方式，含支付宝、微信支付、银行卡、货到付款等。',
+    values_example:['alipay','wechat_pay','bank_card','cod','huabei'], cardinality:'8~12' },
+];
+
+const METRICS = [
+  { id:'dau', name:'dau', display_name:'日活跃用户数 (DAU)', category:'用户域', unit:'万人',
+    formula:'COUNT(DISTINCT user_id) WHERE last_active_date = 统计日期',
+    description:'统计日内在APP/Web端产生任意有效行为的去重用户数，是衡量平台日常活跃度的核心指标。',
+    source_table:'dwd_user_action_log_di', direction:'up', update_freq:'天', owner:'增长分析组',
+    tags:['用户','活跃','DAU','日活','大盘'],
+    available_dimensions:['date','channel','device','platform','region'],
+    sim:{base:320,variance:0.12,trend:0.08} },
+  { id:'mau', name:'mau', display_name:'月活跃用户数 (MAU)', category:'用户域', unit:'万人',
+    formula:'COUNT(DISTINCT user_id) WHERE last_active_month = 统计月份',
+    description:'统计自然月内产生任意有效行为的去重用户数，用于衡量平台月度用户规模和长期增长趋势。',
+    source_table:'dwd_user_action_log_di', direction:'up', update_freq:'天', owner:'增长分析组',
+    tags:['用户','活跃','MAU','月活','增长'],
+    available_dimensions:['date','channel','device','platform','region'],
+    sim:{base:2800,variance:0.06,trend:0.10} },
+  { id:'new_user_cnt', name:'new_user_cnt', display_name:'新增用户数', category:'用户域', unit:'人',
+    formula:'COUNT(user_id) WHERE register_date = 统计日期',
+    description:'当日完成注册的新用户总数，是衡量拉新效果和增长健康度的基础指标，需结合渠道拆分分析获客质量。',
+    source_table:'dwd_user_action_log_di', direction:'up', update_freq:'天', owner:'增长分析组',
+    tags:['用户','新增','注册','拉新','增长'],
+    available_dimensions:['date','channel','device','platform','region'],
+    sim:{base:45000,variance:0.20,trend:0.05} },
+  { id:'user_retention_d7', name:'user_retention_d7', display_name:'7日用户留存率', category:'用户域', unit:'%',
+    formula:'COUNT(DISTINCT user_id WHERE active_on_d7) / COUNT(DISTINCT user_id WHERE register_on_d0) * 100',
+    description:'注册后第7天仍有活跃行为的用户占该批新注册用户的比例，反映产品粘性和新用户体验质量，目标值 ≥ 30%。',
+    source_table:'dws_user_trade_30d_di', direction:'up', update_freq:'天', owner:'用户运营组',
+    tags:['用户','留存率','7日留存','粘性','新用户'],
+    available_dimensions:['date','channel','device','user_segment'],
+    sim:{base:32,variance:0.08,trend:0.02} },
+  { id:'repurchase_rate_30d', name:'repurchase_rate_30d', display_name:'30日复购率', category:'用户域', unit:'%',
+    formula:'COUNT(DISTINCT user_id WHERE order_cnt_30d >= 2) / COUNT(DISTINCT user_id WHERE order_cnt_30d >= 1) * 100',
+    description:'近30天内产生2次及以上购买行为的用户占全部购买用户的比例，反映用户忠诚度和平台品类丰富度。',
+    source_table:'dws_user_trade_30d_di', direction:'up', update_freq:'天', owner:'用户运营组',
+    tags:['用户','复购率','忠诚度','留存','购买'],
+    available_dimensions:['date','category','user_segment','region'],
+    sim:{base:38,variance:0.07,trend:0.03} },
+  { id:'rfm_high_value_ratio', name:'rfm_high_value_ratio', display_name:'高价值用户占比', category:'用户域', unit:'%',
+    formula:'COUNT(user_id WHERE rfm_segment = "高价值") / COUNT(user_id) * 100',
+    description:'RFM模型识别的高价值用户占全量活跃用户的比例，反映用户资产质量。',
+    source_table:'ads_user_rfm_segment', direction:'up', update_freq:'周', owner:'用户运营组',
+    tags:['用户','RFM','高价值','分群','用户质量'],
+    available_dimensions:['date','channel','region','category'],
+    sim:{base:12,variance:0.10,trend:0.01} },
+  { id:'gmv', name:'gmv', display_name:'GMV（商品交易总额）', category:'订单域', unit:'万元',
+    formula:'SUM(order_amount) WHERE order_status NOT IN ("已取消","无效")',
+    description:'统计周期内所有有效订单的支付金额总和（含优惠后实付，不扣退款），是电商平台最核心的规模指标。',
+    source_table:'ads_gmv_dashboard', direction:'up', update_freq:'天', owner:'交易分析组',
+    tags:['GMV','订单','交易额','核心指标','大盘'],
+    available_dimensions:['date','channel','category','region','platform','payment_method'],
+    sim:{base:8500,variance:0.15,trend:0.12} },
+  { id:'order_cnt', name:'order_cnt', display_name:'有效订单量', category:'订单域', unit:'单',
+    formula:'COUNT(order_id) WHERE order_status NOT IN ("已取消","无效")',
+    description:'统计周期内产生的有效订单总数，反映平台交易活跃度和用户购买频次。',
+    source_table:'dws_order_daily_agg', direction:'up', update_freq:'天', owner:'交易分析组',
+    tags:['订单','订单量','交易','购买','大盘'],
+    available_dimensions:['date','channel','category','region','platform','payment_method','device'],
+    sim:{base:125000,variance:0.14,trend:0.10} },
+  { id:'avg_order_value', name:'avg_order_value', display_name:'客单价', category:'订单域', unit:'元',
+    formula:'SUM(order_amount) / COUNT(DISTINCT order_id) WHERE order_status = "已完成"',
+    description:'每笔有效订单的平均支付金额，是GMV分解（订单量 × 客单价）的核心因子。',
+    source_table:'dws_order_daily_agg', direction:'up', update_freq:'天', owner:'交易分析组',
+    tags:['客单价','订单','消费','GMV拆解','用户价值'],
+    available_dimensions:['date','channel','category','region','user_segment','payment_method'],
+    sim:{base:168,variance:0.09,trend:0.04} },
+  { id:'refund_rate', name:'refund_rate', display_name:'退款率', category:'订单域', unit:'%',
+    formula:'COUNT(order_id WHERE refund_status = "已退款") / COUNT(order_id WHERE order_status = "已完成") * 100',
+    description:'已完成订单中发生退款的比例，高退款率是用户体验的重要预警信号。',
+    source_table:'dwd_order_detail_di', direction:'down', update_freq:'天', owner:'交易分析组',
+    tags:['退款率','订单','售后','质量','体验'],
+    available_dimensions:['date','category','region','channel','payment_method'],
+    sim:{base:4.2,variance:0.15,trend:-0.02} },
+  { id:'cancel_rate', name:'cancel_rate', display_name:'订单取消率', category:'订单域', unit:'%',
+    formula:'COUNT(order_id WHERE order_status = "已取消") / COUNT(order_id) * 100',
+    description:'所有订单中被取消的比例，高取消率可能指向支付流程障碍或商品信息误导。',
+    source_table:'ods_order_info', direction:'down', update_freq:'天', owner:'交易分析组',
+    tags:['取消率','订单','支付','流失','体验'],
+    available_dimensions:['date','category','region','channel','device'],
+    sim:{base:8.5,variance:0.12,trend:-0.01} },
+  { id:'items_per_order', name:'items_per_order', display_name:'笔单件数', category:'订单域', unit:'件/单',
+    formula:'SUM(item_quantity) / COUNT(DISTINCT order_id)',
+    description:'每笔有效订单平均包含的商品件数，反映用户的连带购买能力。',
+    source_table:'dwd_order_item_di', direction:'up', update_freq:'天', owner:'商品分析组',
+    tags:['连带率','订单','商品','客单价','购物车'],
+    available_dimensions:['date','category','channel','user_segment'],
+    sim:{base:2.3,variance:0.08,trend:0.02} },
+  { id:'product_conversion_rate', name:'product_conversion_rate', display_name:'商品详情页转化率', category:'商品域', unit:'%',
+    formula:'COUNT(DISTINCT user_id WHERE action="下单") / COUNT(DISTINCT user_id WHERE action="浏览详情页") * 100',
+    description:'浏览商品详情页后产生下单行为的用户比例，反映商品内容质量、价格竞争力和页面体验。',
+    source_table:'dwd_product_behavior_di', direction:'up', update_freq:'天', owner:'商品分析组',
+    tags:['商品','转化率','详情页','选品','运营'],
+    available_dimensions:['date','category','channel','device','platform'],
+    sim:{base:3.8,variance:0.18,trend:0.03} },
+  { id:'add_to_cart_rate', name:'add_to_cart_rate', display_name:'加购率', category:'商品域', unit:'%',
+    formula:'COUNT(DISTINCT user_id WHERE action="加购") / COUNT(DISTINCT user_id WHERE action="浏览详情页") * 100',
+    description:'浏览商品后将其加入购物车的用户比例，是购买意向的中间信号。',
+    source_table:'dwd_product_behavior_di', direction:'up', update_freq:'天', owner:'商品分析组',
+    tags:['加购率','商品','购物车','购买意向','转化'],
+    available_dimensions:['date','category','channel','device','user_segment'],
+    sim:{base:12.5,variance:0.14,trend:0.02} },
+  { id:'product_sales_volume', name:'product_sales_volume', display_name:'商品销售量', category:'商品域', unit:'件',
+    formula:'SUM(item_quantity) WHERE order_status NOT IN ("已取消","已退款")',
+    description:'统计周期内各商品/SKU的实际售出件数，用于选品分析、库存补货决策和热销榜单生成。',
+    source_table:'dws_product_sales_agg', direction:'up', update_freq:'天', owner:'商品分析组',
+    tags:['商品','销量','SKU','选品','热销'],
+    available_dimensions:['date','category','channel','region','platform'],
+    sim:{base:380000,variance:0.16,trend:0.09} },
+  { id:'product_gmv_contribution', name:'product_gmv_contribution', display_name:'商品GMV贡献', category:'商品域', unit:'万元',
+    formula:'SUM(item_amount) WHERE order_status NOT IN ("已取消","无效")',
+    description:'各类目/品牌贡献的GMV金额，用于识别GMV结构分布，支持资源向高贡献品类倾斜的运营决策。',
+    source_table:'ads_hot_product_rank', direction:'up', update_freq:'天', owner:'商品分析组',
+    tags:['商品','GMV','类目','品牌','贡献度'],
+    available_dimensions:['date','category','channel','region'],
+    sim:{base:1200,variance:0.17,trend:0.11} },
+  { id:'product_avg_rating', name:'product_avg_rating', display_name:'商品平均评分', category:'商品域', unit:'分',
+    formula:'AVG(review_score) WHERE review_status = "已审核"',
+    description:'已审核评价的商品平均星级（1-5分），影响搜索排名和推荐权重。',
+    source_table:'ods_product_info', direction:'up', update_freq:'天', owner:'内容组',
+    tags:['评分','商品','评价','满意度','口碑','质量'],
+    available_dimensions:['date','category','channel','user_segment'],
+    sim:{base:4.3,variance:0.03,trend:0.005} },
+  { id:'marketing_roi', name:'marketing_roi', display_name:'营销ROI', category:'营销域', unit:'倍',
+    formula:'SUM(gmv_attributed) / SUM(marketing_cost)',
+    description:'营销投入带来的GMV与营销总费用的比值。ROI > 3 通常视为健康水位，大促期间可放宽至 2。',
+    source_table:'ads_marketing_roi', direction:'up', update_freq:'天', owner:'营销分析组',
+    tags:['ROI','营销','投产比','效率','广告','渠道'],
+    available_dimensions:['date','channel','category','platform','user_segment'],
+    sim:{base:3.8,variance:0.20,trend:0.04} },
+  { id:'coupon_usage_rate', name:'coupon_usage_rate', display_name:'优惠券核销率', category:'营销域', unit:'%',
+    formula:'COUNT(coupon_id WHERE usage_status="已使用") / COUNT(coupon_id WHERE issue_status="已发放") * 100',
+    description:'已发放优惠券中实际被使用的比例，反映券的吸引力和触达效率。',
+    source_table:'dwd_coupon_usage_di', direction:'up', update_freq:'天', owner:'营销分析组',
+    tags:['优惠券','核销率','促销','营销','折扣'],
+    available_dimensions:['date','channel','category','user_segment'],
+    sim:{base:42,variance:0.15,trend:0.01} },
+  { id:'promo_gmv_ratio', name:'promo_gmv_ratio', display_name:'促销GMV占比', category:'营销域', unit:'%',
+    formula:'SUM(gmv WHERE has_promo=true) / SUM(gmv) * 100',
+    description:'通过促销活动产生的GMV占全部GMV的比例，过高时需警惕用户对折扣的依赖性。',
+    source_table:'dws_promo_effect_agg', direction:'up', update_freq:'天', owner:'营销分析组',
+    tags:['促销','GMV','活动','折扣','占比'],
+    available_dimensions:['date','channel','category','platform'],
+    sim:{base:55,variance:0.12,trend:0.02} },
+  { id:'coupon_discount_amount', name:'coupon_discount_amount', display_name:'优惠券让利金额', category:'营销域', unit:'万元',
+    formula:'SUM(discount_amount) WHERE coupon_usage_status = "已使用"',
+    description:'统计周期内因优惠券核销导致的GMV减少金额总量，是营销预算消耗的直接体现。',
+    source_table:'dwd_coupon_usage_di', direction:'down', update_freq:'天', owner:'营销分析组',
+    tags:['优惠券','让利','成本','营销','折扣'],
+    available_dimensions:['date','channel','category','user_segment'],
+    sim:{base:380,variance:0.18,trend:0.05} },
+  { id:'customer_acquisition_cost', name:'customer_acquisition_cost', display_name:'获客成本 (CAC)', category:'营销域', unit:'元/人',
+    formula:'SUM(marketing_cost) / COUNT(DISTINCT new_user_id WHERE source=营销渠道)',
+    description:'通过付费营销渠道获取每位新用户的平均成本，目标与LTV比例 ≥ 1:3。',
+    source_table:'ads_marketing_roi', direction:'down', update_freq:'天', owner:'增长分析组',
+    tags:['获客成本','CAC','新用户','营销','渠道效率'],
+    available_dimensions:['date','channel','platform','device'],
+    sim:{base:28,variance:0.22,trend:0.03} },
+  { id:'promo_new_buyer_ratio', name:'promo_new_buyer_ratio', display_name:'活动拉新率', category:'营销域', unit:'%',
+    formula:'COUNT(DISTINCT user_id WHERE is_new=true AND participated_promo=true) / COUNT(DISTINCT user_id WHERE participated_promo=true) * 100',
+    description:'参与营销活动的用户中，首次购买新用户占比，衡量活动在拉新方面的效果。',
+    source_table:'dws_promo_effect_agg', direction:'up', update_freq:'天', owner:'营销分析组',
+    tags:['活动','拉新','新用户','促销','增长'],
+    available_dimensions:['date','channel','category','platform'],
+    sim:{base:18,variance:0.20,trend:0.02} },
+  { id:'delivery_on_time_rate', name:'delivery_on_time_rate', display_name:'48小时时效达成率', category:'物流域', unit:'%',
+    formula:'COUNT(order_id WHERE delivery_hours<=48) / COUNT(order_id WHERE delivery_completed=true) * 100',
+    description:'订单从付款成功到签收完成在48小时内的比例，直接影响用户满意度和好评率。',
+    source_table:'ads_delivery_performance', direction:'up', update_freq:'天', owner:'物流分析组',
+    tags:['物流','时效','48小时','准时率','KPI','履约'],
+    available_dimensions:['date','region','channel','category'],
+    sim:{base:87,variance:0.05,trend:0.01} },
+  { id:'logistics_complaint_rate', name:'logistics_complaint_rate', display_name:'物流投诉率', category:'物流域', unit:'%',
+    formula:'COUNT(complaint_id WHERE type="物流") / COUNT(order_id WHERE delivery_completed=true) * 100',
+    description:'完成配送的订单中产生物流相关投诉的比例，含超时、破损、丢失等。',
+    source_table:'dwd_logistics_info', direction:'down', update_freq:'天', owner:'物流运营组',
+    tags:['物流','投诉率','满意度','超时','破损','售后'],
+    available_dimensions:['date','region','category'],
+    sim:{base:1.2,variance:0.20,trend:-0.02} },
+  { id:'avg_delivery_days', name:'avg_delivery_days', display_name:'平均配送天数', category:'物流域', unit:'天',
+    formula:'AVG(DATEDIFF(sign_date, pay_date)) WHERE delivery_status = "已签收"',
+    description:'从用户付款到签收的平均天数，需按区域（跨省/省内/同城）分层分析。',
+    source_table:'dwd_logistics_info', direction:'down', update_freq:'天', owner:'物流分析组',
+    tags:['物流','配送','时效','天数','履约'],
+    available_dimensions:['date','region','category','channel'],
+    sim:{base:2.8,variance:0.10,trend:-0.03} },
+  { id:'sign_rate', name:'sign_rate', display_name:'快递签收率', category:'物流域', unit:'%',
+    formula:'COUNT(order_id WHERE delivery_status="已签收") / COUNT(order_id WHERE delivery_status IN ("已签收","拒签","丢失")) * 100',
+    description:'发出包裹中成功签收的比例，低签收率可能源于地址问题、用户拒签或物流丢失。',
+    source_table:'ads_delivery_performance', direction:'up', update_freq:'天', owner:'物流运营组',
+    tags:['物流','签收率','履约','包裹','快递'],
+    available_dimensions:['date','region','category'],
+    sim:{base:97.5,variance:0.02,trend:0.001} },
+  { id:'net_revenue', name:'net_revenue', display_name:'平台净收入', category:'财务域', unit:'万元',
+    formula:'SUM(commission_income + ad_income + service_fee) - SUM(refund_cost + coupon_cost)',
+    description:'平台实际确认收入，含佣金收入和广告收入，扣除退款成本和优惠让利后的净额。',
+    source_table:'ads_profit_analysis', direction:'up', update_freq:'天', owner:'财务分析组',
+    tags:['收入','净收入','财务','佣金','广告','营收'],
+    available_dimensions:['date','category','platform','channel'],
+    sim:{base:420,variance:0.12,trend:0.10} },
+  { id:'gross_margin_rate', name:'gross_margin_rate', display_name:'毛利率', category:'财务域', unit:'%',
+    formula:'(SUM(revenue) - SUM(cost_of_goods)) / SUM(revenue) * 100',
+    description:'营收减去商品成本后占营收的比例，反映平台商业模式的盈利能力。',
+    source_table:'ads_profit_analysis', direction:'up', update_freq:'天', owner:'财务分析组',
+    tags:['毛利率','财务','盈利','成本','品类'],
+    available_dimensions:['date','category','platform','channel'],
+    sim:{base:22,variance:0.08,trend:0.02} },
+  { id:'payment_success_rate', name:'payment_success_rate', display_name:'支付成功率', category:'财务域', unit:'%',
+    formula:'COUNT(pay_id WHERE pay_status="成功") / COUNT(pay_id WHERE pay_status IN ("成功","失败","超时")) * 100',
+    description:'发起支付后最终成功的比例，低于98%时需联合支付渠道方排查技术问题。',
+    source_table:'dwd_payment_di', direction:'up', update_freq:'天', owner:'财务中台',
+    tags:['支付','成功率','财务','订单','渠道'],
+    available_dimensions:['date','payment_method','device','platform','channel'],
+    sim:{base:98.8,variance:0.01,trend:0.0005} },
+  { id:'daily_revenue', name:'daily_revenue', display_name:'日收入', category:'财务域', unit:'万元',
+    formula:'SUM(confirmed_revenue) WHERE settle_date = 统计日期',
+    description:'财务系统确认的每日实收金额（现金流口径），扣除了未完成结算订单和在途退款。',
+    source_table:'dws_finance_daily', direction:'up', update_freq:'天', owner:'财务中台',
+    tags:['收入','日收入','财务','结算','现金流'],
+    available_dimensions:['date','category','payment_method','platform'],
+    sim:{base:680,variance:0.13,trend:0.09} },
+  { id:'uv', name:'uv', display_name:'日独立访客数 (UV)', category:'流量域', unit:'万人',
+    formula:'COUNT(DISTINCT visitor_id) WHERE visit_date = 统计日期',
+    description:'当日访问平台的去重用户/访客数（含未登录），UV × 转化率 × 客单价 = GMV。',
+    source_table:'dws_traffic_channel_agg', direction:'up', update_freq:'天', owner:'流量分析组',
+    tags:['UV','流量','访客','大盘','渠道'],
+    available_dimensions:['date','channel','device','platform','region'],
+    sim:{base:850,variance:0.13,trend:0.07} },
+  { id:'pv', name:'pv', display_name:'日页面访问量 (PV)', category:'流量域', unit:'万次',
+    formula:'COUNT(page_view_id) WHERE visit_date = 统计日期',
+    description:'当日全站所有页面被访问的总次数，PV/UV 比值反映用户在站内的探索深度。',
+    source_table:'dwd_traffic_log_di', direction:'up', update_freq:'天', owner:'流量分析组',
+    tags:['PV','流量','页面','访问量','深度'],
+    available_dimensions:['date','channel','device','platform','region'],
+    sim:{base:4200,variance:0.14,trend:0.06} },
+  { id:'bounce_rate', name:'bounce_rate', display_name:'跳出率', category:'流量域', unit:'%',
+    formula:'COUNT(session_id WHERE page_view_cnt=1) / COUNT(session_id) * 100',
+    description:'只访问一个页面即离开的会话占比，过高时需优化首屏内容和加载性能。',
+    source_table:'dwd_traffic_log_di', direction:'down', update_freq:'天', owner:'流量分析组',
+    tags:['跳出率','流量','落地页','用户体验','会话'],
+    available_dimensions:['date','channel','device','platform'],
+    sim:{base:38,variance:0.10,trend:-0.01} },
+  { id:'uv_to_order_rate', name:'uv_to_order_rate', display_name:'UV转化率', category:'流量域', unit:'%',
+    formula:'COUNT(DISTINCT user_id WHERE has_order=true) / COUNT(DISTINCT visitor_id) * 100',
+    description:'当日访客中产生有效订单的比例，下降时需通过漏斗分析定位转化断点。',
+    source_table:'ads_funnel_analysis', direction:'up', update_freq:'天', owner:'流量分析组',
+    tags:['转化率','UV','流量','漏斗','大盘','效率'],
+    available_dimensions:['date','channel','category','device','platform','user_segment'],
+    sim:{base:2.8,variance:0.12,trend:0.03} },
+  { id:'avg_session_duration', name:'avg_session_duration', display_name:'平均会话时长', category:'流量域', unit:'秒',
+    formula:'AVG(session_end_time - session_start_time) WHERE session_duration > 0',
+    description:'用户每次访问会话的平均停留时长，时长越长通常表示用户粘性和购买意愿越强。',
+    source_table:'dws_traffic_channel_agg', direction:'up', update_freq:'天', owner:'流量分析组',
+    tags:['会话时长','流量','粘性','用户体验','停留'],
+    available_dimensions:['date','channel','device','platform','user_segment'],
+    sim:{base:420,variance:0.11,trend:0.02} },
+];
+
+/* ── State ── */
+let currentCat = 'all';
+let searchQuery = '';
+let currentTab = 'metrics';
+
+/* ── Deterministic sim ── */
+function hashKey(s) {
+  let h = 5381;
+  for (let i = 0; i < s.length; i++) h = Math.imul((h << 5) + h, 1) ^ s.charCodeAt(i);
+  return (h >>> 0);
+}
+function simValue(metric, dateStr) {
+  const h = hashKey(metric.id + '|' + dateStr);
+  const rand = (h % 100000) / 100000;
+  const daysFrom = (new Date(dateStr) - new Date('2024-01-01')) / 86400000;
+  return metric.sim.base * (1 + metric.sim.trend * daysFrom / 365) * (1 + (rand - 0.5) * metric.sim.variance);
+}
+function genSeries(metric, days = 30) {
+  const end = new Date('2024-12-30');
+  const vals = [], labels = [];
+  for (let i = days - 1; i >= 0; i--) {
+    const d = new Date(end); d.setDate(d.getDate() - i);
+    const ds = d.toISOString().slice(0, 10);
+    vals.push(Math.round(simValue(metric, ds) * 100) / 100);
+    labels.push(ds.slice(5));
+  }
+  return { vals, labels };
+}
+
+/* ── Sparkline SVG ── */
+function renderSparkline(vals, W = 420, H = 72) {
+  if (!vals || vals.length < 2) return '';
+  const PAD = { t: 10, b: 6, l: 4, r: 44 };
+  const min = Math.min(...vals), max = Math.max(...vals);
+  const range = max - min || 1;
+  const gW = W - PAD.l - PAD.r, gH = H - PAD.t - PAD.b;
+  const x = i => PAD.l + (i / (vals.length - 1)) * gW;
+  const y = v => PAD.t + (1 - (v - min) / range) * gH;
+  const isUp = vals[vals.length - 1] >= vals[0];
+  const color = isUp ? '#00c087' : '#818cf8';
+  const pts = vals.map((v, i) => `${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(' ');
+  const area = `M${x(0).toFixed(1)},${(PAD.t + gH).toFixed(1)} ` +
+    vals.map((v, i) => `L${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(' ') +
+    ` L${x(vals.length - 1).toFixed(1)},${(PAD.t + gH).toFixed(1)} Z`;
+  const gradId = 'sg' + Math.random().toString(36).slice(2, 6);
+  // y-axis labels (3 lines)
+  const yLabels = [max, min + range / 2, min].map((v, i) => {
+    const yy = y(v);
+    const lbl = v >= 10000 ? (v / 10000).toFixed(1) + 'w' : v >= 1000 ? (v / 1000).toFixed(1) + 'k' : v.toFixed(v < 10 ? 1 : 0);
+    return `<text x="${(W - PAD.r + 5).toFixed(0)}" y="${(yy + 3.5).toFixed(1)}" fill="#6b7494" font-size="9" font-family="monospace">${lbl}</text>`;
+  }).join('');
+  // grid lines
+  const gridLines = [0, 0.5, 1].map(f => {
+    const yy = (PAD.t + f * gH).toFixed(1);
+    return `<line x1="${PAD.l}" y1="${yy}" x2="${(W - PAD.r).toFixed(0)}" y2="${yy}" stroke="#272b3d" stroke-width="1"/>`;
+  }).join('');
+  return `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" class="dp-sparkline-svg">
+    <defs><linearGradient id="${gradId}" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="${color}" stop-opacity=".18"/>
+      <stop offset="100%" stop-color="${color}" stop-opacity="0"/>
+    </linearGradient></defs>
+    ${gridLines}
+    <path d="${area}" fill="url(#${gradId})"/>
+    <polyline points="${pts}" fill="none" stroke="${color}" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>
+    ${yLabels}
+  </svg>`;
+}
+
+/* ── Helpers ── */
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function catColor(cat) {
+  const m = {'用户域':'--c-user','订单域':'--c-order','商品域':'--c-product','营销域':'--c-marketing','物流域':'--c-logistics','财务域':'--c-finance','流量域':'--c-traffic'};
+  return m[cat] || '--c-user';
+}
+
+/* ── Filter ── */
+function filterMetrics() {
+  const q = searchQuery.toLowerCase();
+  return METRICS.filter(m => {
+    const catOk = currentCat === 'all' || m.category === currentCat;
+    if (!q) return catOk;
+    return catOk && (
+      m.display_name.toLowerCase().includes(q) ||
+      m.name.toLowerCase().includes(q) ||
+      m.description.toLowerCase().includes(q) ||
+      m.tags.some(t => t.toLowerCase().includes(q)) ||
+      m.source_table.toLowerCase().includes(q) ||
+      m.category.toLowerCase().includes(q)
+    );
+  });
+}
+
+/* ── Render Sidebar ── */
+function renderSidebar() {
+  const cats = ['all', ...Array.from(new Set(METRICS.map(m => m.category)))];
+  const sb = document.getElementById('sidebar');
+  if (currentTab === 'dimensions') { sb.innerHTML = ''; return; }
+  sb.innerHTML = `<div class="sidebar-section">
+    <div class="sidebar-title">分类</div>
+    ${cats.map(cat => {
+      const count = cat === 'all' ? METRICS.length : METRICS.filter(m => m.category === cat).length;
+      const dotCls = cat === 'all' ? '' : `dot-${cat}`;
+      const label = cat === 'all' ? '全部指标' : cat;
+      return `<button class="cat-btn${cat === currentCat ? ' active' : ''}" onclick="selectCat('${esc(cat)}')">
+        ${cat !== 'all' ? `<span class="dot ${dotCls}"></span>` : ''}
+        <span>${esc(label)}</span>
+        <span class="cnt">${count}</span>
+      </button>`;
+    }).join('')}
+  </div>`;
+}
+
+/* ── Render Grid ── */
+function renderGrid() {
+  const filtered = filterMetrics();
+  const grid = document.getElementById('metric-grid');
+  document.getElementById('count-label').textContent = `${filtered.length} / ${METRICS.length} 个指标`;
+  if (!filtered.length) {
+    grid.innerHTML = `<div class="empty" style="grid-column:1/-1"><div class="empty-icon">📐</div>未找到匹配的指标</div>`;
+    return;
+  }
+  grid.innerHTML = filtered.map(m => `
+    <div class="mc" id="mc-${esc(m.id)}" onclick="openDetail('${esc(m.id)}')">
+      <div class="mc-top">
+        <span class="mc-cat cat-${esc(m.category)}">${esc(m.category)}</span>
+        <span class="mc-dir ${m.direction}">${m.direction === 'up' ? '↑ 正向' : '↓ 负向'}</span>
+      </div>
+      <div class="mc-name">${esc(m.display_name)}</div>
+      <div class="mc-id">${esc(m.name)}</div>
+      <div class="mc-desc">${esc(m.description)}</div>
+      <div class="mc-footer">
+        <span class="mc-unit">${esc(m.unit)}</span>
+        <span class="mc-table">${esc(m.source_table)}</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+/* ── Render Dimensions Tab ── */
+function renderDimGrid() {
+  const grid = document.getElementById('dim-grid');
+  document.getElementById('count-label').textContent = `${DIMENSIONS.length} 个维度`;
+  grid.innerHTML = DIMENSIONS.map(d => `
+    <div class="dim-card">
+      <div class="dim-top">
+        <span class="dim-name">${esc(d.display_name)}</span>
+        <span class="dim-type">${esc(d.type)}</span>
+      </div>
+      <div class="dim-id">${esc(d.id)}</div>
+      <div class="dim-desc">${esc(d.description)}</div>
+      <div class="dim-meta">
+        <span class="dim-meta-item">基数：<strong>${esc(d.cardinality)}</strong></span>
+        <span class="dim-meta-item">字段名：<strong style="font-family:monospace">${esc(d.id)}</strong></span>
+      </div>
+      <div class="dim-vals">${d.values_example.map(v => `<span class="dim-val">${esc(v)}</span>`).join('')}</div>
+    </div>
+  `).join('');
+}
+
+/* ── Detail Panel ── */
+function openDetail(id) {
+  const m = METRICS.find(x => x.id === id);
+  if (!m) return;
+  // Update active card
+  document.querySelectorAll('.mc').forEach(el => el.classList.remove('active'));
+  const card = document.getElementById('mc-' + id);
+  if (card) card.classList.add('active');
+
+  const { vals, labels } = genSeries(m, 30);
+  const last = vals[vals.length - 1];
+  const prev = vals[vals.length - 2];
+  const delta = prev ? ((last - prev) / prev * 100) : 0;
+  const deltaStr = (delta >= 0 ? '+' : '') + delta.toFixed(1) + '%';
+  const deltaColor = (m.direction === 'up' ? delta >= 0 : delta <= 0) ? '#00c087' : '#f6465d';
+  const total = vals.reduce((a, b) => a + b, 0);
+  const avg = total / vals.length;
+  const fmt = v => v >= 10000 ? (v / 10000).toFixed(1) + 'w' : v >= 1000 ? (v / 1000).toFixed(1) + 'k' : v.toFixed(v < 10 ? 2 : 0);
+
+  // Sparse x-labels
+  const step = Math.ceil(labels.length / 5);
+  const shownLabels = labels.map((l, i) => (i === 0 || i === labels.length - 1 || i % step === 0) ? l : '');
+
+  const dimItems = m.available_dimensions.map(did => {
+    const dim = DIMENSIONS.find(d => d.id === did);
+    return `<span class="dp-dim">${esc(dim ? dim.name : did)}</span>`;
+  }).join('');
+
+  document.getElementById('dp-content').innerHTML = `
+    <div class="dp-hdr">
+      <div class="dp-hdr-info">
+        <div class="dp-cat-row">
+          <span class="mc-cat cat-${esc(m.category)}">${esc(m.category)}</span>
+          <span class="dp-dir-badge ${m.direction}">${m.direction === 'up' ? '↑ 越高越好' : '↓ 越低越好'}</span>
+        </div>
+        <div class="dp-name">${esc(m.display_name)}</div>
+        <div class="dp-id">${esc(m.name)}</div>
+      </div>
+      <button class="dp-close" onclick="closeDetail()">✕</button>
+    </div>
+    <div class="dp-body">
+
+      <div class="dp-section">
+        <div class="dp-section-title">近30天趋势（截至 2024-12-30）</div>
+        <div class="dp-stats">
+          <div class="dp-stat"><div class="dp-stat-label">最新值</div><div class="dp-stat-value">${fmt(last)}</div></div>
+          <div class="dp-stat"><div class="dp-stat-label">环比</div><div class="dp-stat-value" style="color:${deltaColor}">${deltaStr}</div></div>
+          <div class="dp-stat"><div class="dp-stat-label">均值</div><div class="dp-stat-value">${fmt(avg)}</div></div>
+          <div class="dp-stat"><div class="dp-stat-label">最高值</div><div class="dp-stat-value">${fmt(Math.max(...vals))}</div></div>
+        </div>
+        <div class="dp-chart">
+          ${renderSparkline(vals)}
+          <div class="dp-chart-xlabels">${shownLabels.map(l => `<span class="dp-chart-xlabel">${esc(l)}</span>`).join('')}</div>
+        </div>
+      </div>
+
+      <div class="dp-section">
+        <div class="dp-section-title">指标说明</div>
+        <div class="dp-desc">${esc(m.description)}</div>
+      </div>
+
+      <div class="dp-section">
+        <div class="dp-section-title">计算口径</div>
+        <div class="dp-formula">${esc(m.formula)}</div>
+      </div>
+
+      <div class="dp-section">
+        <div class="dp-section-title">基础信息</div>
+        <div class="dp-meta-grid">
+          <div class="dp-meta-item"><div class="dp-meta-label">单位</div><div class="dp-meta-value mono">${esc(m.unit)}</div></div>
+          <div class="dp-meta-item"><div class="dp-meta-label">更新频率</div><div class="dp-meta-value">${esc(m.update_freq)}</div></div>
+          <div class="dp-meta-item"><div class="dp-meta-label">负责团队</div><div class="dp-meta-value">${esc(m.owner)}</div></div>
+          <div class="dp-meta-item"><div class="dp-meta-label">指标ID</div><div class="dp-meta-value mono" style="font-size:10.5px">${esc(m.id)}</div></div>
+        </div>
+      </div>
+
+      <div class="dp-section">
+        <div class="dp-section-title">取数来源</div>
+        <div class="dp-table">${esc(m.source_table)}</div>
+      </div>
+
+      <div class="dp-section">
+        <div class="dp-section-title">可拆解维度（${m.available_dimensions.length}个）</div>
+        <div class="dp-dims">${dimItems}</div>
+      </div>
+
+      <div class="dp-section">
+        <div class="dp-section-title">标签</div>
+        <div class="dp-tags">${m.tags.map(t => `<span class="dp-tag">${esc(t)}</span>`).join('')}</div>
+      </div>
+
+    </div>
+  `;
+
+  document.getElementById('detail-overlay').classList.add('open');
+  document.getElementById('detail-panel').classList.add('open');
+}
+
+function closeDetail() {
+  document.getElementById('detail-overlay').classList.remove('open');
+  document.getElementById('detail-panel').classList.remove('open');
+  document.querySelectorAll('.mc').forEach(el => el.classList.remove('active'));
+}
+
+/* ── Event Handlers ── */
+function selectCat(cat) {
+  currentCat = cat;
+  renderSidebar();
+  renderGrid();
+}
+
+document.getElementById('search-input').addEventListener('input', e => {
+  searchQuery = e.target.value;
+  renderGrid();
+  document.getElementById('count-label').textContent;
+});
+
+document.querySelectorAll('.hdr-tab').forEach(btn => {
+  btn.addEventListener('click', () => {
+    currentTab = btn.dataset.tab;
+    document.querySelectorAll('.hdr-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const isMetrics = currentTab === 'metrics';
+    document.getElementById('metric-grid').style.display = isMetrics ? '' : 'none';
+    document.getElementById('dim-grid').style.display = isMetrics ? 'none' : '';
+    document.getElementById('sidebar').style.display = isMetrics ? '' : 'none';
+    if (isMetrics) { renderSidebar(); renderGrid(); }
+    else { renderDimGrid(); document.getElementById('count-label').textContent = `${DIMENSIONS.length} 个维度`; }
+    if (!isMetrics) closeDetail();
+  });
+});
+
+/* ── Init ── */
+renderSidebar();
+renderGrid();
+</script>
+</body>
+</html>
