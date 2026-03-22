@@ -1,0 +1,12 @@
+{
+  "name": "dataclaw-weather-mcp",
+  "version": "1.0.0",
+  "description": "DataClaw 天气查询 MCP 服务器 — 基于 Open-Meteo，无需 API Key",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=14"
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "name": "dataclaw-mcp-knowledge",
+  "version": "1.0.0",
+  "description": "DataClaw Knowledge Base MCP Server",
+  "main": "server.js"
+}
