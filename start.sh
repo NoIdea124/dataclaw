@@ -2,12 +2,14 @@
 
 DIR="$(cd "$(dirname "$0")" && pwd)"
 
+echo "启动 DataClaw Server（认证 & 存储）..."
+node "$DIR/dataclaw-server/server.js" &
+
 echo "启动 MCP 服务..."
 node "$DIR/mcp-knowledge/server.js" &
 node "$DIR/mcp-skills/server.js" &
 node "$DIR/mcp-metrics/server.js" &
 node "$DIR/mcp-feishu/server.js" &
-node "$DIR/mcp-requests/server.js" &
 
 echo "等待服务就绪..."
 sleep 2

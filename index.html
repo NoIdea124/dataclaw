@@ -1147,9 +1147,52 @@ textarea.mf-inp{resize:vertical;line-height:1.55;font-size:12px;font-family:var(
 .about-ver{font-size:11.5px;color:var(--txm);font-family:var(--mono)}
 .about-badge{font-size:11px;color:var(--txm);background:var(--bg-hover);border:1px solid var(--border);border-radius:99px;padding:3px 10px}
 @media(max-width:520px){.about-caps{grid-template-columns:1fr 1fr}.about-body{padding:16px 16px 20px}.about-hdr{padding:16px 16px 0}.about-footer{padding:12px 16px}}
+
+/* ── Login overlay ── */
+#dc-login{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:9999;transition:opacity .2s}
+#dc-login.hidden{opacity:0;pointer-events:none}
+.dc-login-card{width:340px;padding:40px 36px 36px;background:var(--bg-card);border:1px solid var(--border);border-radius:16px;box-shadow:0 4px 32px rgba(0,0,0,.12);display:flex;flex-direction:column;gap:20px}
+.dc-login-brand{display:flex;align-items:center;gap:10px}
+.dc-login-brand .brand-mark{width:34px;height:34px;font-size:13px}
+.dc-login-brand .brand-name{font-size:17px;font-weight:700;letter-spacing:-.5px}
+.dc-login-sub{font-size:13px;color:var(--txm);margin-top:-12px}
+.dc-login-field{display:flex;flex-direction:column;gap:6px}
+.dc-login-field label{font-size:12px;font-weight:600;color:var(--tx2)}
+.dc-login-field input{width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--tx);font-size:13.5px;font-family:var(--font);outline:none;transition:border-color .15s}
+.dc-login-field input:focus{border-color:var(--accent)}
+.dc-login-err{font-size:12px;color:#e74c3c;min-height:16px}
+.dc-login-btn{width:100%;padding:10px;background:var(--accent);color:var(--bg);border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;font-family:var(--font);transition:opacity .15s}
+.dc-login-btn:hover{opacity:.85}
+.dc-login-btn:disabled{opacity:.5;cursor:not-allowed}
+/* user chip in header */
+.dc-user-chip{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--txm);padding:4px 8px;border:1px solid var(--border);border-radius:99px;cursor:default}
+.dc-user-chip .ava{width:18px;height:18px;border-radius:50%;background:var(--accent);color:var(--bg);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;flex-shrink:0}
+.dc-user-chip .logout-lnk{font-size:11px;color:var(--txm);cursor:pointer;padding-left:4px;border-left:1px solid var(--border);margin-left:2px}
+.dc-user-chip .logout-lnk:hover{color:var(--tx)}
   </style>
 </head>
 <body>
+
+<!-- Login overlay -->
+<div id="dc-login">
+  <div class="dc-login-card">
+    <div class="dc-login-brand">
+      <div class="brand-mark">DC</div>
+      <span class="brand-name">DataClaw</span>
+    </div>
+    <div class="dc-login-sub">请登录以继续使用</div>
+    <div class="dc-login-field">
+      <label>用户名</label>
+      <input id="dcu" type="text" placeholder="admin" autocomplete="username" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <div class="dc-login-field">
+      <label>密码</label>
+      <input id="dcp" type="password" placeholder="••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <div class="dc-login-err" id="dc-login-err"></div>
+    <button class="dc-login-btn" id="dc-login-btn" onclick="doLogin()">登录</button>
+  </div>
+</div>
 
 <!-- Header -->
 <header class="hdr">
@@ -1174,6 +1217,11 @@ textarea.mf-inp{resize:vertical;line-height:1.55;font-size:12px;font-family:var(
           <svg class="al-ico" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>数据管理
         </a>
       </div>
+    </div>
+    <div class="dc-user-chip" id="dc-user-chip" style="display:none">
+      <div class="ava" id="dc-ava"></div>
+      <span id="dc-uname"></span>
+      <span class="logout-lnk" onclick="doLogout()">退出</span>
     </div>
     <div class="ibtn-wrap">
       <button class="ibtn" id="task-btn" title="任务中心" onclick="toggleTaskPanel()">
@@ -1893,6 +1941,129 @@ dependsOn: 依赖的步骤id数组，sequential可省略（默认按顺序）
 };
 
 /* ═══════════════════════════════════════════
+   AUTH
+═══════════════════════════════════════════ */
+const DS_URL = 'http://127.0.0.1:3470';
+let _dcToken = localStorage.getItem('dc_token') || null;
+let _dcUser  = null;
+
+function dcHeaders() {
+  return _dcToken
+    ? { 'Authorization': `Bearer ${_dcToken}`, 'Content-Type': 'application/json' }
+    : { 'Content-Type': 'application/json' };
+}
+
+function showLoginOverlay(err) {
+  document.getElementById('dc-login').classList.remove('hidden');
+  document.getElementById('dc-login-err').textContent = err || '';
+  document.getElementById('dcu').value = '';
+  document.getElementById('dcp').value = '';
+  setTimeout(() => document.getElementById('dcu').focus(), 80);
+}
+
+function hideLoginOverlay() {
+  document.getElementById('dc-login').classList.add('hidden');
+}
+
+function setUserChip(username) {
+  const chip = document.getElementById('dc-user-chip');
+  if (username) {
+    document.getElementById('dc-ava').textContent   = username[0].toUpperCase();
+    document.getElementById('dc-uname').textContent = username;
+    chip.style.display = 'flex';
+  } else {
+    chip.style.display = 'none';
+  }
+}
+
+async function doLogin() {
+  const username = document.getElementById('dcu').value.trim();
+  const password = document.getElementById('dcp').value;
+  if (!username || !password) { document.getElementById('dc-login-err').textContent = '请输入用户名和密码'; return; }
+  const btn = document.getElementById('dc-login-btn');
+  btn.disabled = true; btn.textContent = '登录中…';
+  try {
+    const res  = await fetch(`${DS_URL}/api/auth/login`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ username, password }) });
+    const data = await res.json();
+    if (!res.ok) { document.getElementById('dc-login-err').textContent = data.error || '登录失败'; return; }
+    _dcToken = data.token;
+    _dcUser  = { username: data.username, role: data.role };
+    localStorage.setItem('dc_token', _dcToken);
+    setUserChip(data.username);
+    hideLoginOverlay();
+    await syncFromServer();
+    startApp();
+  } catch {
+    document.getElementById('dc-login-err').textContent = '无法连接 DataClaw Server';
+  } finally {
+    btn.disabled = false; btn.textContent = '登录';
+  }
+}
+
+async function doLogout() {
+  await fetch(`${DS_URL}/api/auth/logout`, { method:'POST', headers: dcHeaders() }).catch(() => {});
+  _dcToken = null; _dcUser = null;
+  localStorage.removeItem('dc_token');
+  setUserChip(null);
+  showLoginOverlay();
+}
+
+async function checkDcAuth() {
+  if (!_dcToken) return false;
+  try {
+    const res = await fetch(`${DS_URL}/api/auth/me`, { headers: dcHeaders() });
+    if (!res.ok) { _dcToken = null; localStorage.removeItem('dc_token'); return false; }
+    const data = await res.json();
+    _dcUser = data;
+    setUserChip(data.username);
+    return true;
+  } catch {
+    // dataclaw-server not running, allow offline use
+    return 'offline';
+  }
+}
+
+async function fetchServerData(key) {
+  try {
+    const res = await fetch(`${DS_URL}/api/data/${key}`, { headers: dcHeaders() });
+    if (!res.ok) return null;
+    return await res.json();
+  } catch { return null; }
+}
+
+async function pushServerData(key, value) {
+  if (!_dcToken) return;
+  fetch(`${DS_URL}/api/data/${key}`, { method:'POST', headers: dcHeaders(), body: JSON.stringify(value) }).catch(() => {});
+}
+
+async function syncFromServer() {
+  const [msgs, mems, kbData, tasksData] = await Promise.all([
+    fetchServerData('messages'),
+    fetchServerData('memories'),
+    fetchServerData('kb'),
+    fetchServerData('tasks'),
+  ]);
+  if (Array.isArray(msgs))     { allMsgs  = msgs;      try { localStorage.setItem(MSG_KEY,  JSON.stringify(allMsgs)); } catch(_){} }
+  if (Array.isArray(mems))     { memories = mems;      try { localStorage.setItem(MEM_KEY,  JSON.stringify(memories)); } catch(_){} }
+  if (Array.isArray(kbData))   { kb       = kbData;    try { localStorage.setItem(KB_KEY,   JSON.stringify(kb)); } catch(_){} }
+  if (Array.isArray(tasksData)){ tasks    = tasksData; try { localStorage.setItem(TASK_KEY, JSON.stringify(tasks)); } catch(_){} }
+}
+
+async function initDcAuth() {
+  const status = await checkDcAuth();
+  if (status === 'offline') {
+    // No server — proceed with localStorage data
+    hideLoginOverlay();
+    startApp();
+  } else if (status === true) {
+    await syncFromServer();
+    startApp();
+  } else {
+    showLoginOverlay();
+  }
+}
+
+/* ═══════════════════════════════════════════
    STORAGE
 ═══════════════════════════════════════════ */
 const MSG_KEY   = 'dc_msgs_v2';
@@ -1923,15 +2094,16 @@ function saveMsgs(a)   {
     try{ localStorage.setItem(MSG_KEY,JSON.stringify(t)); toast('存储空间不足，已自动清理最早消息'); }
     catch(_){ toast('存储空间已满，消息未能保存'); }
   }
+  pushServerData('messages', a);
 }
 function loadMems()    { try{ return JSON.parse(localStorage.getItem(MEM_KEY)||'[]'); }catch(_){ return []; } }
-function saveMems(a)   { try{ localStorage.setItem(MEM_KEY, JSON.stringify(a)); }catch(e){} }
+function saveMems(a)   { try{ localStorage.setItem(MEM_KEY, JSON.stringify(a)); }catch(e){} pushServerData('memories', a); }
 function loadSkills()  { try{ return JSON.parse(localStorage.getItem(SKILL_KEY)||'[]'); }catch(_){ return []; } }
 function saveSkills(a) { try{ localStorage.setItem(SKILL_KEY, JSON.stringify(a)); }catch(e){} }
 function loadKB()      { try{ return JSON.parse(localStorage.getItem(KB_KEY)||'[]'); }catch(_){ return []; } }
-function saveKB(a)     { try{ localStorage.setItem(KB_KEY, JSON.stringify(a)); }catch(e){} }
+function saveKB(a)     { try{ localStorage.setItem(KB_KEY, JSON.stringify(a)); }catch(e){} pushServerData('kb', a); }
 function loadTasks()      { try{ return JSON.parse(localStorage.getItem(TASK_KEY)||'[]'); }catch(_){ return []; } }
-function saveTasks(a)     { try{ localStorage.setItem(TASK_KEY, JSON.stringify(a)); }catch(e){} }
+function saveTasks(a)     { try{ localStorage.setItem(TASK_KEY, JSON.stringify(a)); }catch(e){} pushServerData('tasks', a); }
 function loadMCPServers() { try{ return JSON.parse(localStorage.getItem(MCP_KEY)||'[]'); }catch(_){ return []; } }
 function saveMCPServers(a){ try{ localStorage.setItem(MCP_KEY, JSON.stringify(a)); }catch(e){} }
 
@@ -5625,12 +5797,16 @@ document.addEventListener('click', () => {
   document.querySelector('.asset-lib-wrap')?.classList.remove('open');
 });
 
-seedDefaultMCPServers();
-init();
-initTaskScheduler();
-updateMCPCountTab();
-updateThemeIcons();
-document.getElementById('ui').focus();
+function startApp() {
+  seedDefaultMCPServers();
+  init();
+  initTaskScheduler();
+  updateMCPCountTab();
+  updateThemeIcons();
+  document.getElementById('ui').focus();
+}
+
+initDcAuth();
 </script>
 </body>
 </html>

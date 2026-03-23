@@ -2,3 +2,5 @@ node_modules/
 .DS_Store
 *.log
 .claude/
+dataclaw-server/dataclaw.db*
+mcp-requests/data.db*

@@ -543,7 +543,7 @@ body{font-family:var(--font);font-feature-settings:'ss01','cv01';background:var(
 
 <script>
 /* ── Auth ── */
-const AUTH_URL = 'http://127.0.0.1:3465';
+const AUTH_URL = 'http://127.0.0.1:3470';
 let _token = localStorage.getItem('dc_token') || null;
 
 function authHeaders() {
@@ -1710,7 +1710,7 @@ function initDraft(task) {
 }
 
 function syncMcpRequests(callback) {
-  fetch('http://127.0.0.1:3465/api/requests', { headers: authHeaders() })
+  fetch('http://127.0.0.1:3470/api/requests', { headers: authHeaders() })
     .then(r => {
       if (r.status === 401) { showLogin('登录已过期，请重新登录'); throw new Error('401'); }
       return r.json();
@@ -1812,7 +1812,7 @@ function deleteReqTask(e, id) {
   }
   _doRenderReqView(document.getElementById('req-view'));
   // sync deletion to MCP server
-  fetch(`http://127.0.0.1:3465/api/requests/${id}`, { method: 'DELETE', headers: authHeaders() }).catch(() => {});
+  fetch(`http://127.0.0.1:3470/api/requests/${id}`, { method: 'DELETE', headers: authHeaders() }).catch(() => {});
 }
 
 function openNewReq() {
