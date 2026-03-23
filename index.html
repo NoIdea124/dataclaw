@@ -2165,10 +2165,10 @@ const MCP_MARKET = [
       { name: 'get_request',     desc: '根据 ID 获取需求完整详情' },
       { name: 'update_request',  desc: '更新需求字段或流转状态' },
     ],
-    defaultUrl: `${location.protocol}//${location.hostname}:3465`,
+    defaultUrl: `${location.protocol}//${location.hostname}:3470/mcp`,
     defaultHeaders: '',
-    setupNote: '需先在本地启动服务器',
-    setupCmd: 'cd mcp-requests && node server.js',
+    setupNote: '已内置于 dataclaw-server，无需单独启动',
+    setupCmd: 'node dataclaw-server/server.js',
   },
   {
     id: 'metrics',
@@ -5787,6 +5787,18 @@ function saveKBForm() {
 function seedDefaultMCPServers() {
   const defaults = ['feishu', 'requests', 'metrics', 'data-catalog'];
   let changed = false;
+
+  // 迁移：修正旧的 requests URL（3465 → 3470/mcp）
+  const reqItem = MCP_MARKET.find(m => m.id === 'requests');
+  if (reqItem) {
+    mcpServers.forEach(s => {
+      if (s.marketId === 'requests' && s.url !== reqItem.defaultUrl) {
+        s.url = reqItem.defaultUrl;
+        changed = true;
+      }
+    });
+  }
+
   defaults.forEach(marketId => {
     // skip if already added (by url or marketId)
     const item = MCP_MARKET.find(m => m.id === marketId);
