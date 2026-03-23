@@ -434,9 +434,53 @@ body{font-family:var(--font);font-feature-settings:'ss01','cv01';background:var(
 .ad-metric-formula{font-size:11px;color:var(--txm);font-family:var(--mono);background:var(--bg-hover);padding:6px 8px;border-radius:4px;margin-bottom:8px;word-break:break-all}
 .ad-dims{display:flex;gap:4px;flex-wrap:wrap}
 .ad-dim-chip{font-size:10.5px;color:var(--tx2);background:var(--bg-hover);border:1px solid var(--border);padding:2px 8px;border-radius:3px}
+
+/* ── Login overlay ── */
+#login-overlay{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:9999;transition:opacity .2s}
+#login-overlay.hidden{opacity:0;pointer-events:none}
+.login-card{width:340px;padding:40px 36px 36px;background:var(--bg-panel);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh-md);display:flex;flex-direction:column;gap:20px}
+.login-logo{display:flex;align-items:center;gap:10px}
+.login-logo .brand-mark{width:34px;height:34px;font-size:12px}
+.login-logo .brand-name{font-size:16px;font-weight:700;letter-spacing:-.4px}
+.login-title{font-size:13px;color:var(--tx2);margin-top:-10px}
+.login-field{display:flex;flex-direction:column;gap:6px}
+.login-field label{font-size:12px;font-weight:600;color:var(--tx2)}
+.login-field input{width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:var(--r-sm);background:var(--bg);color:var(--tx);font-size:13.5px;font-family:var(--font);outline:none;transition:border-color .15s}
+.login-field input:focus{border-color:var(--accent)}
+.login-err{font-size:12px;color:#e74c3c;min-height:16px}
+.login-btn{width:100%;padding:10px;background:var(--accent);color:var(--bg);border:none;border-radius:var(--r-sm);font-size:14px;font-weight:600;cursor:pointer;font-family:var(--font);transition:opacity .15s}
+.login-btn:hover{opacity:.85}
+.login-btn:disabled{opacity:.5;cursor:not-allowed}
+
+/* ── User badge in toolbar ── */
+.user-badge{display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--tx2);cursor:default}
+.user-badge .avatar{width:26px;height:26px;border-radius:50%;background:var(--accent);color:var(--bg);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
+.logout-btn{font-size:11.5px;color:var(--txm);background:none;border:1px solid var(--border);border-radius:var(--r-xs);padding:3px 8px;cursor:pointer;font-family:var(--font);transition:color .15s,border-color .15s}
+.logout-btn:hover{color:var(--tx);border-color:var(--border-med)}
 </style>
 </head>
 <body>
+
+<!-- Login overlay -->
+<div id="login-overlay">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="brand-mark">AL</div>
+      <span class="brand-name">资产库</span>
+    </div>
+    <div class="login-title">请登录以继续</div>
+    <div class="login-field">
+      <label>用户名</label>
+      <input id="login-username" type="text" placeholder="admin" autocomplete="username" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <div class="login-field">
+      <label>密码</label>
+      <input id="login-password" type="password" placeholder="••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <div class="login-err" id="login-err"></div>
+    <button class="login-btn" id="login-btn" onclick="doLogin()">登录</button>
+  </div>
+</div>
 
 <div class="toolbar">
   <a class="brand" href="#">
@@ -449,7 +493,12 @@ body{font-family:var(--font);font-feature-settings:'ss01','cv01';background:var(
     <button class="tn-item" onclick="switchTab('assets')">数据管理</button>
     <button class="tn-item" onclick="switchTab('request')">需求管理</button>
   </nav>
-  <div class="tb-right">
+  <div class="tb-right" style="display:flex;align-items:center;gap:10px">
+    <div class="user-badge" id="user-badge" style="display:none">
+      <div class="avatar" id="user-avatar"></div>
+      <span id="user-name"></span>
+      <button class="logout-btn" onclick="doLogout()">退出</button>
+    </div>
     <button class="ibtn" id="theme-btn" title="切换主题">◑</button>
   </div>
 </div>
@@ -493,6 +542,92 @@ body{font-family:var(--font);font-feature-settings:'ss01','cv01';background:var(
 </div>
 
 <script>
+/* ── Auth ── */
+const AUTH_URL = 'http://127.0.0.1:3465';
+let _token = localStorage.getItem('dc_token') || null;
+
+function authHeaders() {
+  return _token ? { 'Authorization': `Bearer ${_token}`, 'Content-Type': 'application/json' } : { 'Content-Type': 'application/json' };
+}
+
+function setUser(username) {
+  const badge = document.getElementById('user-badge');
+  const avatar = document.getElementById('user-avatar');
+  const nameEl = document.getElementById('user-name');
+  if (username) {
+    avatar.textContent = username[0].toUpperCase();
+    nameEl.textContent = username;
+    badge.style.display = 'flex';
+  } else {
+    badge.style.display = 'none';
+  }
+}
+
+function showLogin(errMsg) {
+  const overlay = document.getElementById('login-overlay');
+  overlay.classList.remove('hidden');
+  document.getElementById('login-err').textContent = errMsg || '';
+  document.getElementById('login-username').value = '';
+  document.getElementById('login-password').value = '';
+  setTimeout(() => document.getElementById('login-username').focus(), 50);
+}
+
+function hideLogin() {
+  document.getElementById('login-overlay').classList.add('hidden');
+}
+
+async function doLogin() {
+  const username = document.getElementById('login-username').value.trim();
+  const password = document.getElementById('login-password').value;
+  if (!username || !password) { document.getElementById('login-err').textContent = '请输入用户名和密码'; return; }
+  const btn = document.getElementById('login-btn');
+  btn.disabled = true;
+  btn.textContent = '登录中…';
+  try {
+    const res = await fetch(`${AUTH_URL}/api/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password })
+    });
+    const data = await res.json();
+    if (!res.ok) { document.getElementById('login-err').textContent = data.error || '登录失败'; return; }
+    _token = data.token;
+    localStorage.setItem('dc_token', _token);
+    setUser(data.username);
+    hideLogin();
+    syncMcpRequests();
+  } catch {
+    document.getElementById('login-err').textContent = '无法连接服务器';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '登录';
+  }
+}
+
+async function doLogout() {
+  await fetch(`${AUTH_URL}/api/auth/logout`, { method: 'POST', headers: authHeaders() }).catch(() => {});
+  _token = null;
+  localStorage.removeItem('dc_token');
+  setUser(null);
+  showLogin();
+}
+
+async function checkAuth() {
+  if (!_token) { showLogin(); return false; }
+  try {
+    const res = await fetch(`${AUTH_URL}/api/auth/me`, { headers: authHeaders() });
+    if (!res.ok) { _token = null; localStorage.removeItem('dc_token'); showLogin(); return false; }
+    const data = await res.json();
+    setUser(data.username);
+    hideLogin();
+    return true;
+  } catch {
+    // server not running — hide login to allow offline browsing
+    hideLogin();
+    return false;
+  }
+}
+
 /* ── Data ── */
 const DIMENSIONS = [
   { id:'date', name:'日期', display_name:'统计日期', type:'time',
@@ -1575,8 +1710,11 @@ function initDraft(task) {
 }
 
 function syncMcpRequests(callback) {
-  fetch('http://127.0.0.1:3465/api/requests')
-    .then(r => r.json())
+  fetch('http://127.0.0.1:3465/api/requests', { headers: authHeaders() })
+    .then(r => {
+      if (r.status === 401) { showLogin('登录已过期，请重新登录'); throw new Error('401'); }
+      return r.json();
+    })
     .then(mcpList => {
       mcpList.forEach(r => {
         if (reqTasks.find(t => t.id === r.id)) return; // already exists
@@ -1673,6 +1811,8 @@ function deleteReqTask(e, id) {
     currentReqId = null;
   }
   _doRenderReqView(document.getElementById('req-view'));
+  // sync deletion to MCP server
+  fetch(`http://127.0.0.1:3465/api/requests/${id}`, { method: 'DELETE', headers: authHeaders() }).catch(() => {});
 }
 
 function openNewReq() {
@@ -2613,12 +2753,11 @@ function publishTask() {
 }
 
 /* ── Init ── */
-(function() {
+checkAuth().then(() => {
   const hash = location.hash.replace('#', '');
   if (hash.startsWith('request:')) {
     const reqId = hash.slice('request:'.length);
     switchTab('request');
-    // wait for tab render then open the specific request
     setTimeout(() => openReqEdit(reqId), 50);
   } else if (hash === 'assets' || hash === 'request') {
     switchTab(hash);
@@ -2626,7 +2765,7 @@ function publishTask() {
     renderSidebar();
     renderList();
   }
-})();
+});
 
 /* ── PostMessage from DataClaw parent ── */
 window.addEventListener('message', e => {
