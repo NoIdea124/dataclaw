@@ -2189,6 +2189,24 @@ const MCP_MARKET = [
     setupNote: '需先在本地启动服务器',
     setupCmd: 'cd mcp-metrics && node server.js',
   },
+  {
+    id: 'data-catalog',
+    name: '数据资产目录',
+    icon: '🗂️',
+    category: '数据',
+    type: 'local',
+    description: '数据表资产目录，收录 23 张核心数据表，覆盖 ODS/DWD/DWS/ADS 全链路，7 大业务域。支持按关键词/业务域/数据层搜索，查看表字段、关联指标、分区信息和敏感级别。配合"找数"技能可在对话中快速定位数据。',
+    tools: [
+      { name: 'search_tables',    desc: '全文搜索数据表（表名/中文名/业务域/字段/标签），返回相关度评分' },
+      { name: 'get_table_detail', desc: '获取表完整元数据：字段列表、关联指标、分区、敏感级等' },
+      { name: 'list_tables',      desc: '按数据层级列出全部数据表' },
+      { name: 'list_layers',      desc: '各层级表数量和业务域分布统计' },
+    ],
+    defaultUrl: 'http://localhost:3462',
+    defaultHeaders: '',
+    setupNote: '需先在本地启动服务器',
+    setupCmd: 'cd mcp-data && node server.js',
+  },
 ];
 
 function openMCPMarket() {
@@ -5767,7 +5785,7 @@ function saveKBForm() {
    BOOT
 ═══════════════════════════════════════════ */
 function seedDefaultMCPServers() {
-  const defaults = ['feishu', 'requests'];
+  const defaults = ['feishu', 'requests', 'metrics', 'data-catalog'];
   let changed = false;
   defaults.forEach(marketId => {
     // skip if already added (by url or marketId)
