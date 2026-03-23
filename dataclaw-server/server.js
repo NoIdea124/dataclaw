@@ -29,8 +29,9 @@ const crypto   = require('crypto');
 const Database = require('better-sqlite3');
 const path     = require('path');
 
-const PORT    = 3470;
-const DB_PATH = path.join(__dirname, 'dataclaw.db');
+const PORT     = 3470;
+const DB_PATH  = path.join(__dirname, 'dataclaw.db');
+const SITE_URL = process.env.SITE_URL || 'http://localhost:8080';
 
 // ── Database ──────────────────────────────────────────────────────────────────
 const db = new Database(DB_PATH);
@@ -205,7 +206,7 @@ function mcpCreateRequest(args) {
          args.priority||'medium', args.due_date||'', 'draft',
          JSON.stringify(args.dimensions||[]), JSON.stringify(args.metrics||[]), now, now);
   return { success:true, id, message:`需求「${args.title}」已创建`, request: parseReq(db.prepare('SELECT * FROM requests WHERE id=?').get(id)),
-    detail_url:`http://localhost:8080/metric-dict/index.html#request:${id}` };
+    detail_url:`${SITE_URL}/metric-dict/index.html#request:${id}` };
 }
 
 function mcpListRequests(args) {
@@ -217,7 +218,7 @@ function mcpListRequests(args) {
     id:r.id, title:r.title, owner:r.owner, priority:r.priority, status:r.status,
     status_label: STATUS_LBL[r.status]||r.status, due_date:r.due_date, created_at:r.created_at,
     dim_count: JSON.parse(r.dimensions||'[]').length, metric_count: JSON.parse(r.metrics||'[]').length,
-    detail_url: `http://localhost:8080/metric-dict/index.html#request:${r.id}`
+    detail_url: `${SITE_URL}/metric-dict/index.html#request:${r.id}`
   })) };
 }
 
@@ -225,7 +226,7 @@ function mcpGetRequest(args) {
   const r = db.prepare('SELECT * FROM requests WHERE id=?').get(args.id);
   if (!r) return { error:`需求 ${args.id} 不存在` };
   return { ...parseReq(r), status_label: STATUS_LBL[r.status]||r.status,
-    detail_url:`http://localhost:8080/metric-dict/index.html#request:${r.id}` };
+    detail_url:`${SITE_URL}/metric-dict/index.html#request:${r.id}` };
 }
 
 function mcpUpdateRequest(args) {
@@ -391,6 +392,6 @@ const server = http.createServer(async (req, res) => {
   res.writeHead(404); res.end('Not found');
 });
 
-server.listen(PORT, '127.0.0.1', () => {
-  console.log(`[dataclaw-server] http://127.0.0.1:${PORT}  (REST + MCP at /mcp)`);
+server.listen(PORT, '0.0.0.0', () => {
+  console.log(`[dataclaw-server] http://0.0.0.0:${PORT}  (REST + MCP at /mcp)`);
 });

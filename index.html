@@ -1943,7 +1943,7 @@ dependsOn: 依赖的步骤id数组，sequential可省略（默认按顺序）
 /* ═══════════════════════════════════════════
    AUTH
 ═══════════════════════════════════════════ */
-const DS_URL = 'http://127.0.0.1:3470';
+const DS_URL = `${location.protocol}//${location.hostname}:3470`;
 let _dcToken = localStorage.getItem('dc_token') || null;
 let _dcUser  = null;
 
@@ -2070,8 +2070,8 @@ async function initDcAuth() {
 const MSG_KEY   = 'dc_msgs_v2';
 const MEM_KEY   = 'dc_memories_v1';
 const SKILL_KEY    = 'dc_skills_v1'; // kept for migration only
-const SKILLS_SERVER    = 'http://localhost:3458';
-const KNOWLEDGE_SERVER = 'http://localhost:3459';
+const SKILLS_SERVER    = `${location.protocol}//${location.hostname}:3458`;
+const KNOWLEDGE_SERVER = `${location.protocol}//${location.hostname}:3459`;
 
 // Maps knowledge tool names → source ID for enable/disable filtering
 const KB_TOOL_SOURCE_MAP = {
@@ -2147,7 +2147,7 @@ const MCP_MARKET = [
       { name: 'write_content',   desc: '向文档追加内容块（标题/正文/列表/代码等）' },
       { name: 'get_document_info', desc: '查询文档标题、版本和链接' },
     ],
-    defaultUrl: 'http://localhost:3461',
+    defaultUrl: `${location.protocol}//${location.hostname}:3461`,
     defaultHeaders: '',
     setupNote: '需先在本地启动服务器',
     setupCmd: 'cd mcp-feishu && node server.js',
@@ -2165,7 +2165,7 @@ const MCP_MARKET = [
       { name: 'get_request',     desc: '根据 ID 获取需求完整详情' },
       { name: 'update_request',  desc: '更新需求字段或流转状态' },
     ],
-    defaultUrl: 'http://localhost:3465',
+    defaultUrl: `${location.protocol}//${location.hostname}:3465`,
     defaultHeaders: '',
     setupNote: '需先在本地启动服务器',
     setupCmd: 'cd mcp-requests && node server.js',
@@ -2184,7 +2184,7 @@ const MCP_MARKET = [
       { name: 'list_dimensions',   desc: '查看指标可用维度或全部维度定义' },
       { name: 'list_categories',   desc: '指标分类统计概览' },
     ],
-    defaultUrl: 'http://localhost:3464',
+    defaultUrl: `${location.protocol}//${location.hostname}:3464`,
     defaultHeaders: '',
     setupNote: '需先在本地启动服务器',
     setupCmd: 'cd mcp-metrics && node server.js',
@@ -2202,7 +2202,7 @@ const MCP_MARKET = [
       { name: 'list_tables',      desc: '按数据层级列出全部数据表' },
       { name: 'list_layers',      desc: '各层级表数量和业务域分布统计' },
     ],
-    defaultUrl: 'http://localhost:3462',
+    defaultUrl: `${location.protocol}//${location.hostname}:3462`,
     defaultHeaders: '',
     setupNote: '需先在本地启动服务器',
     setupCmd: 'cd mcp-data && node server.js',

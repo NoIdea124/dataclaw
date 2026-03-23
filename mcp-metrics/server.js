@@ -542,7 +542,7 @@ const server = http.createServer((req, res) => {
   });
 });
 
-server.listen(PORT, '127.0.0.1', () => {
+server.listen(PORT, '0.0.0.0', () => {
   console.log('\n  📐  指标字典 MCP Server 已启动\n');
   console.log(`  端点：http://localhost:${PORT}`);
   console.log(`  指标：${METRICS.length} 个  |  维度：${DIMENSIONS.length} 个\n`);
