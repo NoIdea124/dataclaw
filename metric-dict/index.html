@@ -63,7 +63,7 @@ body{font-family:var(--font);font-feature-settings:'ss01','cv01';background:var(
 /* ── Toolbar ── */
 .toolbar{height:52px;padding:0 18px;display:flex;align-items:center;gap:12px;background:var(--bg-panel);border-bottom:1px solid var(--border);flex-shrink:0;transition:background var(--t),border-color var(--t)}
 .brand{display:flex;align-items:center;gap:9px;flex-shrink:0;text-decoration:none}
-.brand-mark{width:28px;height:28px;border-radius:7px;background:#7c3aed;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;font-family:var(--mono);color:#fff;letter-spacing:-.3px;flex-shrink:0}
+.brand-mark{width:30px;height:30px;border-radius:8px;background:#111;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:11px;font-weight:800;color:#fff;font-family:var(--mono);letter-spacing:-.5px;user-select:none}
 .brand-name{font-size:14.5px;font-weight:700;letter-spacing:-.3px;color:var(--tx);white-space:nowrap;transition:color var(--t)}
 .brand-tag{font-size:10px;font-weight:500;letter-spacing:.4px;text-transform:uppercase;color:var(--txm);background:var(--bg-hover);border:1px solid var(--border);padding:2px 6px;border-radius:3px;white-space:nowrap}
 .brand-sep{width:1px;height:16px;background:var(--border);flex-shrink:0}
@@ -82,8 +82,9 @@ body{font-family:var(--font);font-feature-settings:'ss01','cv01';background:var(
 .ibtn{width:30px;height:30px;border:1px solid var(--border);background:none;border-radius:var(--r-xs);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--tx2);transition:all var(--t);font-size:14px;line-height:1}
 .ibtn:hover{border-color:var(--border-med);color:var(--tx);background:var(--bg-hover)}
 /* ── Search strip ── */
-.search-strip{padding:8px 16px;border-bottom:1px solid var(--border);background:var(--bg-panel);display:flex;align-items:center;gap:10px;flex-shrink:0;transition:background var(--t),border-color var(--t)}
-.search-strip .srch{flex:1;width:auto}
+.search-strip{padding:14px 16px;border-bottom:1px solid var(--border);background:var(--bg-panel);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-shrink:0;transition:background var(--t),border-color var(--t)}
+.search-strip-ttl{font-size:14px;font-weight:700;color:var(--tx);letter-spacing:-.2px;white-space:nowrap}
+.search-strip .srch{flex:0 0 auto;width:240px}
 /* ── Sidebar sub-tabs (指标/维度) ── */
 .sb-subtabs{display:flex;gap:3px;padding:3px;background:var(--bg-hover);border:1px solid var(--border);border-radius:var(--r-xs);margin-bottom:10px}
 .sb-stab{flex:1;padding:5px 0;border:none;background:none;font-size:12px;font-weight:500;color:var(--txm);cursor:pointer;border-radius:3px;font-family:var(--font);transition:all var(--t)}
@@ -137,7 +138,11 @@ body{font-family:var(--font);font-feature-settings:'ss01','cv01';background:var(
 .mr-desc{font-size:12px;color:var(--tx2);line-height:1.55;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
 /* Right chips column */
-.mr-chips{display:flex;align-items:center;gap:5px;justify-content:flex-end;flex-wrap:wrap}
+.mr-chips{display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+.mr-chips-row{display:flex;align-items:center;gap:5px;justify-content:flex-end;flex-wrap:wrap}
+.mr-owners{display:flex;flex-direction:column;gap:2px;align-items:flex-end}
+.mr-owner-item{font-size:10.5px;color:var(--txm);white-space:nowrap}
+.mr-owner-item strong{color:var(--tx2);font-weight:500}
 .chip{font-size:10.5px;color:var(--txm);background:var(--bg-hover);border:1px solid var(--border);padding:2px 8px;border-radius:3px;font-family:var(--mono);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px;transition:background var(--t),border-color var(--t)}
 .chip-unit{color:var(--tx2);border-color:var(--border-med)}
 
@@ -228,7 +233,7 @@ body{font-family:var(--font);font-feature-settings:'ss01','cv01';background:var(
 .rep-back:hover{border-color:var(--border-med);color:var(--tx);background:var(--bg-hover)}
 .rep-hdr-title{flex:1;min-width:0;font-size:14px;font-weight:700;color:var(--tx);letter-spacing:-.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .rep-scroll{flex:1;overflow-y:auto}
-.rep-inner{max-width:700px;margin:0 auto;padding:24px 24px 8px}
+.rep-inner{max-width:1200px;margin:0 auto;padding:24px 32px 8px}
 .rep-step{margin-bottom:20px}
 .rep-footer{padding:11px 24px;border-top:1px solid var(--border);background:var(--bg-panel);display:flex;align-items:center;gap:8px;flex-shrink:0;transition:background var(--t),border-color var(--t)}
 /* ── Requirements View ── */
@@ -240,14 +245,19 @@ body{font-family:var(--font);font-feature-settings:'ss01','cv01';background:var(
 .req-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;height:220px;color:var(--txm);font-size:13px}
 .req-empty-icon{font-size:28px;color:var(--txd);margin-bottom:12px}
 .req-list{border:1px solid var(--border);border-radius:var(--r);overflow:hidden;box-shadow:var(--sh-xs)}
-.req-row{display:flex;align-items:center;padding:12px 16px;border-bottom:1px solid var(--border);cursor:pointer;gap:12px;transition:background var(--t);background:var(--bg-card)}
+.req-row{display:flex;align-items:center;padding:12px 16px;border-bottom:1px solid var(--border);cursor:pointer;gap:12px;transition:background var(--t);background:var(--bg-card);position:relative}
 .req-row:last-child{border-bottom:none}
 .req-row:hover{background:var(--bg-hover)}
+.req-row-del{display:none;align-items:center;justify-content:center;width:26px;height:26px;border-radius:var(--r-xs);border:none;background:none;cursor:pointer;color:var(--txd);transition:background var(--t),color var(--t);flex-shrink:0;padding:0}
+.req-row-del:hover{background:rgba(220,38,38,.1);color:#dc2626}
+.req-row:hover .req-row-del{display:flex}
 .req-row-info{flex:1;min-width:0}
 .req-row-title{font-size:13px;font-weight:650;color:var(--tx);letter-spacing:-.2px;margin-bottom:3px}
 .req-row-meta{font-size:11px;color:var(--txm);display:flex;gap:12px}
 .req-badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:3px;font-size:10.5px;font-weight:600;white-space:nowrap;flex-shrink:0}
 .req-badge.draft{background:rgba(107,114,128,.1);color:#6b7280}
+.req-badge.reviewing{background:rgba(245,158,11,.1);color:#d97706}
+.req-badge.testing{background:rgba(124,58,237,.1);color:#7c3aed}
 .req-badge.in_dev{background:rgba(37,99,235,.1);color:#2563eb}
 .req-badge.published{background:rgba(5,150,105,.1);color:#059669}
 /* ── Req Panel ── */
@@ -274,26 +284,45 @@ body{font-family:var(--font);font-feature-settings:'ss01','cv01';background:var(
 .rp-sec:first-child{margin-top:0}
 .rp-sec::after{content:'';flex:1;height:1px;background:var(--border)}
 .fg{margin-bottom:11px}
+.rep-form{max-width:680px}
 .fr2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:11px}
 .flbl{display:block;font-size:10.5px;font-weight:600;color:var(--txm);letter-spacing:.15px;margin-bottom:4px}
 .finp{width:100%;height:32px;background:var(--bg-hover);border:1px solid var(--border);border-radius:var(--r-xs);padding:0 10px;color:var(--tx);font-size:12.5px;font-family:var(--font);outline:none;transition:border-color var(--t),background var(--t)}
 .finp:focus{background:var(--bg-card);border-color:var(--border-med)}
 .fta{width:100%;height:66px;background:var(--bg-hover);border:1px solid var(--border);border-radius:var(--r-xs);padding:8px 10px;color:var(--tx);font-size:12.5px;font-family:var(--font);outline:none;resize:vertical;line-height:1.55;transition:border-color var(--t),background var(--t)}
 .fta:focus{background:var(--bg-card);border-color:var(--border-med)}
-/* meta table */
-.meta-wrap{border:1px solid var(--border);border-radius:var(--r-sm);overflow:auto;margin-bottom:8px;max-height:270px}
+/* meta table – Excel style */
+.meta-wrap{border:1px solid var(--border);border-radius:var(--r-sm);overflow:auto;margin-bottom:8px;max-height:420px}
 .meta-tbl{border-collapse:collapse;font-size:11.5px;min-width:100%}
-.meta-tbl th{padding:6px 7px;background:var(--bg-hdr);font-size:9.5px;font-weight:600;color:var(--txm);letter-spacing:.4px;text-transform:uppercase;text-align:left;border-bottom:1px solid var(--border);white-space:nowrap;position:sticky;top:0;z-index:2}
-.meta-tbl td{padding:3px 4px;border-bottom:1px solid var(--border);vertical-align:middle}
+.meta-tbl th{padding:5px 8px;background:var(--bg-hdr);font-size:10px;font-weight:600;color:var(--txm);text-align:left;white-space:nowrap;position:sticky;top:0;z-index:2;border-right:1px solid var(--border);border-bottom:1px solid var(--border-med);user-select:none}
+.meta-tbl td{padding:0;border-right:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:middle;background:var(--bg-card)}
 .meta-tbl tbody tr:last-child td{border-bottom:none}
-.meta-tbl tbody tr:hover td{background:var(--bg-hover)}
-.ti{width:100%;height:26px;background:transparent;border:1px solid transparent;border-radius:3px;padding:0 5px;color:var(--tx);font-size:11.5px;font-family:var(--font);outline:none}
-.ti:focus{background:var(--bg-card);border:1px solid var(--border-med)}
+.meta-tbl tbody tr:hover td{background:rgba(37,99,235,.03)}
+.meta-tbl td:focus-within{outline:2px solid var(--accent);outline-offset:-2px;position:relative;z-index:3;background:var(--bg-card)!important}
+/* tag-select */
+.tag-sel{position:relative;display:inline-flex;align-items:center;padding:3px 5px;cursor:pointer;user-select:none;min-width:100%;box-sizing:border-box}
+.tag-sel.ro{cursor:default}
+.tag-chip{display:inline-flex;align-items:center;gap:2px;border-radius:3px;padding:2px 7px;font-size:11px;font-weight:500;line-height:1.5;white-space:nowrap}
+.tag-arr{font-size:8px;opacity:.4;margin-left:2px}
+.tc-cat{background:rgba(37,99,235,.1);color:#2563eb}
+.tc-num{background:rgba(124,58,237,.1);color:#7c3aed}
+.tc-bool{background:rgba(5,150,105,.1);color:#059669}
+.tc-up{background:rgba(5,150,105,.1);color:#059669}
+.tc-down{background:rgba(220,38,38,.1);color:#dc2626}
+.tc-unit{background:var(--bg-hover);color:var(--tx2);border:1px solid var(--border)}
+.tc-empty{color:var(--txd)}
+.tag-dd{position:absolute;top:calc(100% + 2px);left:0;background:var(--bg-panel);border:1px solid var(--border-med);border-radius:var(--r-xs);box-shadow:var(--sh-md);z-index:300;overflow:hidden;display:none;min-width:max-content}
+.tag-dd.open{display:block}
+.tag-opt{padding:5px 10px;cursor:pointer;display:flex;align-items:center}
+.tag-opt:hover{background:var(--bg-hover)}
+.tag-opt.cur .tag-chip{outline:1.5px solid currentColor;outline-offset:1px}
+.ti{width:100%;height:28px;background:transparent;border:none;padding:0 6px;color:var(--tx);font-size:11.5px;font-family:var(--font);outline:none;display:block}
 .ti::placeholder{color:var(--txd)}
-.ts{height:26px;background:transparent;border:1px solid transparent;border-radius:3px;padding:0 3px;color:var(--tx);font-size:11.5px;font-family:var(--font);outline:none;cursor:pointer;width:100%}
-.ts:focus{background:var(--bg-card);border:1px solid var(--border-med)}
-.tbl-del{width:22px;height:22px;background:none;border:none;cursor:pointer;color:var(--txm);font-size:11px;border-radius:3px;display:flex;align-items:center;justify-content:center;transition:color var(--t),background var(--t)}
-.tbl-del:hover{color:#dc2626;background:rgba(220,38,38,.08)}
+.ts{height:28px;background:transparent;border:none;padding:0 5px;color:var(--tx);font-size:11.5px;font-family:var(--font);outline:none;cursor:pointer;width:100%;display:block}
+.tbl-del{width:16px;height:100%;background:none;border:none;cursor:pointer;color:var(--txd);font-size:11px;display:flex;align-items:center;justify-content:center;transition:color var(--t),background var(--t);padding:0}
+.tbl-del:hover{color:#dc2626}
+.row-del-td{padding:0!important;text-align:center;vertical-align:middle}
+.meta-tbl th:last-child,.meta-tbl td:last-child{border-right:none}
 .btn-add-row{display:flex;align-items:center;justify-content:center;gap:5px;padding:7px;border:1px dashed var(--border);border-radius:var(--r-xs);background:none;color:var(--txm);font-size:11.5px;font-family:var(--font);cursor:pointer;width:100%;transition:all var(--t)}
 .btn-add-row:hover{border-color:var(--border-med);color:var(--tx2);background:var(--bg-hover)}
 /* ── Autocomplete ── */
@@ -334,13 +363,18 @@ body{font-family:var(--font);font-feature-settings:'ss01','cv01';background:var(
 .btn-sec{height:30px;padding:0 12px;background:none;border:1px solid var(--border);border-radius:var(--r-xs);font-size:12px;font-weight:500;cursor:pointer;font-family:var(--font);color:var(--tx2);transition:all var(--t)}
 .btn-sec:hover{border-color:var(--border-med);color:var(--tx)}
 
-/* ── Spreadsheet: fixed-layout + column resize ── */
+/* ── Spreadsheet: fixed-layout + frozen first column ── */
 .meta-tbl{table-layout:fixed}
-.col-rz{position:absolute;right:0;top:0;bottom:0;width:5px;cursor:col-resize;z-index:3;background:transparent;transition:background var(--t)}
-.col-rz:hover,.col-rz.rz-on{background:var(--accent);opacity:.35}
+.meta-tbl th:first-child{position:sticky;left:0;z-index:4;background:var(--bg-hdr);border-right:2px solid var(--border-med)!important}
+.meta-tbl td:first-child{position:sticky;left:0;z-index:1;background:var(--bg-card);border-right:2px solid var(--border)!important}
+.meta-tbl tbody tr:hover td:first-child{background:rgba(37,99,235,.03)}
+.meta-tbl td:first-child:focus-within{background:var(--bg-card)!important}
+.col-rz{position:absolute;right:0;top:0;bottom:0;width:6px;cursor:col-resize;z-index:3;background:transparent;transition:background var(--t)}
+.col-rz::after{content:'';position:absolute;right:1px;top:20%;bottom:20%;width:2px;border-radius:1px;background:var(--border);opacity:0;transition:opacity var(--t)}
+.meta-tbl th:hover .col-rz::after{opacity:1}
+.col-rz:hover::after,.col-rz.rz-on::after{background:var(--accent);opacity:1!important}
 /* ── Contenteditable cells ── */
-.tc{display:block;min-height:26px;padding:2px 6px;outline:none;border-radius:3px;border:1px solid transparent;color:var(--tx);font-size:11.5px;font-family:var(--font);word-break:break-word;white-space:pre-wrap;cursor:text;line-height:1.5;transition:border-color var(--t),background var(--t);overflow-wrap:anywhere}
-.tc:focus{background:var(--bg-card);border-color:var(--border-med)}
+.tc{display:block;min-height:28px;padding:3px 6px;outline:none;border:none;color:var(--tx);font-size:11.5px;font-family:var(--font);word-break:break-word;white-space:pre-wrap;cursor:text;line-height:1.5;overflow-wrap:anywhere}
 .tc:empty::before{content:attr(data-ph);color:var(--txd);pointer-events:none;font-weight:400}
 .tc a{color:#2563eb;text-decoration:underline;word-break:break-all}
 [data-theme="dark"] .tc a{color:#60a5fa}
@@ -353,12 +387,14 @@ body{font-family:var(--font);font-feature-settings:'ss01','cv01';background:var(
 .fmt-sep{width:1px;height:16px;background:var(--border);margin:0 2px;flex-shrink:0}
 
 /* ── Assets view ── */
-.assets-view{height:100%;overflow-y:auto;background:var(--bg);transition:background var(--t)}
-.assets-toolbar{padding:14px 16px 0;display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
-.assets-ttl{font-size:14px;font-weight:700;color:var(--tx);letter-spacing:-.2px}
+.assets-view{height:100%;overflow-y:auto;background:var(--bg);transition:background var(--t);position:relative}
+.assets-toolbar{padding:14px 16px 0;display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;gap:12px}
+.assets-ttl{font-size:14px;font-weight:700;color:var(--tx);letter-spacing:-.2px;white-space:nowrap}
+.assets-search{flex:1;max-width:280px;height:28px;border:1px solid var(--border);border-radius:6px;background:var(--bg-hover);color:var(--tx);font-size:12px;padding:0 10px;outline:none;transition:border-color var(--t)}
+.assets-search:focus{border-color:var(--accent)}
 .assets-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:10px;padding:12px 16px 20px}
-.asset-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r);padding:14px 15px;box-shadow:var(--sh-xs);transition:background var(--t),border-color var(--t),box-shadow var(--t);cursor:default}
-.asset-card:hover{box-shadow:var(--sh-sm);border-color:var(--border-med)}
+.asset-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r);padding:14px 15px;box-shadow:var(--sh-xs);transition:background var(--t),border-color var(--t),box-shadow var(--t);cursor:pointer}
+.asset-card:hover{box-shadow:var(--sh-sm);border-color:var(--accent)}
 .asset-top{display:flex;align-items:center;gap:8px;margin-bottom:9px}
 .asset-layer{display:inline-flex;align-items:center;padding:2px 7px;border-radius:3px;font-size:9.5px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;flex-shrink:0}
 .layer-ods{background:rgba(107,114,128,.1);color:#6b7280}
@@ -375,20 +411,43 @@ body{font-family:var(--font);font-feature-settings:'ss01','cv01';background:var(
 .asset-stat strong{color:var(--tx2);font-weight:600}
 .asset-linked{display:flex;gap:4px;flex-wrap:wrap}
 .asset-linked-chip{font-size:10.5px;color:var(--txm);background:var(--bg-hover);border:1px solid var(--border);padding:2px 7px;border-radius:3px;font-family:var(--mono);white-space:nowrap}
+/* ── Asset detail ── */
+.asset-detail{position:absolute;inset:0;background:var(--bg);overflow-y:auto;z-index:10;animation:fadeIn .15s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateX(12px)}to{opacity:1;transform:none}}
+.ad-header{display:flex;align-items:center;gap:10px;padding:14px 16px 12px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg);z-index:1}
+.ad-back{display:flex;align-items:center;gap:4px;font-size:12px;color:var(--txm);cursor:pointer;padding:4px 8px;border-radius:5px;border:none;background:none;transition:all var(--t)}
+.ad-back:hover{background:var(--bg-hover);color:var(--tx)}
+.ad-title{font-size:14px;font-weight:700;color:var(--tx);font-family:var(--mono);letter-spacing:-.2px}
+.ad-body{padding:16px}
+.ad-section{margin-bottom:20px}
+.ad-section-ttl{font-size:11px;font-weight:700;color:var(--txm);letter-spacing:.5px;text-transform:uppercase;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+.ad-meta-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px}
+.ad-meta-item{background:var(--bg-card);border:1px solid var(--border);border-radius:6px;padding:10px 12px}
+.ad-meta-label{font-size:10.5px;color:var(--txm);margin-bottom:3px}
+.ad-meta-value{font-size:12.5px;font-weight:600;color:var(--tx)}
+.ad-metric-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px;margin-bottom:8px}
+.ad-metric-top{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.ad-metric-name{font-size:13px;font-weight:700;color:var(--tx)}
+.ad-metric-unit{font-size:10.5px;color:var(--txm);background:var(--bg-hover);border:1px solid var(--border);padding:1px 6px;border-radius:3px}
+.ad-metric-cat{font-size:10.5px;color:var(--accent);font-weight:600}
+.ad-metric-desc{font-size:12px;color:var(--tx2);line-height:1.5;margin-bottom:8px}
+.ad-metric-formula{font-size:11px;color:var(--txm);font-family:var(--mono);background:var(--bg-hover);padding:6px 8px;border-radius:4px;margin-bottom:8px;word-break:break-all}
+.ad-dims{display:flex;gap:4px;flex-wrap:wrap}
+.ad-dim-chip{font-size:10.5px;color:var(--tx2);background:var(--bg-hover);border:1px solid var(--border);padding:2px 8px;border-radius:3px}
 </style>
 </head>
 <body>
 
 <div class="toolbar">
   <a class="brand" href="#">
-    <div class="brand-mark">MD</div>
+    <div class="brand-mark">AL</div>
     <span class="brand-name">资产库</span>
   </a>
   <div class="brand-sep"></div>
   <nav class="top-nav" id="top-nav">
     <button class="tn-item active" onclick="switchTab('search')">指标管理</button>
-    <button class="tn-item" onclick="switchTab('request')">需求管理</button>
     <button class="tn-item" onclick="switchTab('assets')">数据管理</button>
+    <button class="tn-item" onclick="switchTab('request')">需求管理</button>
   </nav>
   <div class="tb-right">
     <button class="ibtn" id="theme-btn" title="切换主题">◑</button>
@@ -399,11 +458,11 @@ body{font-family:var(--font);font-feature-settings:'ss01','cv01';background:var(
   <nav class="sidebar" id="sidebar"></nav>
   <main class="main" id="main">
     <div class="search-strip" id="search-strip">
+      <span class="search-strip-ttl">指标字典<span class="tb-count" id="count-label" style="font-size:11px;font-weight:400;margin-left:6px"></span></span>
       <div class="srch">
         <span class="srch-ico">⌕</span>
         <input type="text" id="search-input" placeholder="搜索指标名称、取数表、标签…" autocomplete="off">
       </div>
-      <span class="tb-count" id="count-label"></span>
     </div>
     <div id="metric-list"></div>
     <div id="dim-grid" class="dim-grid" style="display:none"></div>
@@ -797,10 +856,10 @@ let metricColWidths = [];
 let _rzState = null; // { tableId, colIdx, startX, startW }
 
 function _defaultDimW(showSrc) {
-  return showSrc ? [132,70,78,158,108,56,26] : [132,70,78,180,56,26];
+  return showSrc ? [60,70,158,108,16] : [60,70,200,16];
 }
 function _defaultMetW(showSrc) {
-  return showSrc ? [132,76,52,70,158,132,108,56,26] : [132,76,52,70,168,132,56,26];
+  return showSrc ? [60,52,70,158,132,108,16] : [60,52,70,188,132,16];
 }
 function _applyColWidths(tableId, widths) {
   const tbl = document.getElementById(tableId);
@@ -993,6 +1052,23 @@ function renderSidebar() {
 }
 
 /* ── Metric List ── */
+const OWNER_MAP = {
+  '增长分析组':  { biz:'王磊',  tech:'李强'  },
+  '用户运营组':  { biz:'张敏',  tech:'陈博'  },
+  '交易分析组':  { biz:'刘洋',  tech:'赵伟'  },
+  '商品分析组':  { biz:'孙雪',  tech:'吴凯'  },
+  '营销分析组':  { biz:'赵明',  tech:'周鑫'  },
+  '物流分析组':  { biz:'钱华',  tech:'郑杰'  },
+  '物流运营组':  { biz:'钱华',  tech:'冯宇'  },
+  '财务分析组':  { biz:'许敏',  tech:'徐磊'  },
+  '财务中台':    { biz:'许敏',  tech:'蒋涛'  },
+  '流量分析组':  { biz:'蒋浩',  tech:'韩冰'  },
+  '内容组':      { biz:'冯燕',  tech:'邓亮'  },
+};
+function getOwners(team) {
+  return OWNER_MAP[team] || { biz:'—', tech:'—' };
+}
+
 let openId = null;
 function renderList() {
   const filtered = filterMetrics();
@@ -1021,8 +1097,14 @@ function renderList() {
           <div class="mr-desc">${esc(m.description)}</div>
         </div>
         <div class="mr-chips">
-          <span class="chip chip-unit">${esc(m.unit)}</span>
-          <span class="chip">${esc(m.source_table)}</span>
+          <div class="mr-chips-row">
+            <span class="chip chip-unit">${esc(m.unit)}</span>
+            <span class="chip">${esc(m.source_table)}</span>
+          </div>
+          <div class="mr-owners">
+            <span class="mr-owner-item">业务负责人 <strong>${esc(getOwners(m.owner).biz)}</strong></span>
+            <span class="mr-owner-item">技术负责人 <strong>${esc(getOwners(m.owner).tech)}</strong></span>
+          </div>
         </div>
       </div>`;
     }).join('');
@@ -1110,6 +1192,8 @@ function openDetail(id) {
           <div class="dp-meta-item"><div class="dp-meta-lbl">更新频率</div><div class="dp-meta-val">${esc(m.update_freq)}</div></div>
           <div class="dp-meta-item"><div class="dp-meta-lbl">负责团队</div><div class="dp-meta-val">${esc(m.owner)}</div></div>
           <div class="dp-meta-item"><div class="dp-meta-lbl">指标ID</div><div class="dp-meta-val mono" style="font-size:10.5px">${esc(m.id)}</div></div>
+          <div class="dp-meta-item"><div class="dp-meta-lbl">业务负责人</div><div class="dp-meta-val">${esc(getOwners(m.owner).biz)}</div></div>
+          <div class="dp-meta-item"><div class="dp-meta-lbl">技术负责人</div><div class="dp-meta-val">${esc(getOwners(m.owner).tech)}</div></div>
         </div>
       </div>
       <div class="dp-section">
@@ -1164,6 +1248,7 @@ function switchTab(tab) {
   document.getElementById('metric-list').style.display = isM ? '' : 'none';
   document.getElementById('dim-grid').style.display = isD ? '' : 'none';
   document.getElementById('req-view').style.display = isR ? '' : 'none';
+  document.getElementById('req-edit-view').style.display = 'none';
   document.getElementById('assets-view').style.display = isA ? '' : 'none';
   document.getElementById('search-strip').style.display = isS ? '' : 'none';
   renderSidebar();
@@ -1184,6 +1269,7 @@ document.getElementById('theme-btn').addEventListener('click', () => {
 
 /* ── Assets (数据管理 / 资产字典) ── */
 let currentLayer = 'all';
+let assetSearch = '';
 
 function _getLayer(tableName) {
   const p = (tableName || '').split('_')[0].toLowerCase();
@@ -1192,17 +1278,7 @@ function _getLayer(tableName) {
     || { id:'ods', label: p.toUpperCase() || 'ODS' };
 }
 
-function selectLayer(layer) {
-  currentLayer = layer;
-  renderSidebar();
-  renderAssetsView();
-}
-
-function renderAssetsView() {
-  const el = document.getElementById('assets-view');
-  if (!el) return;
-
-  // Build table catalog: each unique source_table → associated metrics & dims
+function _buildTableMap() {
   const tableMap = {};
   METRICS.forEach(m => {
     if (!m.source_table) return;
@@ -1210,13 +1286,28 @@ function renderAssetsView() {
     tableMap[m.source_table].metrics.push(m);
     if (m.update_freq) tableMap[m.source_table].freqs.add(m.update_freq);
   });
+  return tableMap;
+}
 
+function selectLayer(layer) {
+  currentLayer = layer;
+  renderSidebar();
+  renderAssetsView();
+}
+
+function _buildAssetsGrid() {
+  const tableMap = _buildTableMap();
   let tables = Object.values(tableMap).sort((a,b) => {
     const order = { ods:0, dwd:1, dws:2, ads:3 };
     return (order[_getLayer(a.name).id]||9) - (order[_getLayer(b.name).id]||9) || a.name.localeCompare(b.name);
   });
 
   if (currentLayer !== 'all') tables = tables.filter(t => _getLayer(t.name).id === currentLayer);
+  if (assetSearch.trim()) {
+    const kw = assetSearch.trim().toLowerCase();
+    tables = tables.filter(t => t.name.toLowerCase().includes(kw) ||
+      t.metrics.some(m => m.display_name.toLowerCase().includes(kw) || (m.category||'').toLowerCase().includes(kw)));
+  }
 
   const cards = tables.map(t => {
     const layer = _getLayer(t.name);
@@ -1224,7 +1315,7 @@ function renderAssetsView() {
     const freqStr = [...t.freqs].join(' / ') || '—';
     const shown = t.metrics.slice(0, 4);
     const more = t.metrics.length - shown.length;
-    return `<div class="asset-card">
+    return `<div class="asset-card" onclick="showAssetDetail('${esc(t.name)}')">
       <div class="asset-top">
         <span class="asset-layer layer-${layer.id}">${layer.label}</span>
         <span class="asset-name">${esc(t.name)}</span>
@@ -1241,20 +1332,205 @@ function renderAssetsView() {
     </div>`;
   }).join('');
 
-  el.innerHTML = `
-    <div class="assets-toolbar">
-      <span class="assets-ttl">资产字典
-        <span style="font-size:11px;font-weight:400;color:var(--txm);margin-left:6px">${tables.length} 张表</span>
-      </span>
-    </div>
-    <div class="assets-grid">
-      ${cards || '<div style="padding:20px;color:var(--txm);font-size:13px">暂无数据资产</div>'}
+  return { cards, count: tables.length };
+}
+
+function renderAssetsView() {
+  const el = document.getElementById('assets-view');
+  if (!el) return;
+
+  const { cards, count } = _buildAssetsGrid();
+
+  // First render: build the full shell including toolbar
+  if (!el.querySelector('.assets-toolbar')) {
+    el.innerHTML = `
+      <div class="assets-toolbar">
+        <span class="assets-ttl">资产字典
+          <span id="assets-count" style="font-size:11px;font-weight:400;color:var(--txm);margin-left:6px">${count} 张表</span>
+        </span>
+        <input id="assets-search-input" class="assets-search" type="text" placeholder="搜索表名、指标、业务域…"
+          value="${esc(assetSearch)}" autocomplete="off">
+      </div>
+      <div id="assets-grid" class="assets-grid"></div>`;
+    document.getElementById('assets-search-input').addEventListener('input', function() {
+      assetSearch = this.value;
+      _refreshAssetsGrid();
+    });
+  }
+
+  _refreshAssetsGrid();
+}
+
+function _refreshAssetsGrid() {
+  const grid = document.getElementById('assets-grid');
+  const countEl = document.getElementById('assets-count');
+  if (!grid) return;
+  const { cards, count } = _buildAssetsGrid();
+  grid.innerHTML = cards || '<div style="padding:20px;color:var(--txm);font-size:13px">暂无匹配数据资产</div>';
+  if (countEl) countEl.textContent = count + ' 张表';
+}
+
+function showAssetDetail(tableName) {
+  const tableMap = _buildTableMap();
+  const t = tableMap[tableName];
+  if (!t) return;
+  const el = document.getElementById('assets-view');
+  const layer = _getLayer(t.name);
+  const cats = [...new Set(t.metrics.map(m => m.category))];
+  const freqStr = [...t.freqs].join(' / ') || '—';
+  const owners = [...new Set(t.metrics.map(m => m.owner).filter(Boolean))];
+
+  // Collect all dimension ids used across metrics in this table
+  const allDimIds = [...new Set(t.metrics.flatMap(m => m.available_dimensions || []))];
+  const dimMap = Object.fromEntries(DIMENSIONS.map(d => [d.id, d]));
+
+  const metricCards = t.metrics.map(m => {
+    const dims = (m.available_dimensions || []).map(id => {
+      const d = dimMap[id];
+      return `<span class="ad-dim-chip">${d ? esc(d.display_name) : esc(id)}</span>`;
+    }).join('');
+    return `<div class="ad-metric-card">
+      <div class="ad-metric-top">
+        <span class="ad-metric-name">${esc(m.display_name)}</span>
+        ${m.unit ? `<span class="ad-metric-unit">${esc(m.unit)}</span>` : ''}
+        <span class="ad-metric-cat">${esc(m.category)}</span>
+      </div>
+      <div class="ad-metric-desc">${esc(m.description)}</div>
+      ${m.formula ? `<div class="ad-metric-formula">${esc(m.formula)}</div>` : ''}
+      ${dims ? `<div class="ad-dims">${dims}</div>` : ''}
     </div>`;
+  }).join('');
+
+  const dimSection = allDimIds.length ? allDimIds.map(id => {
+    const d = dimMap[id];
+    if (!d) return '';
+    return `<div class="ad-meta-item">
+      <div class="ad-meta-label">${esc(d.display_name)}</div>
+      <div class="ad-meta-value" style="font-size:11.5px;font-weight:500;color:var(--tx2)">${esc(d.description)}</div>
+    </div>`;
+  }).join('') : '';
+
+  const detail = document.createElement('div');
+  detail.className = 'asset-detail';
+  detail.id = 'asset-detail';
+  detail.innerHTML = `
+    <div class="ad-header">
+      <button class="ad-back" onclick="closeAssetDetail()">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+        返回
+      </button>
+      <span class="asset-layer layer-${layer.id}">${layer.label}</span>
+      <span class="ad-title">${esc(t.name)}</span>
+    </div>
+    <div class="ad-body">
+      <div class="ad-section">
+        <div class="ad-section-ttl">元数据</div>
+        <div class="ad-meta-grid">
+          <div class="ad-meta-item"><div class="ad-meta-label">数据层级</div><div class="ad-meta-value">${layer.label}</div></div>
+          <div class="ad-meta-item"><div class="ad-meta-label">更新频率</div><div class="ad-meta-value">${esc(freqStr)}</div></div>
+          <div class="ad-meta-item"><div class="ad-meta-label">关联指标数</div><div class="ad-meta-value">${t.metrics.length} 个</div></div>
+          <div class="ad-meta-item"><div class="ad-meta-label">业务域</div><div class="ad-meta-value" style="font-size:11.5px">${cats.map(c => esc(c)).join('、') || '—'}</div></div>
+          <div class="ad-meta-item"><div class="ad-meta-label">可用维度数</div><div class="ad-meta-value">${allDimIds.length} 个</div></div>
+          ${owners.length ? `<div class="ad-meta-item"><div class="ad-meta-label">负责团队</div><div class="ad-meta-value" style="font-size:11.5px">${owners.map(o => esc(o)).join('、')}</div></div>` : ''}
+        </div>
+      </div>
+      ${dimSection ? `<div class="ad-section"><div class="ad-section-ttl">维度说明（${allDimIds.length}）</div><div class="ad-meta-grid">${dimSection}</div></div>` : ''}
+      <div class="ad-section">
+        <div class="ad-section-ttl">关联指标（${t.metrics.length}）</div>
+        ${metricCards}
+      </div>
+    </div>`;
+  el.appendChild(detail);
+}
+
+function closeAssetDetail() {
+  const d = document.getElementById('asset-detail');
+  if (d) d.remove();
 }
 
 /* ── Requirements ── */
-const REQ_STATUS_LBL = { draft:'草稿', in_dev:'开发中', published:'已发布' };
-let reqTasks = [];
+const REQ_STATUS_LBL = { draft:'草稿', reviewing:'AI审核中', in_dev:'开发中', testing:'数据测试中', published:'已发布' };
+let reqTasks = [
+  {
+    id:'req_seed001', title:'大促营销效果分析看板',
+    background:'618/双11大促期间营销费用投入显著增加，但 ROI、拉新效果与优惠券核销缺乏统一口径的实时监测体系，导致大促复盘时数据不一致，无法快速定位高效渠道。',
+    benefit:'建立大促营销效果标准指标体系，支持活动期间 T+0 监控和复盘，预计可将营销 ROI 提升 15%，同时降低无效渠道投放比例 20%。',
+    requester:'赵明', assignee:'周鑫',
+    status:'published', createdAt:'2025-01-08T09:00:00.000Z',
+    dimRows:[
+      { display_name:'统计日期', type:'time', category:'时间', description:'活动期间按天统计，支持与往年同期对比。', source_table:'dwd_coupon_usage_di', update_freq:'天' },
+      { display_name:'流量/推广渠道', type:'categorical', category:'营销', description:'区分 SEM、社交媒体、直播、短视频等付费渠道，用于渠道 ROI 横向对比。', source_table:'ads_marketing_roi', update_freq:'天' },
+      { display_name:'RFM用户分群', type:'categorical', category:'用户', description:'区分高价值、成长型、流失风险用户，评估大促对不同用户层的拉动效果。', source_table:'dws_promo_effect_agg', update_freq:'天' }
+    ],
+    metricRows:[
+      { display_name:'营销ROI', category:'营销域', unit:'倍', direction:'up', description:'活动归因 GMV / 营销总投入，大促期间基准值 ≥ 2.5。', source_table:'ads_marketing_roi', update_freq:'天', available_dims:['date','channel','category','user_segment'] },
+      { display_name:'优惠券核销率', category:'营销域', unit:'%', direction:'up', description:'活动期发放优惠券的实际使用比例，反映券的吸引力。', source_table:'dwd_coupon_usage_di', update_freq:'天', available_dims:['date','channel','category','user_segment'] },
+      { display_name:'活动拉新率', category:'营销域', unit:'%', direction:'up', description:'参与活动用户中首购新用户占比，衡量大促拉新效果。', source_table:'dws_promo_effect_agg', update_freq:'天', available_dims:['date','channel','category'] },
+      { display_name:'获客成本 (CAC)', category:'营销域', unit:'元/人', direction:'down', description:'通过付费渠道获取每位新用户的平均成本，目标 ≤ 25 元。', source_table:'ads_marketing_roi', update_freq:'天', available_dims:['date','channel','platform'] }
+    ],
+    step1Review:{ passed:true, feedback:'指标口径清晰，维度覆盖完整，建议在 metricRows 中补充优惠券让利金额作为成本侧指标，以支撑 ROI 分子分母的完整拆解。整体通过，可提交开发。' },
+    step2Test:{ passed:true, feedback:'来源表字段映射正确，dwd_coupon_usage_di 分区键为 dt，ads_marketing_roi 为天级快照表，数据链路验证通过，指标已发布至指标管理。' }
+  },
+  {
+    id:'req_seed002', title:'用户价值分层与留存优化监控',
+    background:'近三个月 7 日留存率连续下滑至 30% 以下，低于行业基准值。现有报表仅展示大盘数据，缺少按渠道、用户分群的精细化留存和复购拆解，导致运营团队无法精准定位流失根因并制定差异化召回策略。',
+    benefit:'构建精细化留存与 RFM 分层监控体系，使运营可按用户价值层制定差异化活动，预计 30 日复购率提升 3 个百分点，高价值用户占比环比提升 2%。',
+    requester:'张敏', assignee:'陈博',
+    status:'in_dev', createdAt:'2025-02-12T10:30:00.000Z',
+    dimRows:[
+      { display_name:'统计日期', type:'time', category:'时间', description:'按自然日统计，支持周/月聚合。', source_table:'dws_user_trade_30d_di', update_freq:'天' },
+      { display_name:'流量/推广渠道', type:'categorical', category:'获客', description:'用于区分不同渠道新用户的留存质量差异。', source_table:'dwd_user_action_log_di', update_freq:'天' },
+      { display_name:'RFM用户分群', type:'categorical', category:'用户价值', description:'RFM 高价值/成长型/睡眠/流失风险分层，是留存分析的核心拆解维度。', source_table:'ads_user_rfm_segment', update_freq:'周' }
+    ],
+    metricRows:[
+      { display_name:'7日用户留存率', category:'用户域', unit:'%', direction:'up', description:'注册后第 7 天仍活跃的用户比例，分渠道对比识别高质量获客来源。', source_table:'dws_user_trade_30d_di', update_freq:'天', available_dims:['date','channel','device','user_segment'] },
+      { display_name:'30日复购率', category:'用户域', unit:'%', direction:'up', description:'近 30 天内产生 2 次及以上购买的用户占比，衡量用户忠诚度。', source_table:'dws_user_trade_30d_di', update_freq:'天', available_dims:['date','category','user_segment','region'] },
+      { display_name:'高价值用户占比', category:'用户域', unit:'%', direction:'up', description:'RFM 高价值用户在全量活跃用户中的占比，用于评估用户资产健康度。', source_table:'ads_user_rfm_segment', update_freq:'周', available_dims:['date','channel','region','category'] }
+    ],
+    step1Review:{ passed:true, feedback:'指标选取与业务目标高度契合，维度拆解合理。建议补充"月活跃用户数"作为分母基准，便于留存率趋势的绝对规模参照。审核通过。' },
+    step2Test:null
+  },
+  {
+    id:'req_seed003', title:'华东区域物流时效精细化监控',
+    background:'华东区域（江苏、浙江、上海）的 48 小时达成率持续低于全国平均水平（全国 87%，华东 79%），物流投诉率也高于均值约 0.4 个百分点。目前缺少省份级别的物流时效拆解，无法精准定位超时订单的根因（仓库发货延迟 vs. 末端配送超时）。',
+    benefit:'省份级物流时效看板上线后，可将华东区域 48 小时达成率提升至 85% 以上，物流投诉率降低 0.3 个百分点，预计减少客服工单 5000+ 条/月。',
+    requester:'钱华', assignee:'',
+    status:'draft', createdAt:'2025-03-10T14:00:00.000Z',
+    dimRows:[
+      { display_name:'收货省份/地区', type:'categorical', category:'地理', description:'精细化到省份，支持进一步聚合为城市等级（一线/新一线/二线）。', source_table:'dwd_logistics_info', update_freq:'天' },
+      { display_name:'商品一级类目', type:'categorical', category:'商品', description:'大件商品与小件商品物流时效差异显著，需按类目分层分析。', source_table:'dwd_logistics_info', update_freq:'天' },
+      { display_name:'统计日期', type:'time', category:'时间', description:'按天统计，支持周同比对比。', source_table:'ads_delivery_performance', update_freq:'天' }
+    ],
+    metricRows:[
+      { display_name:'48小时时效达成率', category:'物流域', unit:'%', direction:'up', description:'按省份拆解的 48 小时签收达成率，目标：华东各省 ≥ 85%。', source_table:'ads_delivery_performance', update_freq:'天', available_dims:['date','region','channel','category'] },
+      { display_name:'物流投诉率', category:'物流域', unit:'%', direction:'down', description:'配送完成订单中产生物流投诉的比例，含超时/破损/丢件。', source_table:'dwd_logistics_info', update_freq:'天', available_dims:['date','region','category'] },
+      { display_name:'平均配送天数', category:'物流域', unit:'天', direction:'down', description:'付款到签收的平均天数，按省内/跨省分层。', source_table:'dwd_logistics_info', update_freq:'天', available_dims:['date','region','category','channel'] },
+      { display_name:'快递签收率', category:'物流域', unit:'%', direction:'up', description:'发出包裹的成功签收比例，低签收率需排查地址问题或拒签原因。', source_table:'ads_delivery_performance', update_freq:'天', available_dims:['date','region','category'] }
+    ],
+    step1Review:null, step2Test:null
+  },
+  {
+    id:'req_seed004', title:'全域流量转化漏斗分析体系',
+    background:'过去两个月各渠道 UV 环比增长 12%，但 UV 转化率从 3.1% 下滑至 2.6%，整体 GMV 增速明显低于流量增速。现有数据散落在流量、商品、订单三张报表中，缺乏从"访问 → 浏览详情 → 加购 → 下单"的统一漏斗视图，无法定位转化断点。',
+    benefit:'建立标准化全域转化漏斗，支持按渠道/设备/商品类目下钻，帮助运营在 1 天内定位转化断点，预计在不增加流量采购成本的前提下，UV 转化率恢复至 3.0% 以上。',
+    requester:'蒋浩', assignee:'韩冰',
+    status:'published', createdAt:'2025-01-25T11:00:00.000Z',
+    dimRows:[
+      { display_name:'流量/推广渠道', type:'categorical', category:'流量', description:'区分 SEO、SEM、社交、直播等渠道，识别各渠道转化效率差异。', source_table:'dws_traffic_channel_agg', update_freq:'天' },
+      { display_name:'终端设备类型', type:'categorical', category:'设备', description:'iOS/Android/PC Web/小程序，用于分析不同端的页面体验和转化差异。', source_table:'dwd_traffic_log_di', update_freq:'天' },
+      { display_name:'商品一级类目', type:'categorical', category:'商品', description:'聚焦转化率低于均值的类目，排查选品和详情页质量问题。', source_table:'dwd_product_behavior_di', update_freq:'天' }
+    ],
+    metricRows:[
+      { display_name:'日独立访客数 (UV)', category:'流量域', unit:'万人', direction:'up', description:'漏斗顶层流量基数，区分渠道/端对比流量结构变化。', source_table:'dws_traffic_channel_agg', update_freq:'天', available_dims:['date','channel','device','platform','region'] },
+      { display_name:'跳出率', category:'流量域', unit:'%', direction:'down', description:'只访问一个页面即离开的会话比例，高跳出率说明首屏体验或落地页质量问题。', source_table:'dwd_traffic_log_di', update_freq:'天', available_dims:['date','channel','device','platform'] },
+      { display_name:'加购率', category:'商品域', unit:'%', direction:'up', description:'浏览详情页后加入购物车的用户比例，是购买意向的中间信号。', source_table:'dwd_product_behavior_di', update_freq:'天', available_dims:['date','category','channel','device','user_segment'] },
+      { display_name:'商品详情页转化率', category:'商品域', unit:'%', direction:'up', description:'浏览详情页后下单的用户比例，直接反映商品内容质量和价格竞争力。', source_table:'dwd_product_behavior_di', update_freq:'天', available_dims:['date','category','channel','device','platform'] },
+      { display_name:'UV转化率', category:'流量域', unit:'%', direction:'up', description:'漏斗底层：全站访客中产生有效订单的比例，是漏斗整体效率的综合指标。', source_table:'ads_funnel_analysis', update_freq:'天', available_dims:['date','channel','category','device','platform','user_segment'] }
+    ],
+    step1Review:{ passed:true, feedback:'漏斗各环节指标覆盖完整，建议在 dimRows 中补充"平台"维度（主站/小程序商城），以支持多平台漏斗横向对比。整体通过。' },
+    step2Test:{ passed:true, feedback:'ads_funnel_analysis 为 T+1 快照表，字段 visitor_id 与 dws_traffic_channel_agg 的 visitor_id 可关联，数据链路验证通过，指标已发布。' }
+  }
+];
 let currentReqId = null;
 let reqDraft = null;
 let reqAiState = null; // { step, status:'idle'|'checking'|'pass'|'fail', message, items }
@@ -1288,6 +1564,8 @@ function initDraft(task) {
     }
     if (!reqDraft.dimRows) reqDraft.dimRows = [emptyDimRow()];
     if (!reqDraft.metricRows) reqDraft.metricRows = [emptyMetricRow()];
+    // Remove legacy time-type rows
+    reqDraft.dimRows = reqDraft.dimRows.filter(r => r.type !== 'time');
   } else {
     reqDraft = { id:null, title:'', background:'', benefit:'', requester:'', assignee:'',
       status:'draft', createdAt:new Date().toISOString(),
@@ -1296,8 +1574,59 @@ function initDraft(task) {
   reqAiState = null;
 }
 
+function syncMcpRequests(callback) {
+  fetch('http://127.0.0.1:3465/api/requests')
+    .then(r => r.json())
+    .then(mcpList => {
+      mcpList.forEach(r => {
+        if (reqTasks.find(t => t.id === r.id)) return; // already exists
+        // map MCP schema → reqTask schema
+        reqTasks.push({
+          id: r.id,
+          title: r.title,
+          background: r.background || '',
+          benefit: r.benefit || '',
+          requester: r.owner || '',
+          assignee: '',
+          priority: r.priority || 'medium',
+          due_date: r.due_date || '',
+          status: r.status || 'draft',
+          createdAt: r.created_at || new Date().toISOString(),
+          dimRows: (r.dimensions || []).map(d => ({
+            display_name: d.display_name || d.name || '',
+            type: d.type || 'categorical',
+            category: '',
+            description: d.description || '',
+            source_table: '',
+            update_freq: ''
+          })),
+          metricRows: (r.metrics || []).map(m => ({
+            display_name: m.display_name || m.name || '',
+            category: '',
+            unit: m.unit || '',
+            direction: m.direction || 'up',
+            description: m.description || '',
+            source_table: '',
+            update_freq: '',
+            available_dims: []
+          })),
+          step1Review: null,
+          step2Test: null
+        });
+      });
+      if (callback) callback();
+    })
+    .catch(() => { if (callback) callback(); }); // ignore if MCP not running
+}
+
 function renderReqView() {
   const el = document.getElementById('req-view');
+  // sync from MCP first, then render
+  syncMcpRequests(() => _doRenderReqView(el));
+}
+
+function _doRenderReqView(el) {
+  if (!el) el = document.getElementById('req-view');
   const sorted = [...reqTasks].sort((a,b) => new Date(b.createdAt)-new Date(a.createdAt));
   const rows = sorted.map(t => {
     const dimCnt = (t.dimRows||[]).length;
@@ -1314,6 +1643,9 @@ function renderReqView() {
         </div>
       </div>
       <span class="req-badge ${t.status}">${REQ_STATUS_LBL[t.status]||t.status}</span>
+      <button class="req-row-del" onclick="deleteReqTask(event,'${esc(t.id)}')" title="删除需求">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+      </button>
     </div>`;
   }).join('');
   el.innerHTML = `
@@ -1325,6 +1657,22 @@ function renderReqView() {
     </div>
     ${rows ? `<div class="req-list">${rows}</div>`
             : '<div class="req-empty"><div class="req-empty-icon">📋</div>暂无需求，点击右上角新建</div>'}`;
+}
+
+function deleteReqTask(e, id) {
+  e.stopPropagation();
+  const task = reqTasks.find(t => t.id === id);
+  if (!task) return;
+  if (!confirm(`确认删除需求「${task.title || '未命名需求'}」？此操作不可撤销。`)) return;
+  reqTasks = reqTasks.filter(t => t.id !== id);
+  // if currently editing this task, close the edit view
+  if (currentReqId === id) {
+    document.getElementById('req-edit-view').style.display = 'none';
+    document.getElementById('req-view').style.display = '';
+    reqDraft = null;
+    currentReqId = null;
+  }
+  _doRenderReqView(document.getElementById('req-view'));
 }
 
 function openNewReq() {
@@ -1363,9 +1711,62 @@ function openReqEdit(id) {
   renderReqEditPage();
 }
 
+function backToDraft() {
+  if (!reqDraft) return;
+  reqDraft.status = 'draft';
+  const idx = reqTasks.findIndex(t => t.id === reqDraft.id);
+  if (idx >= 0) reqTasks[idx] = JSON.parse(JSON.stringify(reqDraft));
+  reqAiState = null;
+  renderReqView();
+  renderReqEditPage();
+}
+
+function submitForReview() {
+  if (!reqDraft) return;
+  if (!reqDraft.title.trim()) {
+    alert('请先填写需求标题');
+    return;
+  }
+  const hasDim = (reqDraft.dimRows||[]).some(r => pt(r.display_name).trim());
+  const hasMet = (reqDraft.metricRows||[]).some(r => pt(r.display_name).trim());
+  if (!hasDim || !hasMet) {
+    alert('请至少录入一条维度和一条指标');
+    return;
+  }
+  reqDraft.status = 'reviewing';
+  const idx = reqTasks.findIndex(t => t.id === reqDraft.id);
+  if (idx >= 0) reqTasks[idx] = JSON.parse(JSON.stringify(reqDraft));
+  reqAiState = null;
+  renderReqView();
+  renderReqEditPage();
+}
+
+function submitForTesting() {
+  if (!reqDraft) return;
+  const dimFilled = (reqDraft.dimRows||[]).some(r => r.source_table && r.source_table.trim());
+  const metFilled = (reqDraft.metricRows||[]).some(r => r.source_table && r.source_table.trim());
+  if (!dimFilled || !metFilled) { alert('请先补录来源表信息'); return; }
+  reqDraft.status = 'testing';
+  const idx = reqTasks.findIndex(t => t.id === reqDraft.id);
+  if (idx >= 0) reqTasks[idx] = JSON.parse(JSON.stringify(reqDraft));
+  reqAiState = null;
+  renderReqView();
+  renderReqEditPage();
+}
+
+function backToInDev() {
+  if (!reqDraft) return;
+  reqDraft.status = 'in_dev';
+  const idx = reqTasks.findIndex(t => t.id === reqDraft.id);
+  if (idx >= 0) reqTasks[idx] = JSON.parse(JSON.stringify(reqDraft));
+  reqAiState = null;
+  renderReqView();
+  renderReqEditPage();
+}
+
 function closeReqEdit() {
-  // Auto-save if still draft
-  if (reqDraft && reqDraft.id && reqDraft.status === 'draft') {
+  // Auto-save if still draft, reviewing, or in_dev
+  if (reqDraft && reqDraft.id && ['draft','reviewing','in_dev'].includes(reqDraft.status)) {
     const idx = reqTasks.findIndex(t => t.id === reqDraft.id);
     if (idx >= 0) reqTasks[idx] = JSON.parse(JSON.stringify(reqDraft));
   }
@@ -1389,12 +1790,16 @@ function saveReqDraft() {
 
 function renderReqEditPage() {
   if (!reqDraft) return;
-  const isDraft = reqDraft.status === 'draft';
-  const isInDev = reqDraft.status === 'in_dev';
+  const isDraft     = reqDraft.status === 'draft';
+  const isReviewing = reqDraft.status === 'reviewing';
+  const isInDev     = ['in_dev','testing'].includes(reqDraft.status);
+  const isTesting   = reqDraft.status === 'testing';
   const isPublished = reqDraft.status === 'published';
 
-  const s1done = isInDev || isPublished;
-  const s2done = isPublished;
+  const s1done = !isDraft;
+  const s2done = isInDev || isTesting || isPublished;
+  const s3done = isTesting || isPublished;
+  const s4done = isPublished;
   const stepBar = `<div class="step-bar rep-step">
     <div class="step-item">
       <div class="step-num ${s1done?'done':'active'}">${s1done?'✓':'1'}</div>
@@ -1402,26 +1807,50 @@ function renderReqEditPage() {
     </div>
     <div class="step-conn ${s1done?'done':''}"></div>
     <div class="step-item">
-      <div class="step-num ${s2done?'done':isInDev?'active':'inactive'}">${s2done?'✓':'2'}</div>
-      <span class="step-lbl ${s2done?'done':isInDev?'active':''}">开发注册</span>
+      <div class="step-num ${s2done?'done':isReviewing?'active':'inactive'}">${s2done?'✓':'2'}</div>
+      <span class="step-lbl ${s2done?'done':isReviewing?'active':''}">AI需求审核</span>
+    </div>
+    <div class="step-conn ${s2done?'done':''}"></div>
+    <div class="step-item">
+      <div class="step-num ${s3done?'done':isInDev?'active':'inactive'}">${s3done?'✓':'3'}</div>
+      <span class="step-lbl ${s3done?'done':isInDev?'active':''}">开发注册</span>
+    </div>
+    <div class="step-conn ${s3done?'done':''}"></div>
+    <div class="step-item">
+      <div class="step-num ${s4done?'done':isTesting?'active':'inactive'}">${s4done?'✓':'4'}</div>
+      <span class="step-lbl ${s4done?'done':isTesting?'active':''}">AI数据测试</span>
     </div>
   </div>`;
 
+  if (isReviewing && !reqAiState) setTimeout(runAiReview, 50);
+  if (isTesting   && !reqAiState) setTimeout(runAiTest,   50);
+
   let bodyHtml;
-  if (isDraft) bodyHtml = renderDraftBody();
-  else if (isInDev) bodyHtml = renderS2Body();
-  else bodyHtml = renderPublishedBody();
+  if (isDraft)       bodyHtml = renderDraftBody();
+  else if (isReviewing) bodyHtml = renderReviewingBody();
+  else if (isInDev)  bodyHtml = renderS2Body();
+  else if (isTesting) bodyHtml = renderTestingBody();
+  else               bodyHtml = renderPublishedBody();
 
   const aiSvg = `<svg width="13" height="13" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M5.5 8l1.8 1.8 3.2-3.8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 
   let footerHtml = '';
   if (isDraft) {
+    footerHtml = `<button class="btn-sec" id="btn-save-draft" onclick="saveReqDraft()">保存草稿</button>
+      <button class="btn-pri ml-auto" onclick="submitForReview()">提交审核</button>`;
+  } else if (isReviewing) {
     const canSubmit = reqAiState && reqAiState.step===1 && reqAiState.status==='pass';
-    footerHtml = `<button class="btn-ai" onclick="runAiReview()">${aiSvg} AI 审核</button>
+    const isFail = reqAiState && reqAiState.step===1 && reqAiState.status==='fail';
+    footerHtml = `${isFail ? `<button class="btn-sec" onclick="backToDraft()">← 返回修改</button>` : ''}
+      <button class="btn-ai" onclick="runAiReview()">${aiSvg} 重新审核</button>
       <button class="btn-pri ml-auto" onclick="submitToDev()" ${canSubmit?'':'disabled'}>提交开发</button>`;
   } else if (isInDev) {
+    footerHtml = `<button class="btn-pri ml-auto" onclick="submitForTesting()">提交数据测试</button>`;
+  } else if (isTesting) {
     const canPublish = reqAiState && reqAiState.step===2 && reqAiState.status==='pass';
-    footerHtml = `<button class="btn-ai" onclick="runAiTest()">${aiSvg} AI 测试</button>
+    const testFail = reqAiState && reqAiState.step===2 && reqAiState.status==='fail';
+    footerHtml = `${testFail ? `<button class="btn-sec" onclick="backToInDev()">← 返回修改</button>` : ''}
+      <button class="btn-ai" onclick="runAiTest()">${aiSvg} 重新测试</button>
       <button class="btn-pri ml-auto" onclick="publishTask()" ${canPublish?'':'disabled'}>发布任务</button>`;
   }
 
@@ -1444,16 +1873,19 @@ function renderReqEditPage() {
 
 function renderReqPanelContent() {
   if (!reqDraft) return;
-  const isNew   = currentReqId === '__new__';
-  const isDraft = reqDraft.status === 'draft';
-  const isInDev = reqDraft.status === 'in_dev';
+  const isNew       = currentReqId === '__new__';
+  const isDraft     = reqDraft.status === 'draft';
+  const isReviewing = reqDraft.status === 'reviewing';
+  const isInDev     = ['in_dev','testing'].includes(reqDraft.status);
+  const isTesting   = reqDraft.status === 'testing';
   const isPublished = reqDraft.status === 'published';
 
-  // Step bar only for existing tasks
   let stepBar = '';
   if (!isNew) {
-    const s1done = isInDev || isPublished;
-    const s2done = isPublished;
+    const s1done = !isDraft;
+    const s2done = isInDev || isTesting || isPublished;
+    const s3done = isTesting || isPublished;
+    const s4done = isPublished;
     stepBar = `<div class="step-bar" style="margin-top:10px">
       <div class="step-item">
         <div class="step-num ${s1done?'done':'active'}">${s1done?'✓':'1'}</div>
@@ -1461,18 +1893,30 @@ function renderReqPanelContent() {
       </div>
       <div class="step-conn ${s1done?'done':''}"></div>
       <div class="step-item">
-        <div class="step-num ${s2done?'done':isInDev?'active':'inactive'}">${s2done?'✓':'2'}</div>
-        <span class="step-lbl ${s2done?'done':isInDev?'active':''}">开发注册</span>
+        <div class="step-num ${s2done?'done':isReviewing?'active':'inactive'}">${s2done?'✓':'2'}</div>
+        <span class="step-lbl ${s2done?'done':isReviewing?'active':''}">AI需求审核</span>
+      </div>
+      <div class="step-conn ${s2done?'done':''}"></div>
+      <div class="step-item">
+        <div class="step-num ${s3done?'done':isInDev?'active':'inactive'}">${s3done?'✓':'3'}</div>
+        <span class="step-lbl ${s3done?'done':isInDev?'active':''}">开发注册</span>
+      </div>
+      <div class="step-conn ${s3done?'done':''}"></div>
+      <div class="step-item">
+        <div class="step-num ${s4done?'done':isTesting?'active':'inactive'}">${s4done?'✓':'4'}</div>
+        <span class="step-lbl ${s4done?'done':isTesting?'active':''}">AI数据测试</span>
       </div>
     </div>`;
   }
 
   const titleText = isNew ? '新建需求' : (reqDraft.title ? esc(reqDraft.title) : '需求详情');
   let body, footer;
-  if (isNew)        { body = renderCreateBody();    footer = renderCreateFooter(); }
-  else if (isDraft) { body = renderDraftBody();     footer = renderDraftFooter(); }
-  else if (isInDev) { body = renderS2Body();        footer = renderS2Footer(); }
-  else              { body = renderPublishedBody(); footer = `<button class="btn-sec ml-auto" onclick="closeReqPanel()">关闭</button>`; }
+  if (isNew)            { body = renderCreateBody();    footer = renderCreateFooter(); }
+  else if (isDraft)     { body = renderDraftBody();     footer = renderDraftFooter(); }
+  else if (isReviewing) { body = renderReviewingBody(); footer = renderReviewingFooter(); }
+  else if (isInDev)     { body = renderS2Body();        footer = renderS2Footer(); }
+  else if (isTesting)   { body = renderTestingBody();   footer = renderTestingFooter(); }
+  else                  { body = renderPublishedBody(); footer = `<button class="btn-sec ml-auto" onclick="closeReqPanel()">关闭</button>`; }
 
   document.getElementById('rp-content').innerHTML = `
     <div class="rp-hdr">
@@ -1508,7 +1952,7 @@ function renderCreateBody() {
       <div><label class="flbl">技术负责人</label><input class="finp" placeholder="数据开发同学" value="${esc(r.assignee)}" oninput="reqDraft.assignee=this.value"></div>
     </div>
     <div style="margin-top:6px;padding:10px 12px;background:var(--bg-hover);border:1px solid var(--border);border-radius:var(--r-xs);font-size:12px;color:var(--txm);line-height:1.6">
-      💡 创建后可在任务详情中补充指标维度元信息，并提交 AI 审核后转入开发
+      💡 创建后可在任务详情中补充指标维度元信息，提交审核后经 AI 审核通过方可转入开发
     </div>`;
 }
 
@@ -1541,6 +1985,7 @@ function renderDraftBody() {
   const r = reqDraft;
   const aiHtml = reqAiState && reqAiState.step===1 ? renderAiBox(reqAiState) : '';
   return `
+    <div class="rep-form">
     <div class="rp-sec">基本信息</div>
     <div class="fg">
       <label class="flbl">需求标题</label>
@@ -1558,6 +2003,7 @@ function renderDraftBody() {
       <div><label class="flbl">业务负责人</label><input class="finp" placeholder="姓名或工号" value="${esc(r.requester)}" oninput="reqDraft.requester=this.value"></div>
       <div><label class="flbl">技术负责人</label><input class="finp" placeholder="数据开发同学" value="${esc(r.assignee)}" oninput="reqDraft.assignee=this.value"></div>
     </div>
+    </div>
     <div class="rp-sec" style="margin-top:8px">维度元数据
       <span style="font-weight:400;color:var(--txm);text-transform:none;letter-spacing:0;font-size:11px">（先录维度，再录指标）</span>
     </div>
@@ -1571,7 +2017,6 @@ function renderDraftBody() {
 
 function renderS2Body() {
   const r = reqDraft;
-  const aiHtml = reqAiState && reqAiState.step===2 ? renderAiBox(reqAiState) : '';
   return `
     <div class="rp-sec">需求信息</div>
     <div style="background:var(--bg-hover);border:1px solid var(--border);border-radius:var(--r-xs);padding:10px 12px;margin-bottom:12px;font-size:12px;color:var(--tx2);line-height:1.7">
@@ -1589,8 +2034,7 @@ function renderS2Body() {
     <div class="rp-sec" style="margin-top:12px">指标元数据
       <span style="font-weight:400;color:#d97706;text-transform:none;letter-spacing:0;font-size:11px">（请补录来源表）</span>
     </div>
-    <div id="metric-tbl-wrap" class="meta-wrap">${renderMetricTable(true, false)}</div>
-    ${aiHtml}`;
+    <div id="metric-tbl-wrap" class="meta-wrap">${renderMetricTable(true, false)}</div>`;
 }
 
 function renderPublishedBody() {
@@ -1614,15 +2058,70 @@ function renderPublishedBody() {
     </div>`;
 }
 
+/* ── Tag-select (chip picker) ── */
+const TAG_DEFS = {
+  'dim-type':[
+    {v:'categorical',l:'枚举型',c:'tc-cat'},
+    {v:'numerical',  l:'数值型',c:'tc-num'},
+    {v:'boolean',    l:'布尔型',c:'tc-bool'}
+  ],
+  'met-unit':[
+    {v:'',    l:'—',   c:'tc-empty'},
+    {v:'数值', l:'数值', c:'tc-unit'},{v:'%',   l:'%',   c:'tc-unit'},
+    {v:'元',  l:'元',  c:'tc-unit'},{v:'万元', l:'万元', c:'tc-unit'},{v:'亿元', l:'亿元', c:'tc-unit'},
+    {v:'天',  l:'天',  c:'tc-unit'},{v:'小时', l:'小时', c:'tc-unit'},{v:'分',  l:'分',  c:'tc-unit'},{v:'秒',  l:'秒',  c:'tc-unit'},
+    {v:'次',  l:'次',  c:'tc-unit'},{v:'人',  l:'人',  c:'tc-unit'},{v:'个',  l:'个',  c:'tc-unit'},{v:'件',  l:'件',  c:'tc-unit'},{v:'笔',  l:'笔',  c:'tc-unit'}
+  ],
+  'met-dir':[
+    {v:'up',  l:'正向↑',c:'tc-up'},
+    {v:'down',l:'负向↓',c:'tc-down'}
+  ]
+};
+function renderTagSel(id, kind, val, tbl, rowIdx, field, readonly) {
+  const defs = TAG_DEFS[kind] || [];
+  const def = defs.find(d => d.v === val) || defs[0] || {l:val||'—',c:'tc-empty'};
+  if (readonly) return `<div class="tag-sel ro"><span class="tag-chip ${def.c}">${esc(def.l)}</span></div>`;
+  const opts = defs.map(d =>
+    `<div class="tag-opt${d.v===val?' cur':''}" data-val="${esc(d.v)}"
+      onmousedown="event.preventDefault();pickTagVal('${id}','${kind}','${tbl}',${rowIdx},'${field}','${d.v.replace(/\\/g,'\\\\').replace(/'/g,"\\'")}')">
+      <span class="tag-chip ${d.c}">${esc(d.l)}</span>
+    </div>`).join('');
+  return `<div class="tag-sel" id="${id}" data-kind="${kind}"
+    onclick="event.stopPropagation();toggleTagSel('${id}')">
+    <span class="tag-chip ${def.c}">${esc(def.l)}<span class="tag-arr">▾</span></span>
+    <div class="tag-dd" id="${id}-dd">${opts}</div>
+  </div>`;
+}
+function toggleTagSel(id) {
+  const dd = document.getElementById(id+'-dd');
+  if (!dd) return;
+  const open = dd.classList.contains('open');
+  document.querySelectorAll('.tag-dd.open').forEach(d => d.classList.remove('open'));
+  if (!open) dd.classList.add('open');
+}
+function pickTagVal(id, kind, tbl, rowIdx, field, value) {
+  if (tbl==='dim') updateDimRow(rowIdx, field, value);
+  else updateMetricRow(rowIdx, field, value);
+  const dd = document.getElementById(id+'-dd');
+  if (dd) dd.classList.remove('open');
+  const sel = document.getElementById(id);
+  if (!sel) return;
+  const defs = TAG_DEFS[kind]||[];
+  const def = defs.find(d=>d.v===value)||{l:value||'—',c:'tc-empty'};
+  const chip = sel.querySelector(':scope>.tag-chip');
+  if (chip) { chip.className=`tag-chip ${def.c}`; chip.innerHTML=`${esc(def.l)}<span class="tag-arr">▾</span>`; }
+  sel.querySelectorAll('.tag-opt').forEach(o=>o.classList.toggle('cur', o.dataset.val===value));
+}
+document.addEventListener('click', () => document.querySelectorAll('.tag-dd.open').forEach(d=>d.classList.remove('open')));
+
 /* ── Dim table (spreadsheet) ── */
 function renderDimTable(showSrc, readonly) {
   const CATS = Object.keys(CAT_DOTS);
-  const rows = reqDraft.dimRows || [];
+  const rows = (reqDraft.dimRows || []).filter(r => r.type !== 'time');
   const defW = _defaultDimW(showSrc);
   if (dimColWidths.length !== defW.length) dimColWidths = [...defW];
   const ro = readonly ? 'readonly disabled' : '';
-  const dimTypes = [['categorical','枚举型'],['time','时间型'],['numerical','数值型'],['boolean','布尔型']];
-  const hcols = ['维度名称','维度类型','业务域','说明', ...(showSrc?['来源表']:[]), '更新频率',''];
+  const hcols = ['维度名称','维度类型','说明', ...(showSrc?['来源表']:[]), ''];
 
   const cg = '<colgroup>' + dimColWidths.map(w => `<col style="width:${w}px">`).join('') + '</colgroup>';
   const thead = hcols.map((h, i) => {
@@ -1632,20 +2131,12 @@ function renderDimTable(showSrc, readonly) {
   }).join('');
 
   const tbody = rows.map((row, idx) => {
-    const typeOpts = dimTypes.map(([v,l]) =>
-      `<option value="${v}"${row.type===v?' selected':''}>${l}</option>`).join('');
-    const catOpts = ['', ...CATS].map(c =>
-      `<option value="${esc(c)}"${row.category===c?' selected':''}>${esc(c)||'—'}</option>`).join('');
-    const freqOpts = ['天','周','月','实时'].map(f =>
-      `<option value="${esc(f)}"${row.update_freq===f?' selected':''}>${esc(f)}</option>`).join('');
     const srcCell = showSrc ? `<td>
         <input class="ti" placeholder="表名" value="${esc(row.source_table)}" ${ro}
           onchange="updateDimRow(${idx},'source_table',this.value)">
       </td>` : '';
-    const delCell = readonly ? '<td></td>'
-      : `<td><button class="tbl-del" onclick="deleteDimRow(${idx})" title="删除">✕</button></td>`;
+    const delCell = `<td class="row-del-td">${readonly?'':'<button class="tbl-del" onclick="deleteDimRow('+idx+')" title="删除">✕</button>'}</td>`;
 
-    // display_name: contenteditable with autocomplete
     const nameCell = readonly
       ? `<td><div class="tc" style="pointer-events:none">${row.display_name||''}</div></td>`
       : `<td style="position:relative">
@@ -1659,7 +2150,6 @@ function renderDimTable(showSrc, readonly) {
           <div class="ac-dd" id="dim-ac-${idx}" style="display:none"></div>
         </td>`;
 
-    // description: contenteditable with rich text
     const descCell = readonly
       ? `<td><div class="tc" style="pointer-events:none">${row.description||''}</div></td>`
       : `<td>
@@ -1673,11 +2163,9 @@ function renderDimTable(showSrc, readonly) {
 
     return `<tr>
       ${nameCell}
-      <td><select class="ts" ${ro} onchange="updateDimRow(${idx},'type',this.value)">${typeOpts}</select></td>
-      <td><select class="ts" ${ro} onchange="updateDimRow(${idx},'category',this.value)">${catOpts}</select></td>
+      <td>${renderTagSel('dim-type-'+idx,'dim-type',row.type||'categorical','dim',idx,'type',readonly)}</td>
       ${descCell}
       ${srcCell}
-      <td><select class="ts" ${ro} onchange="updateDimRow(${idx},'update_freq',this.value)">${freqOpts}</select></td>
       ${delCell}
     </tr>`;
   }).join('');
@@ -1692,8 +2180,8 @@ function renderMetricTable(showSrc, readonly) {
   const defW = _defaultMetW(showSrc);
   if (metricColWidths.length !== defW.length) metricColWidths = [...defW];
   const ro = readonly ? 'readonly disabled' : '';
-  const hcols = ['指标名称','业务域','单位','正负向','指标说明','可拆解维度',
-    ...(showSrc?['来源表']:[]), '更新频率',''];
+  const hcols = ['指标名称','单位','正负向','指标说明','可拆解维度',
+    ...(showSrc?['来源表']:[]), ''];
 
   const cg = '<colgroup>' + metricColWidths.map(w => `<col style="width:${w}px">`).join('') + '</colgroup>';
   const thead = hcols.map((h, i) => {
@@ -1705,18 +2193,11 @@ function renderMetricTable(showSrc, readonly) {
   const availDimNames = (reqDraft.dimRows||[]).filter(d=>pt(d.display_name).trim()).map(d=>pt(d.display_name));
 
   const tbody = rows.map((row, idx) => {
-    const catOpts = ['', ...CATS].map(c =>
-      `<option value="${esc(c)}"${row.category===c?' selected':''}>${esc(c)||'—'}</option>`).join('');
-    const dirOpts = [['up','正向↑'],['down','负向↓']].map(([v,l]) =>
-      `<option value="${v}"${row.direction===v?' selected':''}>${l}</option>`).join('');
-    const freqOpts = ['天','周','月','实时'].map(f =>
-      `<option value="${esc(f)}"${row.update_freq===f?' selected':''}>${esc(f)}</option>`).join('');
     const srcCell = showSrc ? `<td>
         <input class="ti" placeholder="表名" value="${esc(row.source_table)}" ${ro}
           onchange="updateMetricRow(${idx},'source_table',this.value)">
       </td>` : '';
-    const delCell = readonly ? '<td></td>'
-      : `<td><button class="tbl-del" onclick="deleteMetricRow(${idx})" title="删除">✕</button></td>`;
+    const delCell = `<td class="row-del-td">${readonly?'':'<button class="tbl-del" onclick="deleteMetricRow('+idx+')" title="删除">✕</button>'}</td>`;
 
     // display_name: contenteditable with autocomplete
     const nameCell = readonly
@@ -1752,8 +2233,8 @@ function renderMetricTable(showSrc, readonly) {
         : `<span class="dimpick-chip" onmousedown="removeMetricDim(${idx},'${d.replace(/\\/g,'\\\\').replace(/'/g,"\\'")}')">${esc(d)} ×</span>`
     ).join('');
     const dimPickerCell = readonly
-      ? `<td><div class="dimpick-wrap">${dimChips||'<span style="color:var(--txd);font-size:11px">—</span>'}</div></td>`
-      : `<td style="position:relative">
+      ? `<td style="padding:3px 6px"><div class="dimpick-wrap">${dimChips||'<span style="color:var(--txd);font-size:11px">—</span>'}</div></td>`
+      : `<td style="position:relative;padding:3px 4px">
           <div class="dimpick-wrap" id="dimpick-${idx}">
             ${dimChips}
             <button class="dimpick-btn" onmousedown="toggleDimPickerDd(${idx})">+ 维度</button>
@@ -1767,13 +2248,11 @@ function renderMetricTable(showSrc, readonly) {
 
     return `<tr>
       ${nameCell}
-      <td><select class="ts" ${ro} onchange="updateMetricRow(${idx},'category',this.value)">${catOpts}</select></td>
-      <td><input class="ti" placeholder="元/%" value="${esc(row.unit)}" ${ro} oninput="updateMetricRow(${idx},'unit',this.value)"></td>
-      <td><select class="ts" ${ro} onchange="updateMetricRow(${idx},'direction',this.value)">${dirOpts}</select></td>
+      <td>${renderTagSel('met-unit-'+idx,'met-unit',row.unit||'','met',idx,'unit',readonly)}</td>
+      <td>${renderTagSel('met-dir-'+idx,'met-dir',row.direction||'up','met',idx,'direction',readonly)}</td>
       ${descCell}
       ${dimPickerCell}
       ${srcCell}
-      <td><select class="ts" ${ro} onchange="updateMetricRow(${idx},'update_freq',this.value)">${freqOpts}</select></td>
       ${delCell}
     </tr>`;
   }).join('');
@@ -1837,7 +2316,7 @@ function pickDimSuggestion(idx, displayName, type) {
     if (type) reqDraft.dimRows[idx].type = type;
   }
   // Re-render to update type select + refresh cell content
-  const showSrc = reqDraft.status === 'in_dev';
+  const showSrc = ['in_dev','testing'].includes(reqDraft.status);
   const w = document.getElementById('dim-tbl-wrap');
   if (w) w.innerHTML = renderDimTable(showSrc, false);
 }
@@ -1868,7 +2347,7 @@ function pickMetricSuggestion(idx, displayName, category, unit, direction) {
   }
   // Re-render to reflect filled-in selects
   const w = document.getElementById('metric-tbl-wrap');
-  if (w) w.innerHTML = renderMetricTable(reqDraft.status === 'in_dev', false);
+  if (w) w.innerHTML = renderMetricTable(['in_dev','testing'].includes(reqDraft.status), false);
 }
 
 /* ── Dim picker for metric rows ── */
@@ -1893,7 +2372,7 @@ function toggleMetricDim(metricIdx, dimName) {
   const dims = reqDraft.metricRows[metricIdx].available_dims;
   const i = dims.indexOf(dimName);
   if (i >= 0) dims.splice(i, 1); else dims.push(dimName);
-  const showSrc = reqDraft.status === 'in_dev';
+  const showSrc = ['in_dev','testing'].includes(reqDraft.status);
   const w = document.getElementById('metric-tbl-wrap');
   if (w) w.innerHTML = renderMetricTable(showSrc, false);
   // Reopen picker to allow continued selection
@@ -1917,23 +2396,80 @@ function removeMetricDim(metricIdx, dimName) {
 }
 
 function renderDraftFooter() {
-  const canSubmit = reqAiState && reqAiState.step===1 && reqAiState.status==='pass';
   return `<button class="btn-sec" onclick="closeReqPanel()">关闭</button>
-    <button class="btn-ai" id="btn-ai-1" onclick="runAiReview()">
-      <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M5.5 8l1.8 1.8 3.2-3.8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      AI 审核
-    </button>
-    <button class="btn-pri ml-auto" id="btn-submit-dev" onclick="submitToDev()" ${canSubmit?'':'disabled'}>提交开发</button>`;
+    <button class="btn-pri ml-auto" onclick="submitForReview()">提交审核</button>`;
+}
+
+function renderReviewingBody() {
+  const r = reqDraft;
+  const aiHtml = reqAiState && reqAiState.step===1 ? renderAiBox(reqAiState) : `
+    <div class="ai-box checking" style="margin-top:16px">
+      <div class="ai-box-row">⏳ AI 审核中…</div>
+      <div class="ai-box-msg">正在检查元信息完整性，请稍候</div>
+    </div>`;
+  return `
+    <div class="rp-sec">需求信息</div>
+    <div style="background:var(--bg-hover);border:1px solid var(--border);border-radius:var(--r-xs);padding:10px 12px;margin-bottom:12px;font-size:12px;color:var(--tx2);line-height:1.7">
+      <div style="margin-bottom:3px"><strong style="color:var(--tx)">标题：</strong>${esc(r.title||'—')}</div>
+      <div style="margin-bottom:3px"><strong style="color:var(--tx)">背景：</strong>${esc(r.background||'—')}</div>
+      <div style="margin-bottom:6px"><strong style="color:var(--tx)">收益：</strong>${esc(r.benefit||'—')}</div>
+      <div style="display:flex;gap:16px">
+        <span>业务负责人：<strong style="color:var(--tx)">${esc(r.requester||'—')}</strong></span>
+        <span>技术负责人：<strong style="color:var(--tx)">${esc(r.assignee||'—')}</strong></span>
+      </div>
+    </div>
+    <div class="rp-sec">维度元数据</div>
+    <div class="meta-wrap">${renderDimTable(false, true)}</div>
+    <div class="rp-sec" style="margin-top:12px">指标元数据</div>
+    <div class="meta-wrap">${renderMetricTable(false, true)}</div>
+    ${aiHtml}`;
+}
+
+function renderReviewingFooter() {
+  const canSubmit = reqAiState && reqAiState.step===1 && reqAiState.status==='pass';
+  const isFail = reqAiState && reqAiState.step===1 && reqAiState.status==='fail';
+  const aiSvg = `<svg width="13" height="13" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M5.5 8l1.8 1.8 3.2-3.8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+  return `${isFail ? `<button class="btn-sec" onclick="backToDraft()">← 返回修改</button>` : `<button class="btn-sec" onclick="closeReqPanel()">关闭</button>`}
+    <button class="btn-ai" onclick="runAiReview()">${aiSvg} 重新审核</button>
+    <button class="btn-pri ml-auto" onclick="submitToDev()" ${canSubmit?'':'disabled'}>提交开发</button>`;
 }
 
 function renderS2Footer() {
-  const canPublish = reqAiState && reqAiState.step===2 && reqAiState.status==='pass';
   return `<button class="btn-sec" onclick="closeReqPanel()">关闭</button>
-    <button class="btn-ai" id="btn-ai-2" onclick="runAiTest()">
-      <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M5.5 8l1.8 1.8 3.2-3.8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      AI 测试
-    </button>
-    <button class="btn-pri ml-auto" id="btn-publish" onclick="publishTask()" ${canPublish?'':'disabled'}>发布任务</button>`;
+    <button class="btn-pri ml-auto" onclick="submitForTesting()">提交数据测试</button>`;
+}
+
+function renderTestingBody() {
+  const r = reqDraft;
+  const aiHtml = reqAiState && reqAiState.step===2 ? renderAiBox(reqAiState) : `
+    <div class="ai-box checking" style="margin-top:16px">
+      <div class="ai-box-row">⏳ AI 数据测试中…</div>
+      <div class="ai-box-msg">正在验证来源表配置与数据链路，请稍候</div>
+    </div>`;
+  return `
+    <div class="rp-sec">需求信息</div>
+    <div style="background:var(--bg-hover);border:1px solid var(--border);border-radius:var(--r-xs);padding:10px 12px;margin-bottom:12px;font-size:12px;color:var(--tx2);line-height:1.7">
+      <div style="margin-bottom:3px"><strong style="color:var(--tx)">背景：</strong>${esc(r.background||'—')}</div>
+      <div style="margin-bottom:6px"><strong style="color:var(--tx)">收益：</strong>${esc(r.benefit||'—')}</div>
+      <div style="display:flex;gap:16px">
+        <span>业务负责人：<strong style="color:var(--tx)">${esc(r.requester||'—')}</strong></span>
+        <span>技术负责人：<strong style="color:var(--tx)">${esc(r.assignee||'—')}</strong></span>
+      </div>
+    </div>
+    <div class="rp-sec">维度元数据（含来源表）</div>
+    <div class="meta-wrap">${renderDimTable(true, true)}</div>
+    <div class="rp-sec" style="margin-top:12px">指标元数据（含来源表）</div>
+    <div class="meta-wrap">${renderMetricTable(true, true)}</div>
+    ${aiHtml}`;
+}
+
+function renderTestingFooter() {
+  const canPublish = reqAiState && reqAiState.step===2 && reqAiState.status==='pass';
+  const testFail = reqAiState && reqAiState.step===2 && reqAiState.status==='fail';
+  const aiSvg = `<svg width="13" height="13" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M5.5 8l1.8 1.8 3.2-3.8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+  return `${testFail ? `<button class="btn-sec" onclick="backToInDev()">← 返回修改</button>` : `<button class="btn-sec" onclick="closeReqPanel()">关闭</button>`}
+    <button class="btn-ai" onclick="runAiTest()">${aiSvg} 重新测试</button>
+    <button class="btn-pri ml-auto" onclick="publishTask()" ${canPublish?'':'disabled'}>发布任务</button>`;
 }
 
 function renderAiBox(state) {
@@ -1986,7 +2522,6 @@ function runAiReview() {
       metricRows.forEach((row, i) => {
         const n = pt(row.display_name).trim();
         if (!n) items.push({ok:false, text:`指标第${i+1}行：名称不能为空`});
-        else if (!row.category) items.push({ok:false, text:`指标「${n}」：业务域不能为空`});
         else items.push({ok:true, text:`指标「${n}」元信息完整`});
       });
     }
@@ -2080,7 +2615,12 @@ function publishTask() {
 /* ── Init ── */
 (function() {
   const hash = location.hash.replace('#', '');
-  if (hash === 'assets' || hash === 'request') {
+  if (hash.startsWith('request:')) {
+    const reqId = hash.slice('request:'.length);
+    switchTab('request');
+    // wait for tab render then open the specific request
+    setTimeout(() => openReqEdit(reqId), 50);
+  } else if (hash === 'assets' || hash === 'request') {
     switchTab(hash);
   } else {
     renderSidebar();
@@ -2102,6 +2642,7 @@ window.addEventListener('message', e => {
   }
 });
 try { window.parent.postMessage({ type: 'assetLibReady' }, '*'); } catch(e) {}
+
 </script>
 </body>
 </html>

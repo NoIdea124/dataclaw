@@ -63,7 +63,8 @@ function parseMD(content) {
     enabled:      meta.enabled !== 'false',
     instructions,
   };
-  if (meta.output_type)  skill.output_type     = meta.output_type;
+  if (meta.output_type)  skill.output_type  = meta.output_type;
+  if (meta.linked_mcp)   skill.linked_mcp   = meta.linked_mcp;
   if (output_template)   skill.output_template = output_template;
   return skill;
 }

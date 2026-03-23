@@ -21,14 +21,10 @@
 ```
 dataclaw/
 ├── index.html              # 主应用（单文件，含全部 UI + 逻辑）
+├── start.sh                # 一键启动脚本
 ├── metric-dict/
 │   └── index.html          # 资产库（独立应用）
-├── asset-catalog/
-│   └── index.html          # 资产目录（独立应用）
 ├── mcp-metrics/            # 资产库 MCP 服务 (端口 3464)
-│   ├── server.js
-│   └── package.json
-├── mcp-catalog/            # 资产目录 MCP 服务 (端口 3463)
 │   ├── server.js
 │   └── package.json
 ├── mcp-skills/             # 技能文件 REST API 服务 (端口 3458)
@@ -40,40 +36,50 @@ dataclaw/
 ├── mcp-feishu/             # 飞书文档 MCP 服务 (端口 3461)
 │   ├── server.js
 │   └── package.json
+├── mcp-requests/           # 需求管理 MCP 服务 (端口 3465)
+│   ├── server.js
+│   └── package.json
 └── skills/                 # 技能文件目录
     ├── 取数.md
-    └── 找数.md
+    ├── 找数.md
+    └── 提需.md
 ```
 
 ## 快速启动
 
-**1. 启动 MCP 服务**
+**一键启动（推荐）**
 
 ```bash
+bash start.sh
+```
+
+脚本会自动启动所有 MCP 服务和前端，并打开浏览器。
+
+**手动启动**
+
+```bash
+# 启动 MCP 服务
 node mcp-metrics/server.js &
-node mcp-catalog/server.js &
 node mcp-skills/server.js &
 node mcp-knowledge/server.js &
 node mcp-feishu/server.js &
-```
+node mcp-requests/server.js &
 
-**2. 启动前端**
-
-```bash
+# 启动前端
 python3 -m http.server 8080
 ```
 
-**3. 打开浏览器访问** `http://localhost:8080`
+**打开浏览器访问** `http://localhost:8080`
 
 ## MCP 服务说明
 
 | 服务 | 端口 | 提供能力 |
 |------|------|---------|
 | mcp-metrics | 3464 | 资产库指标检索：`search_metrics` · `get_metric_detail` · `get_metric_data` · `list_dimensions` · `list_categories` |
-| mcp-catalog | 3463 | 数据资产目录：`search_assets` · `get_asset_detail` · `list_categories` |
 | mcp-skills | 3458 | 技能文件 CRUD REST API |
 | mcp-knowledge | 3459 | 学术/财经/法律等 7 个外联知识库检索 |
 | mcp-feishu | 3461 | 飞书文档创建、内容写入、文档信息查询 |
+| mcp-requests | 3465 | 需求管理：`create_request` · `list_requests` · `get_request` · `update_request` |
 
 ## 资产库
 

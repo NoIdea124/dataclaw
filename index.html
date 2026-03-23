@@ -149,6 +149,31 @@ body{font-family:var(--font);font-feature-settings:'ss01','cv01';background:var(
 .ml-score-bar{height:100%;border-radius:2px;background:var(--accent)}
 .ml-open-hint{font-size:9.5px;color:var(--txm);margin-top:3px}
 .ml-total{font-size:11px;color:var(--txm);margin-left:auto;padding-right:2px}
+/* request card */
+.req-badge{font-size:10px;font-weight:600;padding:2px 8px;border-radius:10px;flex-shrink:0}
+.req-badge.draft{background:rgba(107,114,128,.1);color:#6b7280}
+.req-badge.reviewing{background:rgba(245,158,11,.1);color:#d97706}
+.req-badge.in_dev{background:rgba(37,99,235,.1);color:#2563eb}
+.req-badge.testing{background:rgba(124,58,237,.1);color:#7c3aed}
+.req-badge.published{background:rgba(5,150,105,.1);color:#059669}
+.rq-card{}
+.rq-body{padding:12px 14px 10px}
+.rq-title-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.rq-title{font-size:14px;font-weight:700;color:var(--tx);flex:1;min-width:0}
+.rq-pri{font-size:10px;font-weight:600;padding:2px 8px;border-radius:10px;flex-shrink:0}
+.rq-pri-high{background:rgba(220,38,38,.1);color:#dc2626}
+.rq-pri-med{background:rgba(245,158,11,.1);color:#d97706}
+.rq-pri-low{background:rgba(107,114,128,.1);color:#6b7280}
+.rq-field{display:flex;gap:8px;margin-bottom:5px;font-size:12px;line-height:1.5;align-items:baseline}
+.rq-lbl{font-weight:600;color:var(--txm);flex-shrink:0;width:28px}
+.rq-val{color:var(--tx2);flex:1;min-width:0}
+.rq-meta-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:8px}
+.rq-meta-item{font-size:11px;color:var(--txm)}
+.rq-id-row{font-size:10.5px;color:var(--txd);margin-top:6px}
+.rq-id-row code{font-family:var(--mono);font-size:10px;background:var(--bg-hover);padding:1px 5px;border-radius:3px;border:1px solid var(--border)}
+.rq-footer{padding:0 14px 12px}
+.rq-open-btn{display:inline-block;font-size:12px;font-weight:600;color:var(--accent);text-decoration:none;padding:6px 14px;border:1px solid var(--accent);border-radius:var(--r-xs);transition:background var(--t),color var(--t)}
+.rq-open-btn:hover{background:var(--accent);color:#fff}
 /* metric dict view */
 #metric-dict-frame{width:100%;height:100%;border:none;display:block}
 
@@ -1131,7 +1156,6 @@ textarea.mf-inp{resize:vertical;line-height:1.55;font-size:12px;font-family:var(
   <div class="hdr-brand">
     <div class="brand-mark">DC</div>
     <div class="brand-name">DataClaw</div>
-    <div class="brand-tag">DeepSeek</div>
   </div>
 
   <div class="hdr-right">
@@ -1148,10 +1172,6 @@ textarea.mf-inp{resize:vertical;line-height:1.55;font-size:12px;font-family:var(
         </a>
         <a class="al-item" href="metric-dict/index.html#assets" target="_blank">
           <svg class="al-ico" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>数据管理
-        </a>
-        <div style="height:1px;background:var(--border);margin:3px 6px"></div>
-        <a class="al-item" href="asset-catalog/index.html" target="_blank">
-          <svg class="al-ico" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>资产目录
         </a>
       </div>
     </div>
@@ -1960,6 +1980,24 @@ const MCP_MARKET = [
     setupCmd: 'cd mcp-feishu && node server.js',
   },
   {
+    id: 'requests',
+    name: '需求管理',
+    icon: '📋',
+    category: '数据',
+    type: 'local',
+    description: '数据需求全生命周期管理。支持创建需求任务、查询需求列表和详情，配合"提需"技能可在对话中一键创建需求并同步到资产库需求管理页面。',
+    tools: [
+      { name: 'create_request',  desc: '创建新需求任务，返回需求 ID 和详情页链接' },
+      { name: 'list_requests',   desc: '查询需求列表，支持按状态筛选' },
+      { name: 'get_request',     desc: '根据 ID 获取需求完整详情' },
+      { name: 'update_request',  desc: '更新需求字段或流转状态' },
+    ],
+    defaultUrl: 'http://localhost:3465',
+    defaultHeaders: '',
+    setupNote: '需先在本地启动服务器',
+    setupCmd: 'cd mcp-requests && node server.js',
+  },
+  {
     id: 'metrics',
     name: '资产库',
     icon: '📐',
@@ -1977,23 +2015,6 @@ const MCP_MARKET = [
     defaultHeaders: '',
     setupNote: '需先在本地启动服务器',
     setupCmd: 'cd mcp-metrics && node server.js',
-  },
-  {
-    id: 'catalog',
-    name: '资产目录',
-    icon: '🗂️',
-    category: '数据',
-    type: 'local',
-    description: '模拟电商数据资产目录，收录 40 张数据表/数据集，覆盖用户、订单、商品、营销、物流、财务等 8 大业务域。支持关键词搜索，按相关度排序返回匹配资产及元数据。',
-    tools: [
-      { name: 'search_assets',   desc: '按关键词搜索资产目录，返回相关度排序的结果' },
-      { name: 'get_asset_detail', desc: '获取单个数据资产的完整元数据' },
-      { name: 'list_categories', desc: '列出所有业务域及各域资产统计' },
-    ],
-    defaultUrl: 'http://localhost:3463',
-    defaultHeaders: '',
-    setupNote: '需先在本地启动服务器',
-    setupCmd: 'cd mcp-catalog && node server.js',
   },
 ];
 
@@ -3476,10 +3497,29 @@ function buildSystemPrompt(query = '', forcedMentions = [], ragChunks = null) {
     }
   }
 
+  // 自动加载与已连接 MCP 服务绑定的技能（linked_mcp 字段）
+  const enabledMcpIds = mcpServers.filter(s => s.enabled).map(s => s.marketId).filter(Boolean);
+  if (enabledMcpIds.length) {
+    const linkedSkills = skills.filter(s =>
+      s.enabled !== false &&
+      s.linked_mcp &&
+      enabledMcpIds.includes(s.linked_mcp) &&
+      !activeSkills.find(a => a.id === s.id)
+    );
+    if (linkedSkills.length) {
+      activeSkills = [...activeSkills, ...linkedSkills];
+      const block = linkedSkills.map(s => `### ${s.name}\n${s.instructions || ''}`).join('\n\n---\n\n');
+      prompt += `\n\n【MCP 关联技能 · 自动加载】\n以下技能与当前已接入的 MCP 服务绑定，当用户的请求涉及相关场景时请主动运用：\n\n${block}`;
+    }
+  }
+
   // 如果激活的技能声明了 output_type，注入该技能自定义的输出格式指令
   const cardSkill = activeSkills.find(s => s.output_type);
   if (cardSkill && cardSkill.output_template) {
-    prompt += `\n\n【结构化输出要求】\n${cardSkill.output_template}`;
+    prompt += `\n\n【结构化输出要求 — 强制执行】\n` +
+      `本次回复必须在正文末尾输出 <dataclaw-data>...</dataclaw-data> 数据块，` +
+      `使用工具调用返回的真实数据填充所有字段，禁止省略，禁止输出示例占位符。\n\n` +
+      cardSkill.output_template;
   }
 
   // 用户手动 @ 指定的 MCP 工具
@@ -3700,11 +3740,53 @@ function renderAssetList(data) {
   </div>`;
 }
 
+// Render request card (from 提需 skill)
+function renderRequestCard(data) {
+  const req = data.request || {};
+  const id = req.id || data.id || '';
+  const detailUrl = data.detail_url || (id ? `metric-dict/index.html#request:${id}` : 'metric-dict/index.html#request');
+  const PRIORITY_CLS = { high: 'rq-pri-high', medium: 'rq-pri-med', low: 'rq-pri-low' };
+  const PRIORITY_LBL = { high: '高优先级', medium: '中优先级', low: '低优先级' };
+  const STATUS_LBL = { draft:'草稿', reviewing:'AI审核中', in_dev:'开发中', testing:'数据测试中', published:'已发布' };
+  const priCls = PRIORITY_CLS[req.priority] || 'rq-pri-med';
+  const priLbl = req.priority_label || PRIORITY_LBL[req.priority] || '中优先级';
+  const statusLbl = req.status_label || STATUS_LBL[req.status] || '草稿';
+  const statusCls = req.status || 'draft';
+  const dimCount = req.dim_count != null ? req.dim_count : 0;
+  const metCount = req.metric_count != null ? req.metric_count : 0;
+  const createdAt = req.created_at ? req.created_at.slice(0, 10) : '';
+  return `<div class="dc-card rq-card">
+    <div class="dc-card-hdr">
+      <span class="dc-card-lbl">${esc(data.icon || '📋')} ${esc(data.title || '需求已创建')}</span>
+      <span class="req-badge ${statusCls}">${esc(statusLbl)}</span>
+    </div>
+    <div class="rq-body">
+      <div class="rq-title-row">
+        <span class="rq-title">${esc(req.title || '未命名需求')}</span>
+        <span class="rq-pri ${priCls}">${esc(priLbl)}</span>
+      </div>
+      ${req.background ? `<div class="rq-field"><span class="rq-lbl">背景</span><span class="rq-val">${esc(req.background)}</span></div>` : ''}
+      ${req.benefit    ? `<div class="rq-field"><span class="rq-lbl">收益</span><span class="rq-val">${esc(req.benefit)}</span></div>`    : ''}
+      <div class="rq-meta-row">
+        ${req.owner    ? `<span class="rq-meta-item">👤 ${esc(req.owner)}</span>` : ''}
+        ${req.due_date ? `<span class="rq-meta-item">📅 ${esc(req.due_date)}</span>` : ''}
+        ${createdAt    ? `<span class="rq-meta-item">🕐 创建于 ${esc(createdAt)}</span>` : ''}
+        ${dimCount > 0 || metCount > 0 ? `<span class="rq-meta-item">📐 ${dimCount} 维度 · ${metCount} 指标</span>` : ''}
+      </div>
+      ${id ? `<div class="rq-id-row">需求ID：<code>${esc(id)}</code></div>` : ''}
+    </div>
+    <div class="rq-footer">
+      <a class="rq-open-btn" href="${esc(detailUrl)}" target="_blank">在需求管理中查看并完善详情 →</a>
+    </div>
+  </div>`;
+}
+
 // Render a data card — each metric is a tab with its own trend chart
 function renderDataCard(data) {
   if (!data) return '';
   if (data.type === 'asset_list') return renderAssetList(data);
   if (data.type === 'metric_list') return renderMetricList(data);
+  if (data.type === 'request_card') return renderRequestCard(data);
   if (data.type !== 'metric_card') return '';
   const metrics = data.metrics || [];
   if (!metrics.length) return '';
@@ -4397,6 +4479,8 @@ async function callAPI(imageItems = [], forcedMentions = []) {
           if (!t || t==='data: [DONE]' || !t.startsWith('data: ')) continue;
           try {
             const chunk = JSON.parse(t.slice(6));
+            // Some providers embed errors in the stream with HTTP 200
+            if (chunk.error) throw new Error(chunk.error.message || JSON.stringify(chunk.error));
             const choice = chunk.choices?.[0];
             if (!choice) continue;
             if (choice.delta?.content) {
@@ -4501,11 +4585,23 @@ async function callAPI(imageItems = [], forcedMentions = []) {
       if (!taskPanelOpen) toggleTaskPanel();
     }
 
-    const aiMsg = { role:'assistant', content:displayText, ts:new Date().toISOString() };
+    // If AI returned no text and no card, show an informative error in the bubble
+    let finalDisplayText = displayText;
+    if (!finalDisplayText.trim() && !cardData) {
+      if (finishReason === 'length') {
+        finalDisplayText = '⚠️ 回复已达到最大 Token 限制，内容被截断，请尝试减少上下文条数或提高 Max Tokens 设置。';
+      } else if (loopIter > 2) {
+        finalDisplayText = '⚠️ 模型完成了工具调用但未返回文字回复，请重试或检查系统提示词。';
+      } else {
+        finalDisplayText = '⚠️ 模型未返回任何内容，请检查 API Key、模型名称或网络连接是否正常。';
+      }
+    }
+
+    const aiMsg = { role:'assistant', content:finalDisplayText, ts:new Date().toISOString() };
     if (thinkSteps.length) aiMsg.thinkSteps = thinkSteps;
     if (cardData) aiMsg.cardData = cardData;
     allMsgs.push(aiMsg); saveMsgs(allMsgs);
-    finalStream(bubble, displayText, cardData);
+    finalStream(bubble, finalDisplayText, cardData);
     setStatus('已就绪','ok');
     updateQATask(qaTask.id, { status: 'done' });
 
@@ -5496,26 +5592,27 @@ function saveKBForm() {
    BOOT
 ═══════════════════════════════════════════ */
 function seedDefaultMCPServers() {
-  // 仅在从未添加过任何 MCP 服务时执行（首次使用）
-  if (mcpServers.length > 0) return;
-  const defaults = ['feishu'];
+  const defaults = ['feishu', 'requests'];
+  let changed = false;
   defaults.forEach(marketId => {
+    // skip if already added (by url or marketId)
     const item = MCP_MARKET.find(m => m.id === marketId);
     if (!item) return;
-    const server = {
-      id:        'mcp_' + Date.now() + '_' + marketId,
-      name:      item.name,
-      url:       item.defaultUrl,
-      headers:   item.defaultHeaders || '',
-      enabled:   true,
-      status:    'idle',
-      tools:     [],
-      lastSync:  null,
-      marketId:  item.id,
-    };
-    mcpServers.push(server);
+    if (mcpServers.some(s => s.url === item.defaultUrl || s.marketId === item.id)) return;
+    mcpServers.push({
+      id:       'mcp_' + Date.now() + '_' + marketId,
+      name:     item.name,
+      url:      item.defaultUrl,
+      headers:  item.defaultHeaders || '',
+      enabled:  true,
+      status:   'idle',
+      tools:    [],
+      lastSync: null,
+      marketId: item.id,
+    });
+    changed = true;
   });
-  saveMCPServers(mcpServers);
+  if (changed) saveMCPServers(mcpServers);
 }
 
 
