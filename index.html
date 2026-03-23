@@ -1218,11 +1218,6 @@ textarea.mf-inp{resize:vertical;line-height:1.55;font-size:12px;font-family:var(
         </a>
       </div>
     </div>
-    <div class="dc-user-chip" id="dc-user-chip" style="display:none">
-      <div class="ava" id="dc-ava"></div>
-      <span id="dc-uname"></span>
-      <span class="logout-lnk" onclick="doLogout()">退出</span>
-    </div>
     <div class="ibtn-wrap">
       <button class="ibtn" id="task-btn" title="任务中心" onclick="toggleTaskPanel()">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
@@ -1244,6 +1239,11 @@ textarea.mf-inp{resize:vertical;line-height:1.55;font-size:12px;font-family:var(
     <button class="ibtn" title="关于 DataClaw" onclick="openAbout()">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
     </button>
+    <div class="dc-user-chip" id="dc-user-chip" style="display:none">
+      <div class="ava" id="dc-ava"></div>
+      <span id="dc-uname"></span>
+      <span class="logout-lnk" onclick="doLogout()">退出</span>
+    </div>
   </div>
 </header>
 
@@ -2056,6 +2056,7 @@ async function initDcAuth() {
     hideLoginOverlay();
     startApp();
   } else if (status === true) {
+    hideLoginOverlay();
     await syncFromServer();
     startApp();
   } else {
@@ -4308,6 +4309,8 @@ function setEmptyMode(empty) {
 }
 
 function init() {
+  document.getElementById('msgs').innerHTML = '';
+  displayStart = 0;
   updateMemBadge();
   if (!allMsgs.length) {
     setEmptyMode(true);
@@ -5797,7 +5800,10 @@ document.addEventListener('click', () => {
   document.querySelector('.asset-lib-wrap')?.classList.remove('open');
 });
 
+let _appStarted = false;
 function startApp() {
+  if (_appStarted) { init(); return; } // re-login: just re-render messages
+  _appStarted = true;
   seedDefaultMCPServers();
   init();
   initTaskScheduler();

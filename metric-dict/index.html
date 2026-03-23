@@ -406,6 +406,7 @@ body{font-family:var(--font);font-feature-settings:'ss01','cv01';background:var(
 [data-theme="dark"] .layer-dws{background:rgba(167,139,250,.1);color:#a78bfa}
 [data-theme="dark"] .layer-ads{background:rgba(52,211,153,.1);color:#34d399}
 .asset-name{font-size:12.5px;font-weight:700;color:var(--tx);font-family:var(--mono);letter-spacing:-.2px;min-width:0;word-break:break-all}
+.asset-cn-name{font-size:13px;font-weight:600;color:var(--tx);letter-spacing:-.2px;margin-top:1px}
 .asset-stats{display:flex;gap:14px;margin-bottom:9px}
 .asset-stat{font-size:11.5px;color:var(--txm)}
 .asset-stat strong{color:var(--tx2);font-weight:600}
@@ -494,12 +495,12 @@ body{font-family:var(--font);font-feature-settings:'ss01','cv01';background:var(
     <button class="tn-item" onclick="switchTab('request')">需求管理</button>
   </nav>
   <div class="tb-right" style="display:flex;align-items:center;gap:10px">
+    <button class="ibtn" id="theme-btn" title="切换主题">◑</button>
     <div class="user-badge" id="user-badge" style="display:none">
       <div class="avatar" id="user-avatar"></div>
       <span id="user-name"></span>
       <button class="logout-btn" onclick="doLogout()">退出</button>
     </div>
-    <button class="ibtn" id="theme-btn" title="切换主题">◑</button>
   </div>
 </div>
 
@@ -1406,6 +1407,36 @@ document.getElementById('theme-btn').addEventListener('click', () => {
 let currentLayer = 'all';
 let assetSearch = '';
 
+const TABLE_CN = {
+  // ODS
+  'ods_order_info':          '订单基础信息表',
+  'ods_product_info':        '商品基础信息表',
+  // DWD
+  'dwd_user_action_log_di':  '用户行为明细日表',
+  'dwd_order_detail_di':     '订单明细日表',
+  'dwd_order_item_di':       '订单商品明细日表',
+  'dwd_payment_di':          '支付流水日表',
+  'dwd_product_behavior_di': '商品行为明细日表',
+  'dwd_traffic_log_di':      '流量日志日表',
+  'dwd_logistics_info':      '物流信息明细表',
+  'dwd_coupon_usage_di':     '优惠券核销明细日表',
+  // DWS
+  'dws_user_trade_30d_di':   '用户近30日交易汇总日表',
+  'dws_order_daily_agg':     '订单每日聚合宽表',
+  'dws_product_sales_agg':   '商品销售聚合宽表',
+  'dws_traffic_channel_agg': '流量渠道聚合宽表',
+  'dws_promo_effect_agg':    '大促效果聚合宽表',
+  'dws_finance_daily':       '财务每日汇总表',
+  // ADS
+  'ads_gmv_dashboard':       'GMV 大盘看板',
+  'ads_user_rfm_segment':    '用户 RFM 分层结果表',
+  'ads_marketing_roi':       '营销 ROI 分析表',
+  'ads_funnel_analysis':     '全域转化漏斗分析表',
+  'ads_profit_analysis':     '利润分析宽表',
+  'ads_hot_product_rank':    '热销商品排行榜',
+  'ads_delivery_performance':'物流履约表现看板',
+};
+
 function _getLayer(tableName) {
   const p = (tableName || '').split('_')[0].toLowerCase();
   return { ods:{id:'ods',label:'ODS'}, dwd:{id:'dwd',label:'DWD'},
@@ -1441,6 +1472,7 @@ function _buildAssetsGrid() {
   if (assetSearch.trim()) {
     const kw = assetSearch.trim().toLowerCase();
     tables = tables.filter(t => t.name.toLowerCase().includes(kw) ||
+      (TABLE_CN[t.name]||'').includes(kw) ||
       t.metrics.some(m => m.display_name.toLowerCase().includes(kw) || (m.category||'').toLowerCase().includes(kw)));
   }
 
@@ -1450,11 +1482,13 @@ function _buildAssetsGrid() {
     const freqStr = [...t.freqs].join(' / ') || '—';
     const shown = t.metrics.slice(0, 4);
     const more = t.metrics.length - shown.length;
+    const cnName = TABLE_CN[t.name] || '';
     return `<div class="asset-card" onclick="showAssetDetail('${esc(t.name)}')">
       <div class="asset-top">
         <span class="asset-layer layer-${layer.id}">${layer.label}</span>
         <span class="asset-name">${esc(t.name)}</span>
       </div>
+      ${cnName ? `<div class="asset-cn-name">${esc(cnName)}</div>` : ''}
       <div class="asset-stats">
         <span class="asset-stat"><strong>${t.metrics.length}</strong> 个指标</span>
         <span class="asset-stat"><strong>${cats.length}</strong> 个业务域</span>
@@ -1555,7 +1589,10 @@ function showAssetDetail(tableName) {
         返回
       </button>
       <span class="asset-layer layer-${layer.id}">${layer.label}</span>
-      <span class="ad-title">${esc(t.name)}</span>
+      <div style="display:flex;flex-direction:column;gap:2px">
+        ${TABLE_CN[t.name] ? `<span class="ad-title">${esc(TABLE_CN[t.name])}</span>` : ''}
+        <span style="font-size:12px;font-family:var(--mono);color:var(--txm);font-weight:400">${esc(t.name)}</span>
+      </div>
     </div>
     <div class="ad-body">
       <div class="ad-section">

@@ -9,6 +9,7 @@ echo "启动 MCP 服务..."
 node "$DIR/mcp-knowledge/server.js" &
 node "$DIR/mcp-skills/server.js" &
 node "$DIR/mcp-metrics/server.js" &
+node "$DIR/mcp-data/server.js" &
 node "$DIR/mcp-feishu/server.js" &
 
 echo "等待服务就绪..."

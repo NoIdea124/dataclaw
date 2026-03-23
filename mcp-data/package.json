@@ -1,0 +1,8 @@
+{
+  "name": "mcp-data",
+  "version": "1.0.0",
+  "description": "DataClaw Data Catalog MCP Server",
+  "main": "server.js",
+  "scripts": { "start": "node server.js" },
+  "license": "MIT"
+}
