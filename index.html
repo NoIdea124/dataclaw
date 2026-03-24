@@ -1216,6 +1216,9 @@ textarea.mf-inp{resize:vertical;line-height:1.55;font-size:12px;font-family:var(
         <a class="al-item" href="metric-dict/index.html#assets" target="_blank">
           <svg class="al-ico" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>数据管理
         </a>
+        <a class="al-item" href="metric-dict/index.html#request" target="_blank">
+          <svg class="al-ico" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="13" y2="17"/></svg>需求管理
+        </a>
       </div>
     </div>
     <div class="ibtn-wrap">
@@ -1236,9 +1239,7 @@ textarea.mf-inp{resize:vertical;line-height:1.55;font-size:12px;font-family:var(
       <!-- moon (dark mode) -->
       <svg id="icon-moon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
     </button>
-    <button class="ibtn" title="关于 DataClaw" onclick="openAbout()">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
-    </button>
+
     <div class="dc-user-chip" id="dc-user-chip" style="display:none">
       <div class="ava" id="dc-ava"></div>
       <span id="dc-uname"></span>
@@ -1385,10 +1386,11 @@ textarea.mf-inp{resize:vertical;line-height:1.55;font-size:12px;font-family:var(
 
     <!-- Landing suggestion chips (shown below input in empty mode) -->
     <div class="landing-sugs" id="landing-sugs">
-      <button class="lsug" onclick="suggest('帮我在现有数据源中查找相关数据')"><span class="lsug-icon">Q</span> 找数</button>
-      <button class="lsug" onclick="suggest('我有个数据相关的问题想请教你')"><span class="lsug-icon">?</span> 问答</button>
-      <button class="lsug" onclick="suggest('帮我从数据中提取我需要的内容')"><span class="lsug-icon">↓</span> 取数</button>
-      <button class="lsug" onclick="suggest('帮我分析这份数据，找出规律和洞察')"><span class="lsug-icon">Σ</span> 分析</button>
+      <button class="lsug" onclick="suggest('订单域有哪些数据表，哪张表适合查 GMV？')"><span class="lsug-icon">Q</span> 找数</button>
+      <button class="lsug" onclick="suggest('我需要一份上周各渠道 GMV 的数据，麻烦帮我整理一下需求背景和取数逻辑')"><span class="lsug-icon">D</span> 提需</button>
+      <button class="lsug" onclick="suggest('帮我取最近 30 天的日活用户数，按渠道拆分')"><span class="lsug-icon">↓</span> 取数</button>
+      <button class="lsug" onclick="suggest('我有个关于 DAU 异常波动的问题想请教你')"><span class="lsug-icon">?</span> 问答</button>
+      <button class="lsug" onclick="suggest('帮我分析上周各品类 GMV 的趋势，找出异动原因')"><span class="lsug-icon">Σ</span> 分析</button>
     </div>
 
     <!-- hidden status anchors (keep for JS compatibility) -->
