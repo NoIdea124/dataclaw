@@ -5566,7 +5566,7 @@ function renderSkillList() {
     return `<div class="skill-card" id="sk-${fid}">
       <input type="checkbox" class="skill-card-toggle" ${sk.enabled!==false?'checked':''} onchange="toggleSkill('${sk.id}',this.checked)" title="启用/停用" />
       <div class="skill-card-body">
-        <div class="skill-card-name">${esc(sk.name || sk.id)}${sk.output_type ? ' <span style="font-size:10px;padding:1px 5px;border-radius:3px;background:rgba(99,102,241,.12);color:#818cf8;border:1px solid rgba(99,102,241,.25);font-weight:500;vertical-align:middle">HTML输出</span>' : ''}</div>
+        <div class="skill-card-name">${esc(sk.name || sk.id)}${sk.output_type ? ' <span style="font-size:10px;padding:1px 5px;border-radius:3px;background:rgba(99,102,241,.12);color:#818cf8;border:1px solid rgba(99,102,241,.25);font-weight:500;vertical-align:middle">HTML输出</span>' : ''}${sk.linked_mcp ? ` <span style="font-size:10px;padding:1px 5px;border-radius:3px;background:rgba(16,185,129,.1);color:#10b981;border:1px solid rgba(16,185,129,.25);font-weight:500;vertical-align:middle">MCP · ${esc(sk.linked_mcp)}</span>` : ''}</div>
         <div class="skill-card-trigger">${esc(sk.trigger || '')}</div>
         <div class="skill-card-preview">${esc(preview)}</div>
         <div class="skill-card-file">📄 ${esc(sk.filename || sk.id)}</div>

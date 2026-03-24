@@ -65,6 +65,7 @@ function parseMD(content) {
   };
   if (meta.output_type)  skill.output_type  = meta.output_type;
   if (meta.linked_mcp)   skill.linked_mcp   = meta.linked_mcp;
+  if (meta.mcp_tools)    skill.mcp_tools    = meta.mcp_tools;
   if (output_template)   skill.output_template = output_template;
   return skill;
 }
