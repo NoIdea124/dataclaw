@@ -3669,6 +3669,12 @@ function queryRelevantSkills(query, topN = 3) {
 function buildSystemPrompt(query = '', forcedMentions = [], ragChunks = null) {
   let prompt = C.systemBase;
 
+  // ── 全局执行优先级 ──
+  prompt += `\n\n【执行优先级（必须遵守）】
+1. **技能优先**：若当前问题与某个技能匹配，必须严格按照技能指令执行，包括其规定的步骤、工具调用方式和输出格式。技能是经过设计的完整执行规程，不得跳过。
+2. **MCP 工具辅助**：MCP 工具是技能执行过程中的调用手段，不得绕过技能直接使用 MCP 工具完成技能已覆盖的任务。
+3. **无技能时自主调用**：仅当没有匹配技能时，才可根据用户需求自行决定是否调用 MCP 工具。`;
+
   // ── 长期记忆：始终全量注入 ──
   if (memories.length) {
     prompt += `\n\n【长期记忆】\n以下是关于用户的长期记忆，请结合问题按需运用：\n${memories.map(m => `- ${m.content}`).join('\n')}`;
